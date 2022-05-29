@@ -87,29 +87,27 @@ func abs(x int) int {
 	return x
 }
 
-func minIdx(nums ...int) int {
-	rt := 0
+func minIdx(nums ...int) (idx int) {
 	for i, v := range nums {
-		if nums[rt] > v {
-			rt = i
+		if nums[idx] > v {
+			idx = i
 		}
 	}
-	return rt
+	return idx
 }
 
-func maxIdx(nums ...int) int {
-	rt := 0
+func maxIdx(nums ...int) (idx int) {
 	for i, v := range nums {
-		if nums[rt] < v {
-			rt = i
+		if nums[idx] < v {
+			idx = i
 		}
 	}
-	return rt
+	return idx
 }
 
 type cntMap struct {
 	cnt [26]int
-	len int64
+	len int
 }
 
 func (m *cntMap) add(c byte) {
@@ -124,31 +122,6 @@ func (m *cntMap) remove(c byte) {
 		m.len--
 	}
 	m.cnt[c-'a']--
-}
-
-type Stack struct {
-	data []int
-}
-
-func (s *Stack) empty() bool {
-	return len(s.data) == 0
-}
-
-func (s *Stack) pop() {
-	if !s.empty() {
-		s.data = s.data[:len(s.data)-1]
-	}
-}
-
-func (s *Stack) push(x int) {
-	s.data = append(s.data, x)
-}
-
-func (s *Stack) peek() int {
-	if !s.empty() {
-		return s.data[len(s.data)-1]
-	}
-	return 0
 }
 
 type TreeNode struct {

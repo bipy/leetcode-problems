@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/emirpasic/gods/trees/redblacktree"
 	"math"
 	"math/rand"
+	"net"
 	"sort"
 	"strconv"
 	"strings"
@@ -587,10 +589,10 @@ func countDistinct(nums []int, k int, p int) int {
 
 }
 
-func appealSum(s string) int64 {
+func appealSum(s string) int {
 	cm := &cntMap{}
 	n := len(s)
-	ans := int64(n)
+	ans := int(n)
 	cm.add(s[0])
 	for i := 2; i <= n; i++ {
 		if i%2 == 0 {
@@ -1271,6 +1273,223 @@ func minimumLines(stockPrices [][]int) int {
 		x3, y3 := stockPrices[i][0], stockPrices[i][1]
 		if x1*(y2-y3)-x2*(y1-y3)+x3*(y1-y2) != 0 {
 			ans++
+		}
+	}
+	return ans
+}
+
+func isUnivalTree(root *TreeNode) bool {
+	target := root.Val
+	var dfs func(*TreeNode) bool
+	dfs = func(cur *TreeNode) bool {
+		if cur == nil {
+			return true
+		}
+		if cur.Val != target {
+			return false
+		}
+		return dfs(cur.Left) && dfs(cur.Right)
+	}
+	return dfs(root)
+}
+
+func findSubstringInWraproundString(p string) int {
+	n := len(p)
+	dp := [26]int{}
+	k := 0
+	for i := 1; i < n; i++ {
+		if p[i]-'a' == (p[i-1]-'a'+1)%26 {
+			k++
+		} else {
+			k = 1
+		}
+		dp[p[i]-'a'] = max(dp[p[i]-'a'], k)
+	}
+	ans := 0
+	for _, v := range dp {
+		ans += v
+	}
+	return ans
+}
+
+func removeOuterParentheses(s string) string {
+	cnt := 0
+	sb := strings.Builder{}
+	sb.Grow(len(s))
+	for i := range s {
+		if s[i] == '(' {
+			if cnt != 0 {
+				sb.WriteByte('(')
+			}
+			cnt++
+		} else {
+			cnt--
+			if cnt != 0 {
+				sb.WriteByte(')')
+			}
+		}
+	}
+	return sb.String()
+}
+
+func digitCount(num string) bool {
+	cnt := [10]int{}
+	for i := range num {
+		cnt[num[i]-'0']++
+	}
+	for i := 0; i < len(num); i++ {
+		if cnt[i] != int(num[i]-'0') {
+			return false
+		}
+	}
+	return true
+}
+
+func largestWordCount(messages []string, senders []string) string {
+	cnt := map[string]int{}
+	n := len(messages)
+	for i := 0; i < n; i++ {
+		cnt[senders[i]] += len(strings.Split(messages[i], " "))
+	}
+	maxv := 0
+	for _, v := range cnt {
+		if maxv < v {
+			maxv = v
+		}
+	}
+	ans := ""
+	for k, v := range cnt {
+		if maxv == v {
+			if ans < k {
+				ans = k
+			}
+		}
+	}
+	return ans
+}
+
+func maximumImportance(n int, roads [][]int) int64 {
+	list := make([]int, n)
+	for _, road := range roads {
+		list[road[0]]++
+		list[road[1]]++
+	}
+	sort.Slice(list, func(i, j int) bool {
+		return list[i] > list[j]
+	})
+	var ans int64 = 0
+	w := n
+	for _, v := range list {
+		ans += int64(w * v)
+		w--
+	}
+	return ans
+}
+
+func validIPAddress(queryIP string) string {
+	ip := net.ParseIP(queryIP)
+	if ip == nil {
+		return "Neither"
+	}
+	if ip.To4() == nil {
+		items := strings.Split(queryIP, ":")
+		for _, s := range items {
+			if l := len(s); l < 1 || l > 4 {
+				return "Neither"
+			}
+		}
+		return "IPv6"
+	}
+	items := strings.Split(queryIP, ".")
+	for _, s := range items {
+		if len(s) > 1 && s[0] == '0' {
+			return "Neither"
+		}
+	}
+	return "IPv4"
+}
+
+func rearrangeCharacters(s string, target string) int {
+	cnt, targetCnt := [26]int{}, [26]int{}
+	for i := range s {
+		cnt[s[i]-'a']++
+	}
+	for i := range target {
+		targetCnt[target[i]-'a']++
+	}
+	ans := 0x7fffffff
+	for i := range cnt {
+		if targetCnt[i] != 0 && ans > cnt[i]/targetCnt[i] {
+			ans = cnt[i] / targetCnt[i]
+		}
+	}
+	return ans
+}
+
+func discountPrices(sentence string, discount int) string {
+	words := strings.Split(sentence, " ")
+	disc := float64(100-discount) / 100.0
+	for i := range words {
+		if len(words[i]) > 1 && words[i][0] == '$' {
+			if input, err := strconv.Atoi(words[i][1:]); err == nil {
+				words[i] = fmt.Sprintf("$%.2f", float64(input)*disc)
+			}
+		}
+	}
+	return strings.Join(words, " ")
+}
+
+func minimumObstacles(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+		for j := range dp[i] {
+			dp[i][j] = 0x7fffffff
+		}
+	}
+	type node struct {
+		x, y, val int
+	}
+	queue := make([]node, 0, m*n)
+	queue = append(queue, node{
+		x:   0,
+		y:   0,
+		val: 0,
+	})
+	for len(queue) > 0 {
+		cur := queue[0]
+		if cur.val <= dp[cur.x][cur.y] {
+			for _, d := range directions {
+				nx, ny := cur.x+d.x, cur.y+d.y
+				if nx >= 0 && nx < m && ny >= 0 && ny < n {
+					nval := cur.val + grid[nx][ny]
+					if dp[nx][ny] > nval {
+						dp[nx][ny] = nval
+						queue = append(queue, node{
+							x:   nx,
+							y:   ny,
+							val: nval,
+						})
+					}
+				}
+			}
+		}
+		queue = queue[1:]
+	}
+	return dp[m-1][n-1]
+}
+
+func totalSteps(nums []int) int {
+	if len(nums) <= 1 {
+		return len(nums)
+	}
+	ans := 0
+	pre := 0
+	for i := 1; i <= len(nums); i++ {
+		if i == len(nums) || nums[i] >= nums[pre] {
+			ans = max(ans, totalSteps(nums[pre+1:i]))
+			pre = i
 		}
 	}
 	return ans
