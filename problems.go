@@ -1480,17 +1480,154 @@ func minimumObstacles(grid [][]int) int {
 	return dp[m-1][n-1]
 }
 
-func totalSteps(nums []int) int {
-	if len(nums) <= 1 {
-		return len(nums)
+func sumRootToLeaf(root *TreeNode) (ans int) {
+	var dfs func(*TreeNode, int)
+	dfs = func(cur *TreeNode, val int) {
+		val += cur.Val
+		if cur.Left == nil && cur.Right == nil {
+			ans += val
+			return
+		}
+		if cur.Left != nil {
+			dfs(cur.Left, val<<1)
+		}
+		if cur.Right != nil {
+			dfs(cur.Right, val<<1)
+		}
 	}
-	ans := 0
-	pre := 0
-	for i := 1; i <= len(nums); i++ {
-		if i == len(nums) || nums[i] >= nums[pre] {
-			ans = max(ans, totalSteps(nums[pre+1:i]))
-			pre = i
+	dfs(root, root.Val<<1)
+	return
+}
+
+func alienOrder(words []string) string {
+	g := [26][26]int{}
+	cnt := map[int]int{}
+	n := len(words)
+	for _, w := range words {
+		for _, c := range w {
+			cnt[int(c-'a')] = 0
+		}
+	}
+	for i := 1; i < n; i++ {
+		flag := false
+		k := min(len(words[i-1]), len(words[i]))
+		for j := 0; j < k; j++ {
+			if c1, c2 := words[i-1][j], words[i][j]; c1 != c2 {
+				g[c1-'a'][c2-'a'] = 1
+				flag = true
+				break
+			}
+		}
+		if !flag && len(words[i-1]) > len(words[i]) {
+			return ""
+		}
+	}
+	for i := 0; i < 26; i++ {
+		for j := 0; j < 26; j++ {
+			if g[i][j] == 1 {
+				cnt[j]++
+			}
+		}
+	}
+	sb := strings.Builder{}
+	for {
+		flag := false
+		for k, v := range cnt {
+			if v == 0 {
+				flag = true
+				sb.WriteByte('a' + byte(k))
+				for j := 0; j < 26; j++ {
+					if g[k][j] == 1 {
+						cnt[j]--
+					}
+				}
+				delete(cnt, k)
+				break
+			}
+		}
+		if !flag {
+			break
+		}
+	}
+	if len(cnt) > 0 {
+		return ""
+	}
+	return sb.String()
+}
+
+func deleteNode(root *TreeNode, key int) *TreeNode {
+	R := &TreeNode{Right: root}
+	pre, p := R, root
+	for p != nil && p.Val != key {
+		pre = p
+		if p.Val > key {
+			p = p.Left
+		} else {
+			p = p.Right
+		}
+	}
+	if pre.Left == p {
+		smallest := p.Right
+		if smallest == nil {
+			pre.Left = p.Left
+		} else {
+			pre.Left = p.Right
+			for smallest.Left != nil {
+				smallest = smallest.Left
+			}
+			smallest.Left = p.Left
+		}
+	} else {
+		largest := p.Left
+		if largest == nil {
+			pre.Right = p.Right
+		} else {
+			pre.Right = p.Left
+			for largest.Right != nil {
+				largest = largest.Right
+			}
+			largest.Right = p.Right
+		}
+	}
+	return R.Right
+}
+
+func sumOfThree(num int64) []int64 {
+	if num%3 == 0 {
+		return []int64{num/3 - 1, num / 3, num/3 + 1}
+	}
+	return []int64{}
+}
+
+func consecutiveNumbersSum(n int) int {
+	ans := 1
+	for i := 2; i < n; i++ {
+		if t := n - i*(i-1)/2; t%i == 0 {
+			if t < 0 {
+				break
+			}
+			ans++
 		}
 	}
 	return ans
+}
+
+func numUniqueEmails(emails []string) int {
+	m := map[string]struct{}{}
+	for _, email := range emails {
+		sb := strings.Builder{}
+		for i := range email {
+			if email[i] == '@' || email[i] == '+' {
+				for email[i] != '@' {
+					i++
+				}
+				sb.WriteString(email[i:])
+				break
+			} else if email[i] != '.' {
+				sb.WriteByte(email[i])
+			}
+		}
+		m[sb.String()] = struct{}{}
+	}
+	return len(m)
 }
