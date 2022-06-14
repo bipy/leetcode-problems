@@ -1631,3 +1631,172 @@ func numUniqueEmails(emails []string) int {
 	}
 	return len(m)
 }
+
+func isBoomerang(points [][]int) bool {
+	x1, y1 := points[0][0], points[0][1]
+	x2, y2 := points[1][0], points[1][1]
+	x3, y3 := points[2][0], points[2][1]
+	return x1*(y2-y3)-x2*(y1-y3)+x3*(y1-y2) != 0
+}
+
+func minEatingSpeed(piles []int, h int) int {
+	upper := 0
+	for i := range piles {
+		if piles[i] > upper {
+			upper = piles[i]
+		}
+	}
+	return 1 + sort.Search(upper, func(k int) bool {
+		k++
+		time := 0
+		for i := range piles {
+			time += piles[i] / k
+			if piles[i]%k != 0 {
+				time++
+			}
+		}
+		return time <= h
+	})
+}
+
+func minFlipsMonoIncr(s string) int {
+	ans := len(s)
+	zero, one := 0, 0
+	for i := range s {
+		if s[i] == '0' {
+			zero++
+		}
+	}
+	for i := range s {
+		ans = min(ans, one+zero-(i-one))
+		if s[i] == '1' {
+			one++
+		}
+	}
+	ans = min(ans, one+zero-(len(s)-one))
+	return ans
+}
+
+func calculateTax(brackets [][]int, income int) float64 {
+	if income < brackets[0][0] {
+		return float64(income) * float64(brackets[0][1]) / 100
+	}
+	ans := float64(brackets[0][0]) * float64(brackets[0][1]) / 100
+	for i := 1; i < len(brackets); i++ {
+		if income >= brackets[i][0] {
+			ans += float64(brackets[i][0]-brackets[i-1][0]) * float64(brackets[i][1]) / 100
+		} else {
+			ans += float64(income-brackets[i-1][0]) * float64(brackets[i][1]) / 100
+			break
+		}
+	}
+	return ans
+}
+
+func minPathCost(grid [][]int, moveCost [][]int) int {
+	m, n := len(grid), len(grid[0])
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+	}
+	for i := 1; i < m; i++ {
+		for j := 0; j < n; j++ {
+			minVal := 0x7fffffff
+			for k := 0; k < n; k++ {
+				if t := dp[i-1][k] + moveCost[grid[i-1][k]][j] + grid[i-1][k]; minVal > t {
+					minVal = t
+				}
+			}
+			dp[i][j] = minVal
+		}
+	}
+	for i := range dp[m-1] {
+		dp[m-1][i] += grid[m-1][i]
+	}
+	ans := 0x7fffffff
+	for _, v := range dp[m-1] {
+		if ans > v {
+			ans = v
+		}
+	}
+	return ans
+}
+
+func distributeCookies(cookies []int, k int) int {
+	n := len(cookies)
+	ans := 0x7fffffff
+	temp := make([]int, n)
+	var dfs func(int)
+	dfs = func(i int) {
+		if i == n {
+			maxVal := 0
+			for j := range temp {
+				if temp[j] > maxVal {
+					maxVal = temp[j]
+				}
+			}
+			ans = min(ans, maxVal)
+			return
+		}
+		for j := i + 1; j < n; j++ {
+			temp[j] += cookies[j]
+			dfs(j + 1)
+			temp[j] -= cookies[j]
+		}
+	}
+	dfs(-1)
+	return ans
+}
+
+func findAndReplacePattern(words []string, pattern string) (rt []string) {
+	for _, w := range words {
+		m := map[byte]byte{}
+		r := map[byte]byte{}
+		flag := true
+		for i := range w {
+			c, ok := m[pattern[i]]
+			cc, okk := r[w[i]]
+			if ok && okk && c == w[i] && cc == pattern[i] {
+				continue
+			} else if !ok && !okk {
+				m[pattern[i]] = w[i]
+				r[w[i]] = pattern[i]
+			} else {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			rt = append(rt, w)
+		}
+	}
+	return
+}
+
+func findDiagonalOrder(mat [][]int) (rt []int) {
+	m, n := len(mat), len(mat[0])
+	maxSum := m + n - 2
+	d := 1
+	valid := func(x, y int) bool {
+		return x >= 0 && y >= 0 && x < m && y < n
+	}
+	for r := 0; r <= maxSum; r++ {
+		d = -d
+		if d == 1 {
+			for i := 0; i <= r; i++ {
+				if !valid(i, r-i) {
+					break
+				}
+				rt = append(rt, mat[i][r-i])
+			}
+		} else {
+			for i := r; i >= 0; i-- {
+				if !valid(i, r-i) {
+					break
+				}
+				rt = append(rt, mat[i][r-i])
+			}
+		}
+	}
+	return
+}
