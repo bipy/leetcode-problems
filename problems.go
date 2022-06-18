@@ -1800,3 +1800,90 @@ func findDiagonalOrder(mat [][]int) (rt []int) {
 	}
 	return
 }
+
+func smallestDistancePair(nums []int, k int) int {
+	n := len(nums)
+	ans := make([]int, 0, n*(n+1)/2)
+	for i := 0; i < n; i++ {
+		for j := i + 1; j < n; j++ {
+			ans = append(ans, abs(nums[i]-nums[j]))
+		}
+	}
+	sort.Ints(ans)
+	return ans[k-1]
+}
+
+func findPairs(nums []int, k int) int {
+	ans := map[[2]int]struct{}{}
+	sort.Ints(nums)
+	n := len(nums)
+	for i := 0; i < n; i++ {
+		j := i + sort.Search(n-i, func(j int) bool {
+			return nums[i+j] >= nums[i]+k
+		})
+		if j < n && j != i && nums[j]-nums[i] == k {
+			ans[[2]int{nums[i], nums[j]}] = struct{}{}
+		}
+	}
+	return len(ans)
+}
+
+func duplicateZeros(arr []int) {
+	n := len(arr)
+	j := 0
+	idx := n - 1
+	for i := 0; i < n; i++ {
+		if arr[j] == 0 {
+			i++
+		}
+		j++
+		if i == n {
+			arr[idx] = 0
+			idx--
+			j--
+		}
+	}
+	for idx >= 0 {
+		j--
+		arr[idx] = arr[j]
+		if arr[j] == 0 {
+			arr[idx-1] = 0
+			idx--
+		}
+		idx--
+	}
+}
+
+func insert(aNode *ListNode, x int) *ListNode {
+	t := &ListNode{Val: x}
+	if aNode == nil {
+		t.Next = t
+		return t
+	}
+	if aNode.Next == aNode {
+		t.Next = aNode
+		aNode.Next = t
+		return aNode
+	}
+	maxPre := aNode
+	p := aNode.Next
+	for p != aNode {
+		if p.Next.Next.Val < p.Next.Val {
+			maxPre = p
+		}
+		p = p.Next
+	}
+	if x >= maxPre.Next.Val || x <= maxPre.Next.Next.Val {
+		t.Next = maxPre.Next.Next
+		maxPre.Next.Next = t
+		return aNode
+	}
+	for i := maxPre.Next.Next; i != maxPre.Next; i = i.Next {
+		if x >= i.Val && x <= i.Next.Val {
+			t.Next = i.Next
+			i.Next = t
+			break
+		}
+	}
+	return aNode
+}
