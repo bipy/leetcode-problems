@@ -1,4 +1,4 @@
-package main
+package leetcode
 
 import (
 	"fmt"
@@ -1460,7 +1460,7 @@ func minimumObstacles(grid [][]int) int {
 	for len(queue) > 0 {
 		cur := queue[0]
 		if cur.val <= dp[cur.x][cur.y] {
-			for _, d := range directions {
+			for _, d := range dir4 {
 				nx, ny := cur.x+d.x, cur.y+d.y
 				if nx >= 0 && nx < m && ny >= 0 && ny < n {
 					nval := cur.val + grid[nx][ny]
@@ -1886,4 +1886,92 @@ func insert(aNode *ListNode, x int) *ListNode {
 		}
 	}
 	return aNode
+}
+
+func greatestLetter(s string) string {
+	cntUpper := [26]bool{}
+	cntLower := [26]bool{}
+	for i := range s {
+		if s[i] >= 'a' && s[i] <= 'z' {
+			cntLower[s[i]-'a'] = true
+		} else {
+			cntUpper[s[i]-'A'] = true
+		}
+	}
+	for i := 25; i >= 0; i-- {
+		if cntLower[i] && cntUpper[i] {
+			return string(byte('A' + i))
+		}
+	}
+	return ""
+}
+
+func minimumNumbers(num int, k int) int {
+	if num == 0 {
+		return 0
+	}
+	t := num % 10
+	for i := 1; i < 10; i++ {
+		if t == i*k%10 && i*k <= num {
+			return i
+		}
+	}
+	return -1
+}
+
+func longestSubsequence(s string, k int) int {
+	n := len(s)
+	cnt := 0
+	var sum int64
+	for i := n - 1; i >= 0; i-- {
+		if s[i] == '1' {
+			if cnt > 31 {
+				continue
+			}
+			if t := sum + (1 << cnt); t <= int64(k) {
+				cnt++
+				sum = t
+			}
+		} else {
+			cnt++
+		}
+	}
+	return cnt
+}
+
+func findFrequentTreeSum(root *TreeNode) (ans []int) {
+	type node struct {
+		val int
+		cnt int
+	}
+	m := map[int]int{}
+	var save []*node
+	var dfs func(*TreeNode) int
+	dfs = func(cur *TreeNode) int {
+		if cur == nil {
+			return 0
+		}
+		sum := dfs(cur.Left) + dfs(cur.Right) + cur.Val
+		if idx, ok := m[sum]; ok {
+			save[idx].cnt++
+		} else {
+			t := &node{
+				val: sum,
+				cnt: 1,
+			}
+			m[sum] = len(save)
+			save = append(save, t)
+		}
+		return sum
+	}
+	dfs(root)
+	sort.Slice(save, func(i, j int) bool {
+		return save[i].cnt > save[j].cnt
+	})
+	for i := range save {
+		if save[i].cnt == save[0].cnt {
+			ans = append(ans, save[i].val)
+		}
+	}
+	return
 }

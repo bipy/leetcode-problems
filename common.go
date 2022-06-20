@@ -1,8 +1,9 @@
-package main
+package leetcode
 
 const mod = 1e9 + 7
 
-var directions = []struct{ x, y int }{{1, 0}, {0, -1}, {-1, 0}, {0, 1}}
+var dir4 = []struct{ x, y int }{{1, 0}, {0, -1}, {-1, 0}, {0, 1}}
+var dirRightDown = []struct{ x, y int }{{0, 1}, {1, 0}}
 
 func min(x, y int) int {
 	if x < y {
@@ -31,7 +32,7 @@ func minIdx(nums ...int) (idx int) {
 			idx = i
 		}
 	}
-	return idx
+	return
 }
 
 func maxIdx(nums ...int) (idx int) {
@@ -40,5 +41,5 @@ func maxIdx(nums ...int) (idx int) {
 			idx = i
 		}
 	}
-	return idx
+	return
 }

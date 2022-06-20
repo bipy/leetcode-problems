@@ -1,4 +1,4 @@
-package main
+package leetcode
 
 import (
 	"strconv"
@@ -43,6 +43,8 @@ func TreeSerialize(root *TreeNode) string {
 
 // TreeDeserialize Deserializes your encoded data to tree.
 func TreeDeserialize(data string) *TreeNode {
+	data = strings.TrimPrefix(data, "[")
+	data = strings.TrimSuffix(data, "]")
 	if data == "" {
 		return nil
 	}
