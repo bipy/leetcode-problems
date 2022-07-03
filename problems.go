@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/emirpasic/gods/trees/redblacktree"
 	"math"
+	"math/bits"
 	"math/rand"
 	"net"
 	"sort"
@@ -1161,7 +1162,7 @@ type CountIntervals struct {
 	cnt int // 所有区间长度和
 }
 
-func Constructor() CountIntervals {
+func ConstructorCountIntervals() CountIntervals {
 	return CountIntervals{redblacktree.NewWithIntComparator(), 0}
 }
 
@@ -1974,4 +1975,605 @@ func findFrequentTreeSum(root *TreeNode) (ans []int) {
 		}
 	}
 	return
+}
+
+func findBottomLeftValue(root *TreeNode) int {
+	var queue []*TreeNode
+	if root != nil {
+		queue = append(queue, root)
+	}
+	for len(queue) != 0 {
+		n := len(queue)
+		for i := 0; i < n; i++ {
+			cur := queue[i]
+			if cur.Left != nil {
+				queue = append(queue, cur.Left)
+			}
+			if cur.Right != nil {
+				queue = append(queue, cur.Right)
+			}
+		}
+		if len(queue) == n {
+			break
+		}
+		queue = queue[n:]
+	}
+	return queue[0].Val
+}
+
+func findSubstring(s string, words []string) (ans []int) {
+	length := len(words[0])
+	n := len(s)
+	m := map[string]int{}
+	for _, w := range words {
+		m[w]++
+	}
+	total := len(words) * length
+r:
+	for i := 0; i < n; i++ {
+		cnt := map[string]int{}
+		for j := i; j < i+total && j+length <= n; j += length {
+			if _, ok := m[s[j:j+length]]; ok {
+				cnt[s[j:j+length]]++
+			} else {
+				continue r
+			}
+		}
+		flag := true
+		for k, v := range m {
+			if c, ok := cnt[k]; !ok || c != v {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			ans = append(ans, i)
+		}
+	}
+	return
+}
+
+func largestValues(root *TreeNode) (ans []int) {
+	var queue []*TreeNode
+	if root == nil {
+		return
+	}
+	queue = append(queue, root)
+	for len(queue) > 0 {
+		n := len(queue)
+		maxVal := -1 << 31
+		for i := 0; i < n; i++ {
+			cur := queue[i]
+			if cur.Left != nil {
+				queue = append(queue, cur.Left)
+			}
+			if cur.Right != nil {
+				queue = append(queue, cur.Right)
+			}
+			if maxVal < cur.Val {
+				maxVal = cur.Val
+			}
+		}
+		ans = append(ans, maxVal)
+		queue = queue[n:]
+	}
+	return
+}
+
+func minCost(costs [][]int) int {
+	n := len(costs)
+	for i := 1; i < n; i++ {
+		for j := 0; j < 3; j++ {
+			costs[i][j] += min(costs[i-1][(j+1)%3], costs[i-1][(j+2)%3])
+		}
+	}
+	return min(min(costs[n-1][0], costs[n-1][1]), costs[n-1][2])
+}
+
+func countAsterisks(s string) (ans int) {
+	cnt := 0
+	for i := range s {
+		if s[i] == '|' {
+			cnt++
+			continue
+		}
+		if s[i] == '*' && cnt%2 == 0 {
+			ans++
+		}
+	}
+	return
+}
+
+// TODO
+func countPairs(n int, edges [][]int) int64 {
+	idx := make([]int, n)
+	for i := range idx {
+		idx[i] = -1
+	}
+	getA := func(cur int) (int, int) {
+		i := 0
+		for idx[cur] >= 0 {
+			cur = idx[cur]
+			i++
+		}
+		return cur, i
+	}
+	for _, e := range edges {
+		if idx[e[0]] < 0 && idx[e[1]] < 0 {
+			idx[e[1]] += idx[e[0]]
+			idx[e[0]] = e[1]
+		} else if idx[e[0]] < 0 {
+			a, _ := getA(e[1])
+			if a != e[0] {
+				idx[a] += idx[e[0]]
+				idx[e[0]] = a
+			}
+		} else if idx[e[1]] < 0 {
+			a, _ := getA(e[0])
+			if a != e[1] {
+				idx[a] += idx[e[1]]
+				idx[e[1]] = a
+			}
+		} else {
+			a, acnt := getA(e[0])
+			b, bcnt := getA(e[1])
+			if a != b {
+				if acnt > bcnt {
+					idx[a] += idx[b]
+					idx[b] = a
+				} else {
+					idx[b] += idx[a]
+					idx[a] = b
+				}
+			}
+		}
+	}
+	cnts := make([]int, 0, n)
+	for i := range idx {
+		if idx[i] <= -1 {
+			cnts = append(cnts, -idx[i])
+		}
+	}
+	if len(cnts) <= 1 {
+		return 0
+	}
+	var ans int64 = 0
+	for i := range cnts {
+		for j := i + 1; j < len(cnts); j++ {
+			ans += int64(cnts[i]) * int64(cnts[j])
+		}
+	}
+	return ans
+}
+
+func maximumXOR(nums []int) int {
+	cnt := [32]int{}
+	for _, v := range nums {
+		i := 0
+		for v != 0 {
+			if (v & 1) == 1 {
+				cnt[i]++
+			}
+			v >>= 1
+			i++
+		}
+	}
+	ans := 0
+	for i := 31; i >= 0; i-- {
+		if cnt[i] > 0 {
+			ans += 1 << i
+		}
+	}
+	return ans
+}
+
+func checkXMatrix(grid [][]int) bool {
+	n := len(grid)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			if i == j || i+j == n-1 {
+				if grid[i][j] == 0 {
+					return false
+				}
+			} else {
+				if grid[i][j] != 0 {
+					return false
+				}
+			}
+		}
+	}
+	return true
+}
+
+func countHousePlacements(n int) int {
+	dp := make([][2]int, n)
+	dp[0][0] = 1
+	dp[0][1] = 1
+	for i := 1; i < n; i++ {
+		dp[i][0] = dp[i-1][1] + dp[i-1][0]
+		dp[i][1] = dp[i-1][0]
+		dp[i][0] %= mod
+		dp[i][1] %= mod
+	}
+	t := int64((dp[n-1][0] + dp[n-1][1]) % mod)
+	return int((t * t) % mod)
+}
+
+func maximumsSplicedArray(nums1 []int, nums2 []int) int {
+	n := len(nums1)
+	div := make([]int, n)
+	for i := 0; i < n; i++ {
+		div[i] = nums1[i] - nums2[i]
+	}
+	maxv, minv := math.MinInt32, math.MaxInt32
+	sum := 0
+	for i := range div {
+		sum += div[i]
+		if sum < 0 {
+			sum = 0
+		} else if sum > maxv {
+			maxv = sum
+		}
+	}
+	sum = 0
+	for i := range div {
+		sum += div[i]
+		if sum > 0 {
+			sum = 0
+		} else if sum < minv {
+			minv = sum
+		}
+	}
+	sum1, sum2 := 0, 0
+	for i := range nums1 {
+		sum1 += nums1[i]
+		sum2 += nums2[i]
+	}
+	return max(sum1-minv, sum2+maxv)
+}
+
+func findLUSlength(strs []string) int {
+	m := map[string]int{}
+	var dfs func(int)
+	for _, str := range strs {
+		tmp := make([]byte, 0, len(str))
+		dfs = func(i int) {
+			m[string(tmp)]++
+			for j := i + 1; j < len(str); j++ {
+				tmp = append(tmp, str[j])
+				dfs(j)
+				tmp = tmp[:len(tmp)-1]
+			}
+		}
+		dfs(-1)
+	}
+	maxl := -1
+	for k, v := range m {
+		if v == 1 && len(k) > maxl {
+			maxl = len(k)
+		}
+	}
+	return maxl
+}
+
+func hammingDistance(x int, y int) int {
+	return bits.OnesCount(uint(x ^ y))
+}
+
+func mincostTickets(days []int, costs []int) int {
+	n := len(days)
+	dp := make([]int, days[n-1]+1)
+	for i := 0; i < n; i++ {
+		dp[days[i]] = -1
+	}
+	for i := 1; i < len(dp); i++ {
+		if dp[i] == 0 {
+			dp[i] = dp[i-1]
+			continue
+		}
+		a, b, c := 0x7fffffff, 0x7fffffff, 0x7fffffff
+		a = dp[i-1] + costs[0]
+		if i-7 >= 0 {
+			b = dp[i-7] + costs[1]
+		} else {
+			b = dp[0] + costs[1]
+		}
+		if i-30 >= 0 {
+			c = dp[i-30] + costs[2]
+		} else {
+			c = dp[0] + costs[2]
+		}
+		dp[i] = minOf(a, b, c)
+	}
+	return dp[len(dp)-1]
+}
+
+func diffWaysToCompute(expression string) (rt []int) {
+	if n, err := strconv.Atoi(expression); err == nil {
+		return append(rt, n)
+	}
+	for i, c := range expression {
+		if c == '+' || c == '-' || c == '*' {
+			left := diffWaysToCompute(expression[:i])
+			right := diffWaysToCompute(expression[i+1:])
+			if c == '+' {
+				for j := range left {
+					for k := range right {
+						rt = append(rt, left[j]+right[k])
+					}
+				}
+			} else if c == '-' {
+				for j := range left {
+					for k := range right {
+						rt = append(rt, left[j]-right[k])
+					}
+				}
+			} else {
+				for j := range left {
+					for k := range right {
+						rt = append(rt, left[j]*right[k])
+					}
+				}
+			}
+		}
+	}
+	return rt
+}
+
+func fourSum(nums []int, target int) [][]int {
+	ans := map[[4]int]struct{}{}
+	sort.Ints(nums)
+	n := len(nums)
+	for i := 0; i < n; i++ {
+		if nums[i] > target>>2 {
+			break
+		}
+		for j := i + 1; j < n; j++ {
+			s0 := nums[i] + nums[j]
+			if s0 > target>>1 {
+				break
+			}
+			for k := j + 1; k < n; k++ {
+				sum := s0 + nums[k]
+				if sum+nums[k] > target {
+					break
+				}
+				t := target - sum
+				idx := sort.Search(n, func(i0 int) bool {
+					return nums[i0] >= t
+				})
+				for idx <= k {
+					idx++
+				}
+				for idx < n && nums[idx] == t {
+					ans[[4]int{nums[i], nums[j], nums[k], t}] = struct{}{}
+					idx++
+				}
+			}
+		}
+	}
+	rt := make([][]int, len(ans))
+	i := 0
+	for k := range ans {
+		rt[i] = k[:]
+		i++
+	}
+	return rt
+}
+
+//func minRefuelStops(target int, startFuel int, stations [][]int) int {
+//	curFuel := startFuel
+//	curPos := 0
+//	pre := 0
+//	n := len(stations)
+//	cnt := 0
+//	for {
+//		nextPos := curPos + curFuel
+//		end := sort.Search(n, func(i int) bool {
+//			return stations[i][0] > nextPos
+//		})
+//		t := 0
+//		for i := pre; i < end; i++ {
+//			if stations[i][1] - (nextPos - stations[i][0]) > t {
+//				t =
+//			}
+//		}
+//	}
+//}
+
+func reverseKGroup(head *ListNode, k int) *ListNode {
+	H := &ListNode{}
+	p := head
+	for i := 0; i < k; i++ {
+		if p == nil {
+			return head
+		}
+		p = p.Next
+	}
+	var reverse func(*ListNode, int) *ListNode
+	reverse = func(cur *ListNode, cnt int) *ListNode {
+		if cnt == 1 {
+			return cur
+		}
+		rt := reverse(cur.Next, cnt-1)
+		cur.Next.Next = cur
+		cur.Next = nil
+		return rt
+	}
+	H.Next = reverse(head, k)
+	head.Next = reverseKGroup(p, k)
+	return H.Next
+}
+
+func removeElements(head *ListNode, val int) *ListNode {
+	H := &ListNode{Next: head}
+	p := H
+	for p.Next != nil {
+		if p.Next.Val == val {
+			p.Next = p.Next.Next
+			continue
+		}
+		p = p.Next
+	}
+	return H.Next
+}
+
+func isIsomorphic(s string, t string) bool {
+	s2t := map[byte]byte{}
+	t2s := map[byte]byte{}
+	for i := range s {
+		a, oka := s2t[s[i]]
+		b, okb := t2s[t[i]]
+		if oka && okb && a == t[i] && b == s[i] {
+			continue
+		} else if !oka && !okb {
+			s2t[s[i]] = t[i]
+			t2s[t[i]] = s[i]
+		} else {
+			return false
+		}
+	}
+	return true
+}
+
+func lowestCommonAncestor(root, p, q *TreeNode) (ans *TreeNode) {
+	done := false
+	var dfs func(cur *TreeNode) bool
+	dfs = func(cur *TreeNode) bool {
+		if done || cur == nil {
+			return false
+		}
+		l := dfs(cur.Left)
+		r := dfs(cur.Right)
+		if cur == p || cur == q {
+			if l || r {
+				done = true
+				ans = cur
+			}
+			return true
+		}
+		if !done && l && r {
+			done = true
+			ans = cur
+		}
+		return l || r
+	}
+	dfs(root)
+	return
+}
+
+func binaryTreePaths(root *TreeNode) (rt []string) {
+	var buf []string
+	var dfs func(*TreeNode)
+	dfs = func(cur *TreeNode) {
+		if cur.Left == nil && cur.Right == nil {
+			if len(buf) != 0 {
+				rt = append(rt, strings.Join(buf, "->"))
+			}
+			return
+		}
+		if cur.Left != nil {
+			buf = append(buf, strconv.Itoa(cur.Left.Val))
+			dfs(cur.Left)
+			buf = buf[:len(buf)-1]
+		}
+		if cur.Right != nil {
+			buf = append(buf, strconv.Itoa(cur.Right.Val))
+			dfs(cur.Right)
+			buf = buf[:len(buf)-1]
+		}
+	}
+	if root != nil {
+		buf = append(buf, strconv.Itoa(root.Val))
+		dfs(root)
+	}
+	return
+}
+
+func isPowerOfFour(n int) bool {
+	if cnt := bits.OnesCount(uint(n)); cnt == 1 {
+		if z := bits.TrailingZeros(uint(n)); z%2 == 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func intersect(nums1 []int, nums2 []int) (rt []int) {
+	var larger, smaller []int
+	if len(nums2) > len(nums1) {
+		larger = nums2
+		smaller = nums1
+	} else {
+		larger = nums1
+		smaller = nums2
+	}
+	cnt := map[int]int{}
+	for i := range smaller {
+		cnt[smaller[i]]++
+	}
+	for i := range larger {
+		if n, ok := cnt[larger[i]]; ok && n > 0 {
+			rt = append(rt, larger[i])
+			cnt[larger[i]]--
+		}
+	}
+	return
+}
+
+func nextGreaterElement(n int) int {
+	num := []byte(strconv.Itoa(n))
+	flag := false
+	for i := len(num) - 1; i > 0; i-- {
+		if num[i] > num[i-1] {
+			idx := i
+			for j := i; j < len(num); j++ {
+				if num[idx] > num[j] && num[j] > num[i-1] {
+					idx = j
+				}
+			}
+			num[idx], num[i-1] = num[i-1], num[idx]
+			sort.Slice(num[i:], func(i0, j0 int) bool {
+				return num[i+i0] < num[i+j0]
+			})
+			flag = true
+			break
+		}
+	}
+	if flag {
+		rt := 0
+		for i := 0; i < len(num); i++ {
+			rt *= 10
+			rt += int(num[i] - '0')
+		}
+		if rt > math.MaxInt32 {
+			return -1
+		}
+		return rt
+	}
+	return -1
+}
+
+func firstUniqChar(s string) int {
+	idx := [26]int{}
+	for i := range idx {
+		idx[i] = -1
+	}
+	for i := range s {
+		if idx[s[i]-'a'] == -1 {
+			idx[s[i]-'a'] = i
+			continue
+		}
+		idx[s[i]-'a'] = -2
+	}
+	minv := 1<<31 - 1
+	for i := range idx {
+		if idx[i] >= 0 && idx[i] < minv {
+			minv = idx[i]
+		}
+	}
+	if minv == 1<<31-1 {
+		return -1
+	}
+	return minv
 }

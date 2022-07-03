@@ -22,6 +22,7 @@ func (n *ListNode) Show() {
 	for p := n.Next; p != nil && p != n; p = p.Next {
 		fmt.Printf("%d->", p.Val)
 	}
+	fmt.Println("nil")
 }
 
 type cntMap struct {

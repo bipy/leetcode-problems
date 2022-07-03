@@ -2,6 +2,7 @@ package leetcode
 
 import (
 	"fmt"
+	"sort"
 	"testing"
 )
 
@@ -31,6 +32,7 @@ func Test_insert(t *testing.T) {
 }
 
 func Test_longestSubsequence(t *testing.T) {
+	defer Timer()
 	fmt.Println(longestSubsequence("111100010000011101001110001111000000001011101111111110111000011111011000010101110100110110001111001001011001010011010000011111101001101000000101101001110110000111101011000101", 11713332))
 }
 
@@ -38,4 +40,84 @@ func Test_findFrequentTreeSum(t *testing.T) {
 	defer Timer()
 	root := TreeDeserialize("[5,2,-3]")
 	fmt.Println(findFrequentTreeSum(root))
+}
+
+func Test_findSubstring(t *testing.T) {
+	defer Timer()
+	rt := findSubstring("ababaab", StrToStrSlice("[\"ab\",\"ba\",\"ba\"]"))
+	fmt.Println(rt)
+}
+
+func Test_largestValues(t *testing.T) {
+	fmt.Println(largestValues(TreeDeserialize("[1,3,2,5,3,null,9]")))
+}
+
+func Test_countPairs(t *testing.T) {
+	defer Timer()
+	fmt.Println(countPairs(7, StrTo2DIntSlice("[[0,2],[0,5],[2,4],[1,6],[5,4]]")))
+}
+
+func Test_countHousePlacements(t *testing.T) {
+	fmt.Println(countHousePlacements(3))
+}
+
+func Test_maximumsSplicedArray(t *testing.T) {
+	fmt.Println(maximumsSplicedArray(StrToIntSlice("[60,60,60]"), StrToIntSlice("[10,90,10]")))
+}
+
+func Test_findLUSlength(t *testing.T) {
+	defer Timer()
+	fmt.Println(findLUSlength(StrToStrSlice("[\"aba\",\"cdc\",\"eae\"]")))
+}
+
+func Test_mincostTickets(t *testing.T) {
+	fmt.Println(mincostTickets(StrToIntSlice("[1,4,6,7,8,20]"), StrToIntSlice("[7,2,15]")))
+}
+
+func Test_diffWaysToCompute(t *testing.T) {
+	defer Timer()
+	fmt.Println(diffWaysToCompute("2-1-1"))
+}
+
+func Test_fourSum(t *testing.T) {
+	my := fourSum(StrToIntSlice("[-4,-3,-2,-1,0,0,1,2,3,4]"), 0)
+	//my := StrTo2DIntSlice("[[-2,-1,0,3],[-2,-1,1,2],[-4,-3,3,4],[-4,0,1,3],[-3,-1,1,3],[-2,0,0,2],[-1,0,0,1],[-4,-1,1,4],[-3,0,0,3],[-3,0,1,2],[-3,-1,0,4],[-4,-2,2,4],[-4,0,0,4],[-3,-2,2,3]]")
+	it := StrTo2DIntSlice("[[-4,-3,3,4],[-4,-2,2,4],[-4,-1,1,4],[-4,-1,2,3],[-4,0,0,4],[-4,0,1,3],[-3,-2,1,4],[-3,-2,2,3],[-3,-1,0,4],[-3,-1,1,3],[-3,0,0,3],[-3,0,1,2],[-2,-1,0,3],[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]")
+	sort.Slice(my, func(i, j int) bool {
+		for k := 0; k < 4; k++ {
+			if my[i][k] != my[j][k] {
+				return my[i][k] < my[j][k]
+			}
+		}
+		return false
+	})
+	sort.Slice(it, func(i, j int) bool {
+		for k := 0; k < 4; k++ {
+			if it[i][k] != it[j][k] {
+				return it[i][k] < it[j][k]
+			}
+		}
+		return false
+	})
+	fmt.Println(my)
+	fmt.Println(it)
+}
+
+func Test_reverseKGroup(t *testing.T) {
+	reverseKGroup(ListDeserialize("[1,2,3,4,5]"), 2).Show()
+}
+
+func Test_isIsomorphic(t *testing.T) {
+	isIsomorphic("add", "egg")
+}
+
+func Test_lowestCommonAncestor(t *testing.T) {
+	tree := TreeDeserialize("[3,1,4,null,2]")
+	p := tree
+	q := tree.Left.Right
+	fmt.Println(lowestCommonAncestor(tree, p, q).Val)
+}
+
+func Test_nextGreaterElement(t *testing.T) {
+	nextGreaterElement(230241)
 }
