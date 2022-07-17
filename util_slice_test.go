@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+func TestStrTo2DByteSlice(t *testing.T) {
+	fmt.Println(StrTo2DByteSlice("[[\"c\",\"a\",\"z\",\"z\"],[\"a\",\"a\",\"c\",\"z\"]]"))
+}
+
 func TestStrTo2DStrSlice(t *testing.T) {
 	fmt.Println(StrTo2DStrSlice("[[\"ac\",\"ab\",\"zc\",\"zb\"],[\"ac\",\"ab\",\"zc\",\"zb\"]]"))
 }
@@ -12,6 +16,10 @@ func TestStrTo2DStrSlice(t *testing.T) {
 func TestStrTo2DIntSlice(t *testing.T) {
 	fmt.Println(StrTo2DIntSlice("[[12,10,15],[20,23,8],[21,7,1],[8,1,13],[9,10,25],[5,3,2]]"))
 
+}
+
+func TestStrToByteSlice(t *testing.T) {
+	fmt.Println(StrToByteSlice("[\"c\",\"a\",\"c\",\"z\"]"))
 }
 
 func TestStrToStrSlice(t *testing.T) {

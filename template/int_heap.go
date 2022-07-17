@@ -1,10 +1,5 @@
 package template
 
-import (
-	"container/heap"
-	"fmt"
-)
-
 // IntHeap min heap
 type IntHeap []int
 
@@ -29,17 +24,4 @@ func (h *IntHeap) Pop() any {
 	x := (*h)[n-1]
 	*h = (*h)[:n-1]
 	return x
-}
-
-func Example_intHeap() {
-	h := &IntHeap{2, 1, 5}
-	heap.Init(h)
-	heap.Push(h, 3)
-	fmt.Printf("minimum: %d\n", (*h)[0])
-	for h.Len() > 0 {
-		fmt.Printf("%d ", heap.Pop(h))
-	}
-	// Output:
-	// minimum: 1
-	// 1 2 3 5
 }

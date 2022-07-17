@@ -1,6 +1,6 @@
 package leetcode
 
-const mod = 1e9 + 7
+const mod int = 1e9 + 7
 
 var dir4 = [4]struct{ x, y int }{{1, 0}, {0, -1}, {-1, 0}, {0, 1}}
 var dirRightDown = [2]struct{ x, y int }{{0, 1}, {1, 0}}
@@ -72,4 +72,11 @@ func isPrime(x int) bool {
 		}
 	}
 	return true
+}
+
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
 }

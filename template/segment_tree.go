@@ -18,15 +18,15 @@ func InitSegmentTree(arr []int) *SegmentTree {
 	return t
 }
 
-func (t *SegmentTree) Add(idx, val int) {
+func (t SegmentTree) Add(idx, val int) {
 	t.add(1, t.root, t.size, idx, val)
 }
 
-func (t *SegmentTree) QuerySum(left, right int) int {
+func (t SegmentTree) QuerySum(left, right int) int {
 	return t.querySum(1, t.root, t.size, left, right)
 }
 
-func (t *SegmentTree) build(cur, left, right int) {
+func (t SegmentTree) build(cur, left, right int) {
 	if left == right {
 		t.sum[cur] = t.arr[left-1]
 		return
@@ -37,7 +37,7 @@ func (t *SegmentTree) build(cur, left, right int) {
 	t.sum[cur] = t.sum[cur*2] + t.sum[cur*2+1]
 }
 
-func (t *SegmentTree) add(cur, left, right, idx, val int) {
+func (t SegmentTree) add(cur, left, right, idx, val int) {
 	if left == right {
 		t.sum[cur] += val
 		return
@@ -51,7 +51,7 @@ func (t *SegmentTree) add(cur, left, right, idx, val int) {
 	t.sum[cur] = t.sum[cur*2] + t.sum[cur*2+1]
 }
 
-func (t *SegmentTree) querySum(cur, left, right, queryLeft, queryRight int) int {
+func (t SegmentTree) querySum(cur, left, right, queryLeft, queryRight int) int {
 	if left <= queryLeft && right >= queryRight {
 		return t.sum[cur]
 	}

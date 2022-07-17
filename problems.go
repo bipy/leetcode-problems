@@ -3,6 +3,7 @@ package leetcode
 import (
 	"fmt"
 	"github.com/emirpasic/gods/trees/redblacktree"
+	"leetcode/template"
 	"math"
 	"math/bits"
 	"math/rand"
@@ -2196,7 +2197,7 @@ func countHousePlacements(n int) int {
 		dp[i][1] %= mod
 	}
 	t := int64((dp[n-1][0] + dp[n-1][1]) % mod)
-	return int((t * t) % mod)
+	return int((t * t) % int64(mod))
 }
 
 func maximumsSplicedArray(nums1 []int, nums2 []int) int {
@@ -2360,26 +2361,6 @@ func fourSum(nums []int, target int) [][]int {
 	}
 	return rt
 }
-
-//func minRefuelStops(target int, startFuel int, stations [][]int) int {
-//	curFuel := startFuel
-//	curPos := 0
-//	pre := 0
-//	n := len(stations)
-//	cnt := 0
-//	for {
-//		nextPos := curPos + curFuel
-//		end := sort.Search(n, func(i int) bool {
-//			return stations[i][0] > nextPos
-//		})
-//		t := 0
-//		for i := pre; i < end; i++ {
-//			if stations[i][1] - (nextPos - stations[i][0]) > t {
-//				t =
-//			}
-//		}
-//	}
-//}
 
 func reverseKGroup(head *ListNode, k int) *ListNode {
 	H := &ListNode{}
@@ -2576,4 +2557,764 @@ func firstUniqChar(s string) int {
 		return -1
 	}
 	return minv
+}
+
+func minimumAbsDifference(arr []int) (ans [][]int) {
+	sort.Ints(arr)
+	n := len(arr)
+	minv := math.MaxInt32
+	for i := 1; i < n; i++ {
+		if arr[i]-arr[i-1] < minv {
+			minv = arr[i] - arr[i-1]
+		}
+	}
+	for i := 1; i < n; i++ {
+		if arr[i]-arr[i-1] == minv {
+			ans = append(ans, []int{arr[i-1], arr[i]})
+		}
+	}
+	return
+}
+
+func search(nums []int, target int) int {
+	n := len(nums)
+	last := nums[n-1]
+	k := sort.Search(n, func(i int) bool {
+		return nums[i] <= last
+	})
+	if last == target {
+		return n - 1
+	}
+	if last > target {
+		idx := sort.SearchInts(nums[k:], target)
+		if idx != n-k && nums[k+idx] == target {
+			return k + idx
+		}
+	} else {
+		idx := sort.SearchInts(nums[:k], target)
+		if idx != k && nums[idx] == target {
+			return idx
+		}
+	}
+	return -1
+}
+
+func jump(nums []int) int {
+	n := len(nums)
+	dp := make([]int, n)
+	for i := range dp {
+		dp[i] = 0x7fffffff
+	}
+	dp[0] = 0
+	for i := 0; i < n; i++ {
+		up := min(i+nums[i], n-1)
+		for j := i + 1; j <= up; j++ {
+			dp[j] = min(dp[j], dp[i]+1)
+		}
+	}
+	return dp[n-1]
+}
+
+func decodeMessage(key string, message string) string {
+	trans := [26]byte{}
+	idx := byte('a')
+	for i := range key {
+		if key[i] != ' ' && trans[key[i]-'a'] == 0 {
+			trans[key[i]-'a'] = idx
+			idx++
+		}
+	}
+	buf := []byte(message)
+	for i := range buf {
+		if buf[i] != ' ' {
+			buf[i] = trans[buf[i]-'a']
+		}
+	}
+	return string(buf)
+}
+
+func spiralMatrix(m int, n int, head *ListNode) [][]int {
+	matrix := make([][]int, m)
+	for i := 0; i < m; i++ {
+		matrix[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			matrix[i][j] = -1
+		}
+	}
+	var dir = [4]struct{ x, y int }{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+	p := head
+	x, y := 0, 0
+	curDir := 0
+	cnt := 0
+	for p != nil {
+		matrix[x][y] = p.Val
+		nx, ny := x+dir[curDir].x, y+dir[curDir].y
+		if nx < 0 || nx >= m || ny < 0 || ny >= n || matrix[nx][ny] != -1 {
+			curDir = (curDir + 1) % 4
+			cnt++
+			if cnt == 4 {
+				break
+			}
+			continue
+		}
+		cnt = 0
+		x, y = nx, ny
+		p = p.Next
+	}
+	return matrix
+}
+
+func peopleAwareOfSecret(n int, delay int, forget int) int {
+	type node struct {
+		total, inc, able int
+	}
+	dp := make([]node, n+1)
+	dp[1].total = 1
+	dp[1].able = 0
+	dp[1].inc = 1
+	for i := 2; i <= n; i++ {
+		dp[i].able = dp[i-1].able
+		if i-delay > 0 {
+			dp[i].able += dp[i-delay].inc
+		}
+		if i-forget > 0 {
+			dp[i].total -= dp[i-forget].inc
+			dp[i].able -= dp[i-forget].inc
+		}
+		dp[i].total += dp[i-1].total + dp[i].able
+		dp[i].inc = dp[i].able
+		dp[i].total = ((dp[i].total % mod) + mod) % mod
+		dp[i].able = ((dp[i].able % mod) + mod) % mod
+		dp[i].inc = ((dp[i].inc % mod) + mod) % mod
+	}
+	return dp[n].total
+}
+
+func replaceWords(dictionary []string, sentence string) string {
+	m := make(map[string]struct{}, len(dictionary))
+	for i := range dictionary {
+		m[dictionary[i]] = struct{}{}
+	}
+	words := strings.Split(sentence, " ")
+	for i := range words {
+		for j := 1; j < len(words[i]); j++ {
+			if _, ok := m[words[i][:j]]; ok {
+				words[i] = words[i][:j]
+				break
+			}
+		}
+	}
+	return strings.Join(words, " ")
+}
+
+func replaceWords1(dictionary []string, sentence string) string {
+	type node struct {
+		end  bool
+		next [26]*node
+	}
+	root := &node{}
+	add := func(s string) {
+		p := root
+		for i := range s {
+			if p.next[s[i]-'a'] == nil {
+				p.next[s[i]-'a'] = &node{}
+			}
+			p = p.next[s[i]-'a']
+		}
+		p.end = true
+	}
+	query := func(s string) string {
+		p := root
+		for i := range s {
+			if p.end {
+				return s[:i]
+			}
+			if p.next[s[i]-'a'] == nil {
+				break
+			}
+			p = p.next[s[i]-'a']
+		}
+		return s
+	}
+	for i := range dictionary {
+		add(dictionary[i])
+	}
+	words := strings.Split(sentence, " ")
+	for i := range words {
+		words[i] = query(words[i])
+	}
+	return strings.Join(words, " ")
+}
+
+func minCostToMoveChips(position []int) int {
+	oddCnt := 0
+	for i := range position {
+		if position[i]%2 == 1 {
+			oddCnt++
+		}
+	}
+	return min(oddCnt, len(position)-oddCnt)
+}
+
+func canReceiveAllSignals(intervals [][]int) bool {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	n := len(intervals)
+	for i := 0; i < n-1; i++ {
+		if intervals[i][1] > intervals[i+1][0] {
+			return false
+		}
+	}
+	return true
+}
+
+func minSwaps(chess []int) int {
+	onesCnt := 0
+	for i := range chess {
+		if chess[i] == 1 {
+			onesCnt++
+		}
+	}
+	n := len(chess)
+	curCnt := 0
+	for i := 0; i < onesCnt; i++ {
+		if chess[i] == 1 {
+			curCnt++
+		}
+	}
+	ans := curCnt
+	for i := onesCnt; i < n; i++ {
+		if chess[i] == 1 {
+			curCnt++
+		}
+		if chess[i-onesCnt] == 1 {
+			curCnt--
+		}
+		if curCnt > ans {
+			ans = curCnt
+		}
+	}
+	return onesCnt - ans
+}
+
+func buildTransferStation(area [][]int) int {
+	m := len(area)
+	n := len(area[0])
+	var points [][2]int
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if area[i][j] == 1 {
+				points = append(points, [2]int{i, j})
+			}
+		}
+	}
+	ans := 0x7fffffff
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			cur := 0
+			for _, p := range points {
+				cur += abs(p[0]-i) + abs(p[1]-j)
+			}
+			if ans > cur {
+				ans = cur
+			}
+		}
+	}
+	return ans
+}
+
+func minTransfers(distributions [][]int) int {
+	hosts := [12]int{}
+	for _, d := range distributions {
+		hosts[d[0]] -= d[2]
+		hosts[d[1]] += d[2]
+	}
+	var opos, oneg []int
+	for i := range hosts {
+		if hosts[i] > 0 {
+			opos = append(opos, hosts[i])
+		} else if hosts[i] < 0 {
+			oneg = append(oneg, hosts[i])
+		}
+	}
+	ans := 8
+	var dfs func([]int, []int, int, int)
+	dfs = func(pos []int, neg []int, cnt int, depth int) {
+		if depth >= ans {
+			return
+		}
+		if cnt == 0 {
+			if ans > depth {
+				ans = depth
+			}
+			return
+		}
+		for i := range pos {
+			if pos[i] == 0 {
+				continue
+			}
+			for j := range neg {
+				if neg[j] == 0 {
+					continue
+				}
+				oldp, oldn := pos[i], neg[j]
+				sum := oldp + oldn
+				if sum > 0 {
+					pos[i] = sum
+					neg[j] = 0
+					dfs(pos, neg, cnt-1, depth+1)
+				} else if sum < 0 {
+					pos[i] = 0
+					neg[j] = sum
+					dfs(pos, neg, cnt-1, depth+1)
+				} else {
+					dfs(pos, neg, cnt-2, depth+1)
+				}
+				pos[i] = oldp
+				neg[j] = oldn
+			}
+		}
+	}
+	dfs(opos, oneg, len(opos)+len(oneg), 0)
+	return ans
+}
+
+func sortedSquares(nums []int) []int {
+	mid := sort.SearchInts(nums, 0)
+	n := len(nums)
+	rt := make([]int, n)
+	p, q := mid-1, mid
+	for i := 0; i < n; i++ {
+		if p >= 0 && q < n {
+			if -nums[p] < nums[q] {
+				rt[i] = nums[p] * nums[p]
+				p--
+			} else {
+				rt[i] = nums[q] * nums[q]
+				q++
+			}
+		} else if p >= 0 {
+			rt[i] = nums[p] * nums[p]
+			p--
+		} else {
+			rt[i] = nums[q] * nums[q]
+			q++
+		}
+	}
+	return rt
+}
+
+func lenLongestFibSubseq(arr []int) int {
+	ans := 0
+	n := len(arr)
+	var dfs func(int, int, int)
+	dfs = func(pre, cur, cnt int) {
+		if cnt > 2 && cnt > ans {
+			ans = cnt
+		}
+		next := cur + sort.SearchInts(arr[cur:], arr[pre]+arr[cur])
+		if next != n && arr[next] == arr[pre]+arr[cur] {
+			dfs(cur, next, cnt+1)
+		}
+	}
+	for i := 0; i < n; i++ {
+		for j := i + 1; j < n; j++ {
+			dfs(i, j, 2)
+		}
+	}
+	return ans
+}
+
+func evaluateTree(root *TreeNode) bool {
+	if root.Left == nil && root.Right == nil {
+		return root.Val == 1
+	}
+	l := evaluateTree(root.Left)
+	r := evaluateTree(root.Right)
+	if root.Val == 2 {
+		return l || r
+	}
+	return l && r
+}
+
+//func latestTimeCatchTheBus(buses []int, passengers []int, capacity int) int {
+//	buses = append(buses, 0)
+//	sort.Ints(buses)
+//	sort.Ints(passengers)
+//	type bus struct {
+//		full        bool
+//		firstOneIdx int
+//		lastOneIdx  int
+//	}
+//	status := make([]bus, len(buses))
+//	cur := 0
+//	for i := 1; i < len(buses); i++ {
+//		idx := sort.SearchInts(passengers, buses[i]+1)
+//		next := idx
+//		if idx-cur >= capacity {
+//			next = cur + capacity
+//			status[i].full = true
+//		}
+//		status[i].firstOneIdx = cur
+//		status[i].lastOneIdx = next - 1
+//		cur = next
+//	}
+//	for i := len(buses) - 1; i > 0; i-- {
+//		if !status[i].full {
+//			k := status[i].lastOneIdx
+//			for j := buses[i]; j > buses[i-1]; j-- {
+//				if j != passengers[k] {
+//					return j
+//				}
+//				if k > 0 {
+//					k--
+//				}
+//			}
+//		}
+//		if buses[i]-buses[i-1] == capacity {
+//			continue
+//		}
+//		if status[i].lastOneIdx-status[i].firstOneIdx == passengers[status[i].lastOneIdx]-passengers[status[i].firstOneIdx] {
+//			continue
+//		}
+//
+//	}
+//}
+//
+//func minSumSquareDiff(nums1 []int, nums2 []int, k1 int, k2 int) int64 {
+//	n := len(nums1)
+//	div := make([]int, n)
+//	for i := range div {
+//		div[i] = abs(nums1[i] - nums2[i])
+//	}
+//	sort.Ints(div)
+//	sum := 0
+//	for i := range div {
+//		sum += div[i]
+//	}
+//	avg := sum / n
+//
+//}
+
+func fillCups(amount []int) int {
+	cnt := 0
+	for {
+		sort.Ints(amount)
+		if amount[0] == 0 {
+			return cnt + max(amount[1], amount[2])
+		}
+		t := amount[1] - amount[0] + 1
+		cnt += t
+		amount[1] -= t
+		amount[2] -= t
+	}
+}
+
+func canChange(start string, target string) bool {
+	type node struct {
+		val byte
+		pos int
+	}
+	n := len(start)
+	startPos := make([]node, 0, n)
+	targetPos := make([]node, 0, n)
+	for i := range start {
+		if start[i] != '_' {
+			startPos = append(startPos, node{
+				val: start[i],
+				pos: i,
+			})
+		}
+	}
+	for i := range target {
+		if target[i] != '_' {
+			targetPos = append(targetPos, node{
+				val: target[i],
+				pos: i,
+			})
+		}
+	}
+	if len(startPos) != len(targetPos) {
+		return false
+	}
+	for i := range startPos {
+		if startPos[i].val != targetPos[i].val {
+			return false
+		}
+		if startPos[i].val == 'L' && startPos[i].pos < targetPos[i].pos {
+			return false
+		}
+		if startPos[i].val == 'R' && startPos[i].pos > targetPos[i].pos {
+			return false
+		}
+	}
+	return true
+}
+
+func oddCells(m int, n int, indices [][]int) (ans int) {
+	rows, cols := make([]int, m), make([]int, n)
+	for _, d := range indices {
+		rows[d[0]]++
+		cols[d[1]]++
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if (rows[i]+cols[j])%2 == 1 {
+				ans++
+			}
+		}
+	}
+	return
+}
+
+func findRedundantConnection(edges [][]int) []int {
+	uf := template.InitUnionFind(len(edges) + 1)
+	for _, e := range edges {
+		if !uf.Union(e[0], e[1]) {
+			return e
+		}
+	}
+	return nil
+}
+
+func surroundedRegions(board [][]byte) {
+	m := len(board)
+	n := len(board[0])
+	bfs := func(x, y int) {
+		var queue [][2]int
+		queue = append(queue, [2]int{x, y})
+		board[x][y] = 'T'
+		for len(queue) > 0 {
+			nn := len(queue)
+			for i := 0; i < nn; i++ {
+				cur := queue[i]
+				for _, d := range dir4 {
+					nx, ny := cur[0]+d.x, cur[1]+d.y
+					if nx >= 0 && nx < m && ny >= 0 && ny < n && board[nx][ny] == 'O' {
+						board[nx][ny] = 'T'
+						queue = append(queue, [2]int{nx, ny})
+					}
+				}
+			}
+			queue = queue[nn:]
+		}
+	}
+	replace := func(old, new byte) {
+		for i := range board {
+			for j := range board[i] {
+				if board[i][j] == old {
+					board[i][j] = new
+				}
+			}
+		}
+	}
+	for i := 0; i < n; i++ {
+		if board[0][i] == 'O' {
+			bfs(0, i)
+		}
+		if board[m-1][i] == 'O' {
+			bfs(m-1, i)
+		}
+	}
+	for i := 0; i < m; i++ {
+		if board[i][0] == 'O' {
+			bfs(i, 0)
+		}
+		if board[i][n-1] == 'O' {
+			bfs(i, n-1)
+		}
+	}
+	replace('O', 'X')
+	replace('T', 'O')
+}
+
+func numIslands(grid [][]byte) int {
+	m := len(grid)
+	n := len(grid[0])
+	bfs := func(x, y int) {
+		var queue [][2]int
+		queue = append(queue, [2]int{x, y})
+		grid[x][y] = 'X'
+		for len(queue) > 0 {
+			nn := len(queue)
+			for i := 0; i < nn; i++ {
+				cur := queue[i]
+				for _, d := range dir4 {
+					nx, ny := cur[0]+d.x, cur[1]+d.y
+					if nx >= 0 && nx < m && ny >= 0 && ny < n && grid[nx][ny] == '1' {
+						grid[nx][ny] = 'X'
+						queue = append(queue, [2]int{nx, ny})
+					}
+				}
+			}
+			queue = queue[nn:]
+		}
+	}
+	ans := 0
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == '1' {
+				ans++
+				bfs(i, j)
+			}
+		}
+	}
+	return ans
+}
+
+func findCircleNum(isConnected [][]int) int {
+	n := len(isConnected)
+	uf := template.InitUnionFind(n)
+	for i := range isConnected {
+		for j := range isConnected[i] {
+			if i != j && isConnected[i][j] == 1 {
+				uf.Union(i, j)
+			}
+		}
+	}
+	return uf.Groups
+}
+
+func accountsMerge(accounts [][]string) [][]string {
+	n := len(accounts)
+	uf := template.InitUnionFind(n)
+	m := map[string]int{}
+	for i := range accounts {
+		for j := 1; j < len(accounts[i]); j++ {
+			if idx, ok := m[accounts[i][j]]; ok {
+				uf.Union(idx, i)
+			} else {
+				m[accounts[i][j]] = i
+			}
+		}
+	}
+	temp := map[int][]string{}
+	for k, v := range m {
+		fa := uf.Find(v)
+		if _, ok := temp[fa]; !ok {
+			temp[fa] = append(temp[fa], accounts[fa][0])
+		}
+		temp[fa] = append(temp[fa], k)
+	}
+	ans := make([][]string, 0, uf.Groups)
+	for k := range temp {
+		ans = append(ans, temp[k])
+	}
+	for i := range ans {
+		sort.Strings(ans[i][1:])
+	}
+	return ans
+}
+
+func minSwapsCouples(row []int) int {
+	n := len(row)
+	uf := template.InitUnionFind(n / 2)
+	for i := 0; i < n; i += 2 {
+		uf.Union(row[i]/2, row[i+1]/2)
+	}
+	return n/2 - uf.Groups
+}
+
+func numberOfPairs(nums []int) []int {
+	cnt := [101]int{}
+	for i := range nums {
+		cnt[nums[i]]++
+	}
+	a, b := 0, 0
+	for i := range cnt {
+		if cnt[i]%2 == 1 {
+			b += 1
+		}
+		a += cnt[i] / 2
+	}
+	return []int{a, b}
+}
+
+func maximumSum(nums []int) int {
+	m := map[int][]int{}
+	f := func(x int) (sum int) {
+		for x != 0 {
+			sum += x % 10
+			x /= 10
+		}
+		return
+	}
+	for i := range nums {
+		sum := f(nums[i])
+		m[sum] = append(m[sum], nums[i])
+	}
+	ans := -1
+	for _, v := range m {
+		if len(v) <= 1 {
+			continue
+		}
+		sort.Ints(v)
+		if t := v[len(v)-1] + v[len(v)-2]; ans < t {
+			ans = t
+		}
+	}
+	return ans
+}
+
+func smallestTrimmedNumbers(nums []string, queries [][]int) (ans []int) {
+	length := len(nums[0])
+	type node struct {
+		num *string
+		idx int
+	}
+	arr := make([]*node, len(nums))
+	for i := range arr {
+		arr[i] = &node{
+			num: &nums[i],
+			idx: i,
+		}
+	}
+	for i := range queries {
+		k, trim := queries[i][0], queries[i][1]
+		left := length - trim
+		sort.Slice(arr, func(i, j int) bool {
+			if (*arr[i].num)[left:] == (*arr[j].num)[left:] {
+				return arr[i].idx < arr[j].idx
+			}
+			return (*arr[i].num)[left:] < (*arr[j].num)[left:]
+		})
+		ans = append(ans, arr[k-1].idx)
+	}
+	return
+}
+
+func minOperations(nums []int, numsDivide []int) int {
+	sort.Ints(nums)
+	sort.Ints(numsDivide)
+	pre := 0
+l:
+	for i := range nums {
+		if nums[i] != pre {
+			pre = nums[i]
+			for j := range numsDivide {
+				if numsDivide[j]%nums[i] != 0 {
+					continue l
+				}
+			}
+			return i
+		}
+	}
+	return -1
+}
+
+func arrayNesting(nums []int) int {
+	ans := 0
+	for i := range nums {
+		cnt := 0
+		p := i
+		for nums[p] >= 0 {
+			p, nums[p] = nums[p], -1
+			cnt++
+		}
+		if ans < cnt {
+			ans = cnt
+		}
+	}
+	return ans
 }

@@ -6,7 +6,7 @@ import (
 )
 
 func TestSegmentTree(t *testing.T) {
-	st := InitSegmentTree(10)
+	st := InitSegmentTree(make([]int, 10))
 	fmt.Println(st.QuerySum(1, 10))
 	st.Add(2, 5)
 	st.Add(3, 6)

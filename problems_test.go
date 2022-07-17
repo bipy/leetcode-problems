@@ -121,3 +121,22 @@ func Test_lowestCommonAncestor(t *testing.T) {
 func Test_nextGreaterElement(t *testing.T) {
 	nextGreaterElement(230241)
 }
+
+func Test_peopleAwareOfSecret(t *testing.T) {
+	fmt.Println(peopleAwareOfSecret(289, 7, 23))
+}
+
+func Test_minTransfers(t *testing.T) {
+	defer Timer()
+	fmt.Println(minTransfers(StrTo2DIntSlice("[[1,8,1],[1,0,21],[2,8,10],[3,9,20],[4,10,61],[5,11,61],[6,1,59],[7,0,60]]")))
+}
+
+func Test_surroundedRegions(t *testing.T) {
+	a := StrTo2DByteSlice("[[\"O\",\"O\",\"O\"],[\"O\",\"O\",\"O\"],[\"O\",\"O\",\"O\"]]")
+	surroundedRegions(a)
+	fmt.Println(a)
+}
+
+func Test_findCircleNum(t *testing.T) {
+	findCircleNum(StrTo2DIntSlice("[[1,1,0],[1,1,0],[0,0,1]]"))
+}
