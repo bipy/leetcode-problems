@@ -594,24 +594,24 @@ func countDistinct(nums []int, k int, p int) int {
 func appealSum(s string) int {
 	cm := &cntMap{}
 	n := len(s)
-	ans := int(n)
-	cm.add(s[0])
+	ans := n
+	cm.Add(s[0])
 	for i := 2; i <= n; i++ {
 		if i%2 == 0 {
-			cm.add(s[i-1])
-			ans += cm.len
+			cm.Add(s[i-1])
+			ans += cm.Len
 			for j := i; j < n; j++ {
-				cm.add(s[j])
-				cm.remove(s[j-i])
-				ans += cm.len
+				cm.Add(s[j])
+				cm.Remove(s[j-i])
+				ans += cm.Len
 			}
 		} else {
-			cm.add(s[n-i])
-			ans += cm.len
+			cm.Add(s[n-i])
+			ans += cm.Len
 			for j := n - i - 1; j >= 0; j-- {
-				cm.add(s[j])
-				cm.remove(s[j+i])
-				ans += cm.len
+				cm.Add(s[j])
+				cm.Remove(s[j+i])
+				ans += cm.Len
 			}
 		}
 	}

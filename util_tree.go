@@ -1,6 +1,7 @@
 package leetcode
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -8,7 +9,7 @@ import (
 // TreeSerialize Serializes a tree to a single string.
 func TreeSerialize(root *TreeNode) string {
 	if root == nil {
-		return ""
+		return "[]"
 	}
 	sb := strings.Builder{}
 	var queue []*TreeNode
@@ -38,7 +39,7 @@ func TreeSerialize(root *TreeNode) string {
 		}
 		queue = queue[n:]
 	}
-	return strings.TrimSuffix(sb.String(), ",")
+	return fmt.Sprintf("[%s]", strings.TrimRight(sb.String(), "null,"))
 }
 
 // TreeDeserialize Deserializes your encoded data to tree.
@@ -62,4 +63,15 @@ func TreeDeserialize(data string) *TreeNode {
 		}
 	}
 	return insert(0)
+}
+
+func TreeEqual(t1 *TreeNode, t2 *TreeNode) bool {
+	if t1 == t2 {
+		return true
+	}
+	if t1 == nil || t2 == nil || t1.Val != t2.Val {
+		return false
+	}
+	return TreeEqual(t1.Left, t2.Left) && TreeEqual(t1.Right, t2.Right)
+
 }

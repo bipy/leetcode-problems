@@ -8,16 +8,16 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
+func (n *TreeNode) Show() {
+	fmt.Println(TreeSerialize(n))
+}
+
 type ListNode struct {
 	Val  int
 	Next *ListNode
 }
 
 func (n *ListNode) Show() {
-	if n == nil {
-		fmt.Println("nil")
-		return
-	}
 	fmt.Printf("%d->", n.Val)
 	for p := n.Next; p != nil && p != n; p = p.Next {
 		fmt.Printf("%d->", p.Val)
@@ -26,20 +26,20 @@ func (n *ListNode) Show() {
 }
 
 type cntMap struct {
-	cnt [26]int
-	len int
+	Cnt [26]int
+	Len int
 }
 
-func (m *cntMap) add(c byte) {
-	if m.cnt[c-'a'] == 0 {
-		m.len++
+func (m *cntMap) Add(c byte) {
+	if m.Cnt[c-'a'] == 0 {
+		m.Len++
 	}
-	m.cnt[c-'a']++
+	m.Cnt[c-'a']++
 }
 
-func (m *cntMap) remove(c byte) {
-	if m.cnt[c-'a'] == 1 {
-		m.len--
+func (m *cntMap) Remove(c byte) {
+	if m.Cnt[c-'a'] == 1 {
+		m.Len--
 	}
-	m.cnt[c-'a']--
+	m.Cnt[c-'a']--
 }

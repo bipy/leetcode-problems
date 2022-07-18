@@ -45,3 +45,17 @@ func CycleListDeserialize(data string) *ListNode {
 	p.Next = H.Next
 	return H.Next
 }
+
+func ListEqual(l1, l2 *ListNode) bool {
+	p, q := l1, l2
+	for p != nil && q != nil {
+		if p.Val != q.Val {
+			return false
+		}
+		p, q = p.Next, q.Next
+		if p == l1 && q == l2 {
+			return true
+		}
+	}
+	return q == nil && p == nil
+}
