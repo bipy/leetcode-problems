@@ -25,19 +25,19 @@ func (n *ListNode) Show() {
 	fmt.Println("nil")
 }
 
-type cntMap struct {
+type CntMap struct {
 	Cnt [26]int
 	Len int
 }
 
-func (m *cntMap) Add(c byte) {
+func (m *CntMap) Add(c byte) {
 	if m.Cnt[c-'a'] == 0 {
 		m.Len++
 	}
 	m.Cnt[c-'a']++
 }
 
-func (m *cntMap) Remove(c byte) {
+func (m *CntMap) Remove(c byte) {
 	if m.Cnt[c-'a'] == 1 {
 		m.Len--
 	}

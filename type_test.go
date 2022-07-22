@@ -16,7 +16,7 @@ func TestTreeNode_Show(t *testing.T) {
 }
 
 func TestCntMap(t *testing.T) {
-	cm := cntMap{}
+	cm := CntMap{}
 	s := "hellooooworld"
 	fmt.Println("Add")
 	for i := range s {

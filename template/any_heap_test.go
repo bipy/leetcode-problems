@@ -7,12 +7,12 @@ import (
 )
 
 func TestHeap(t *testing.T) {
-	h := &Heap{&HeapItem{y: 2}, &HeapItem{y: 1}, &HeapItem{y: 5}}
+	h := &Heap{&Item{priority: 2}, &Item{priority: 1}, &Item{priority: 5}}
 	heap.Init(h)
-	heap.Push(h, &HeapItem{y: 3})
-	fmt.Printf("minimum: %d\n", (*h)[0].y)
+	heap.Push(h, &Item{priority: 3})
+	fmt.Printf("minimum: %d\n", (*h)[0].priority)
 	for h.Len() > 0 {
-		fmt.Printf("%d ", heap.Pop(h).(*HeapItem).y)
+		fmt.Printf("%d ", heap.Pop(h).(*Item).priority)
 	}
 	fmt.Println()
 	// Output:

@@ -1,11 +1,7 @@
 package template
 
-// Heap min heap
-type HeapItem struct {
-	x, y int
-}
-
-type Heap []*HeapItem
+// Heap min-heap
+type Heap []*Item
 
 func (h Heap) Len() int {
 	return len(h)
@@ -16,11 +12,11 @@ func (h Heap) Swap(i, j int) {
 }
 
 func (h Heap) Less(i, j int) bool {
-	return h[i].y < h[j].y
+	return h[i].priority < h[j].priority
 }
 
 func (h *Heap) Push(x any) {
-	*h = append(*h, x.(*HeapItem))
+	*h = append(*h, x.(*Item))
 }
 
 func (h *Heap) Pop() any {

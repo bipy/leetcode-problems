@@ -2,12 +2,6 @@ package template
 
 import "container/heap"
 
-type Item struct {
-	value    any
-	priority int
-	index    int
-}
-
 type PriorityQueue []*Item
 
 func (pq PriorityQueue) Len() int {

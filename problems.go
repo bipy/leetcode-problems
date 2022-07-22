@@ -592,7 +592,7 @@ func countDistinct(nums []int, k int, p int) int {
 }
 
 func appealSum(s string) int {
-	cm := &cntMap{}
+	cm := &CntMap{}
 	n := len(s)
 	ans := n
 	cm.Add(s[0])
@@ -3317,4 +3317,36 @@ func arrayNesting(nums []int) int {
 		}
 	}
 	return ans
+}
+
+func shiftGrid(grid [][]int, k int) [][]int {
+	m, n := len(grid), len(grid[0])
+	total := m * n
+	f := func(x, y int) (nx, ny int) {
+		pos := (x*n + y + k) % total
+		return pos / n, pos % n
+	}
+	ans := make([][]int, m)
+	for i := range ans {
+		ans[i] = make([]int, n)
+	}
+	for i := range grid {
+		for j := range grid[i] {
+			x, y := f(i, j)
+			ans[x][y] = grid[i][j]
+		}
+	}
+	return ans
+}
+
+func pruneTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	root.Left = pruneTree(root.Left)
+	root.Right = pruneTree(root.Right)
+	if root.Left == nil && root.Right == nil && root.Val == 0 {
+		return nil
+	}
+	return root
 }
