@@ -1,7 +1,7 @@
 <div align="center">
     <h2>LeetCode 刷题记录</h2>
     <img src="https://stats-cards.vercel.app/api/leetcode/?username=bipy&cn=true;" alt="">
-</div>
+
 
 ## 文件结构
 
@@ -14,3 +14,4 @@
 | util_*.go        | 测试工具     |
 | other            | 通用函数     |
 
+</div>
