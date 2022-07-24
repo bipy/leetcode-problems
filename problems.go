@@ -3350,3 +3350,210 @@ func pruneTree(root *TreeNode) *TreeNode {
 	}
 	return root
 }
+
+func sequenceReconstruction(nums []int, sequences [][]int) bool {
+	n := len(nums)
+	g := make([][]int, n)
+	in := make([]int, n)
+	for i := range sequences {
+		for j := 1; j < len(sequences[i]); j++ {
+			p, q := sequences[i][j-1], sequences[i][j]
+			g[p] = append(g[p], q)
+			in[q]++
+		}
+	}
+	//for {
+	//	for i := range in {
+	//		if
+	//	}
+	//}
+	return true
+}
+
+func bestHand(ranks []int, suits []byte) string {
+	isFlush := func() bool {
+		flush := true
+		for i := range suits {
+			if suits[i] != suits[0] {
+				flush = false
+				break
+			}
+		}
+		return flush
+	}
+	isThree := func() bool {
+		cnt := map[int]int{}
+		for i := range ranks {
+			cnt[ranks[i]]++
+		}
+		if len(cnt) <= 3 {
+			for _, v := range cnt {
+				if v >= 3 {
+					return true
+				}
+			}
+		}
+		return false
+	}
+	isPair := func() bool {
+		cnt := map[int]int{}
+		for i := range ranks {
+			cnt[ranks[i]]++
+		}
+		if len(cnt) <= 4 {
+			for _, v := range cnt {
+				if v >= 2 {
+					return true
+				}
+			}
+		}
+		return false
+	}
+	isHigh := func() bool {
+		cnt := map[int]int{}
+		for i := range ranks {
+			cnt[ranks[i]]++
+		}
+		return len(cnt) == 5
+	}
+	if isFlush() {
+		return "Flush"
+	}
+	if isThree() {
+		return "Three of a Kind"
+	}
+	if isPair() {
+		return "Pair"
+	}
+	if isHigh() {
+		return "High Card"
+	}
+	return ""
+}
+
+func zeroFilledSubarray(nums []int) int64 {
+	cnt := map[int]int{}
+	for i := 0; i < len(nums); i++ {
+		if nums[i] == 0 {
+			j := 0
+			for i+j < len(nums) && nums[i+j] == 0 {
+				j++
+			}
+			if j > 0 {
+				cnt[j]++
+			}
+			i += j
+		}
+	}
+	maxV := 0
+	for k := range cnt {
+		if k > maxV {
+			maxV = k
+		}
+	}
+	if maxV == 0 {
+		return 0
+	}
+	dp := make([]int, maxV+1)
+	dp[1] = 1
+	for i := 2; i < len(dp); i++ {
+		dp[i] = dp[i-1] + i
+	}
+	ans := 0
+	for k, v := range cnt {
+		ans += dp[k] * v
+	}
+	return int64(ans)
+}
+
+func shortestSequence(rolls []int, k int) int {
+	n := len(rolls)
+	cnt := make([]int, k+1)
+	vis := make([]bool, k+1)
+	for i := range rolls {
+		cnt[rolls[i]]++
+	}
+	ans := math.MaxInt32
+	for i := 0; i < n; i++ {
+		cnt[rolls[i]]--
+		if !vis[rolls[i]] {
+			for j := 1; j <= k; j++ {
+				ans = min(ans, cnt[j]+1)
+			}
+			vis[rolls[i]] = true
+		}
+	}
+	for i := 1; i <= k; i++ {
+		if !vis[i] {
+			return 1
+		}
+	}
+	return ans + 1
+}
+
+func repeatedCharacter(s string) byte {
+	cnt := [26]int{}
+	for i := 0; i < len(s); i++ {
+		cnt[s[i]-'a']++
+		if cnt[s[i]-'a'] == 2 {
+			return s[i]
+		}
+	}
+	return 'a'
+}
+
+func equalPairs(grid [][]int) int {
+	ans := 0
+	n := len(grid)
+	for i := range grid {
+		for j := 0; j < n; j++ {
+			flag := true
+			for k := 0; k < n; k++ {
+				if grid[i][k] != grid[k][j] {
+					flag = false
+					break
+				}
+			}
+			if flag {
+				ans++
+			}
+		}
+	}
+	return ans
+}
+
+func countExcellentPairs(nums []int, k int) int64 {
+	set := make(map[int]struct{}, len(nums))
+	for i := range nums {
+		set[nums[i]] = struct{}{}
+	}
+	nums = nums[:len(set)]
+	idx := 0
+	for i := range set {
+		nums[idx] = i
+		idx++
+	}
+	sort.Slice(nums, func(i, j int) bool {
+		return bits.OnesCount(uint(nums[i])) < bits.OnesCount(uint(nums[j]))
+	})
+	ans := 0
+	for i := range nums {
+		t := sort.Search(len(nums), func(j int) bool {
+			return bits.OnesCount(uint(nums[i]&nums[j]))+bits.OnesCount(uint(nums[i]|nums[j])) >= k
+		})
+		ans += len(nums) - t
+	}
+	return int64(ans)
+}
+
+func distanceBetweenBusStops(distance []int, start int, destination int) int {
+	for i := 1; i < len(distance); i++ {
+		distance[i] += distance[i-1]
+	}
+	total := distance[len(distance)-1]
+	if start > destination {
+		start, destination = destination, start
+	}
+	t := distance[destination] - distance[start]
+	return min(total-t, t)
+}

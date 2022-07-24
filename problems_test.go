@@ -140,3 +140,16 @@ func Test_surroundedRegions(t *testing.T) {
 func Test_findCircleNum(t *testing.T) {
 	findCircleNum(StrTo2DIntSlice("[[1,1,0],[1,1,0],[0,0,1]]"))
 }
+
+func Test_zeroFilledSubarray(t *testing.T) {
+	zeroFilledSubarray(StrToIntSlice("[1,3,0,0,2,0,0,4]"))
+}
+
+func Test_shortestSequence(t *testing.T) {
+	shortestSequence(StrToIntSlice("[1,1,2,2]"), 2)
+}
+
+func Test_countExcellentPairs(t *testing.T) {
+	defer Timer()
+	countExcellentPairs(StrToIntSlice("[1,2,3,1]"), 3)
+}
