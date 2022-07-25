@@ -3523,16 +3523,7 @@ func equalPairs(grid [][]int) int {
 }
 
 func countExcellentPairs(nums []int, k int) int64 {
-	set := make(map[int]struct{}, len(nums))
-	for i := range nums {
-		set[nums[i]] = struct{}{}
-	}
-	nums = nums[:len(set)]
-	idx := 0
-	for i := range set {
-		nums[idx] = i
-		idx++
-	}
+	nums = removeDup(nums)
 	sort.Slice(nums, func(i, j int) bool {
 		return bits.OnesCount(uint(nums[i])) < bits.OnesCount(uint(nums[j]))
 	})

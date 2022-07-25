@@ -71,43 +71,33 @@ func MergeSort(arr []int) {
 
 func QuickSort(arr []int) {
 	if len(arr) > 1 {
-		l, r := 1, len(arr)-1
-		for l <= r {
-			if arr[l] <= arr[0] {
-				l++
-			} else if arr[r] > arr[0] {
-				r--
-			} else {
-				arr[l], arr[r] = arr[r], arr[l]
-				l++
-				r--
+		i := -1
+		pivot := arr[len(arr)-1]
+		for j := range arr {
+			if arr[j] <= pivot {
+				i++
+				arr[i], arr[j] = arr[j], arr[i]
 			}
 		}
-		arr[0], arr[r] = arr[r], arr[0]
-		QuickSort(arr[:r])
-		QuickSort(arr[r+1:])
+		QuickSort(arr[:i])
+		QuickSort(arr[i+1:])
 	}
 }
 
 func RandomizedQuickSort(arr []int) {
 	if len(arr) > 1 {
+		i := -1
 		p := rand.Intn(len(arr))
-		arr[0], arr[p] = arr[p], arr[0]
-		l, r := 1, len(arr)-1
-		for l <= r {
-			if arr[l] <= arr[0] {
-				l++
-			} else if arr[r] > arr[0] {
-				r--
-			} else {
-				arr[l], arr[r] = arr[r], arr[l]
-				l++
-				r--
+		arr[p], arr[len(arr)-1] = arr[len(arr)-1], arr[p]
+		pivot := arr[len(arr)-1]
+		for j := range arr {
+			if arr[j] <= pivot {
+				i++
+				arr[i], arr[j] = arr[j], arr[i]
 			}
 		}
-		arr[0], arr[r] = arr[r], arr[0]
-		RandomizedQuickSort(arr[:r])
-		RandomizedQuickSort(arr[r+1:])
+		RandomizedQuickSort(arr[:i])
+		RandomizedQuickSort(arr[i+1:])
 	}
 }
 

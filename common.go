@@ -63,9 +63,39 @@ func maxOf(nums ...int) int {
 	return ans
 }
 
-func reverseSlice(arr []any) {
+func reverseSlice(arr []int) {
 	for i := len(arr)/2 - 1; i >= 0; i-- {
 		j := len(arr) - i - 1
 		arr[i], arr[j] = arr[j], arr[i]
 	}
+}
+
+func maxOfSlice(arr []int, less func(i, j int) bool) (idx int) {
+	for i := 1; i < len(arr); i++ {
+		if less(idx, i) {
+			idx = i
+		}
+	}
+	return
+}
+
+func minOfSlice(arr []int, less func(i, j int) bool) (idx int) {
+	for i := 1; i < len(arr); i++ {
+		if less(i, idx) {
+			idx = i
+		}
+	}
+	return
+}
+
+func removeDup(arr []int) []int {
+	set := map[int]struct{}{}
+	for i := range arr {
+		set[arr[i]] = struct{}{}
+	}
+	arr = arr[:0]
+	for i := range set {
+		arr = append(arr, i)
+	}
+	return arr
 }
