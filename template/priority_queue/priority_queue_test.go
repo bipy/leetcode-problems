@@ -1,4 +1,4 @@
-package template
+package priority_queue
 
 import (
 	"container/heap"
@@ -13,7 +13,7 @@ func TestPriorityQueue(t *testing.T) {
 	}
 
 	// Create a priority queue, put the items in it, and
-	// establish the priority queue (heap) invariants.
+	// establish the priority queue (heaps) invariants.
 	pq := make(PriorityQueue, len(items))
 	i := 0
 	for value, priority := range items {

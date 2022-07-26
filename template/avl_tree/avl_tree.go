@@ -1,35 +1,35 @@
-package template
+package avl_tree
 
-type avlNode struct {
+type node struct {
 	key    int
 	val    any
-	left   *avlNode
-	right  *avlNode
+	left   *node
+	right  *node
 	height int
 }
 
 type AVLTree struct {
-	root *avlNode
+	root *node
 	size int
 }
 
-func getNodeHeight(cur *avlNode) int {
+func getNodeHeight(cur *node) int {
 	if cur == nil {
 		return 0
 	}
 	return cur.height
 }
 
-func (n *avlNode) isBalanced() bool {
+func (n *node) isBalanced() bool {
 	bf := getNodeHeight(n.left) - getNodeHeight(n.right)
 	return bf <= 1 && bf >= -1
 }
 
-func (n *avlNode) updateHeight() {
+func (n *node) updateHeight() {
 	n.height = max(getNodeHeight(n.left), getNodeHeight(n.right)) + 1
 }
 
-func llRotation(cur *avlNode) (ptr *avlNode) {
+func llRotation(cur *node) (ptr *node) {
 	ptr = cur.left
 	cur.left = ptr.right
 	ptr.right = cur
@@ -38,7 +38,7 @@ func llRotation(cur *avlNode) (ptr *avlNode) {
 	return
 }
 
-func rrRotation(cur *avlNode) (ptr *avlNode) {
+func rrRotation(cur *node) (ptr *node) {
 	ptr = cur.right
 	cur.right = ptr.left
 	ptr.left = cur
@@ -47,19 +47,19 @@ func rrRotation(cur *avlNode) (ptr *avlNode) {
 	return
 }
 
-func lrRotation(cur *avlNode) *avlNode {
+func lrRotation(cur *node) *node {
 	cur.left = rrRotation(cur.left)
 	return llRotation(cur)
 }
 
-func rlRotation(cur *avlNode) *avlNode {
+func rlRotation(cur *node) *node {
 	cur.right = llRotation(cur.right)
 	return rrRotation(cur)
 }
 
-func insert(cur *avlNode, key int, value any, treeSize *int) *avlNode {
+func insert(cur *node, key int, value any, treeSize *int) *node {
 	if cur == nil {
-		cur = &avlNode{
+		cur = &node{
 			key: key,
 			val: value,
 		}
@@ -91,7 +91,7 @@ func insert(cur *avlNode, key int, value any, treeSize *int) *avlNode {
 	return cur
 }
 
-func find(cur *avlNode, key int) (value any, ok bool) {
+func find(cur *node, key int) (value any, ok bool) {
 	if cur == nil {
 		return nil, false
 	}
@@ -114,4 +114,11 @@ func (tree *AVLTree) Find(key int) (value any, ok bool) {
 
 func (tree *AVLTree) Len() int {
 	return tree.size
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
 }

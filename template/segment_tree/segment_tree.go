@@ -1,4 +1,4 @@
-package template
+package segment_tree
 
 type SegmentTree struct {
 	arr  []int

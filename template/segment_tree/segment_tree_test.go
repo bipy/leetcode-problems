@@ -1,4 +1,4 @@
-package template
+package segment_tree
 
 import (
 	"github.com/stretchr/testify/assert"

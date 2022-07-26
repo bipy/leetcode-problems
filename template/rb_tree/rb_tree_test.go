@@ -1,10 +1,16 @@
-package template
+package rb_tree
 
 import (
 	"github.com/emirpasic/gods/trees/redblacktree"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+type Item struct {
+	value    any
+	priority int
+	index    int
+}
 
 func TestRedBlackTree_Size(t *testing.T) {
 	rb := redblacktree.NewWithIntComparator()

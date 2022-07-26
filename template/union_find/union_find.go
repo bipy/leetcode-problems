@@ -1,9 +1,9 @@
-package template
+package union_find
 
 type UnionFind struct {
-	Father []int
-	Size   []int
-	Groups int
+	father []int
+	size   []int
+	groups int
 }
 
 func InitUnionFind(n int) *UnionFind {
@@ -17,10 +17,10 @@ func InitUnionFind(n int) *UnionFind {
 }
 
 func (uf *UnionFind) Find(x int) int {
-	if x != uf.Father[x] {
-		uf.Father[x] = uf.Find(uf.Father[x])
+	if x != uf.father[x] {
+		uf.father[x] = uf.Find(uf.father[x])
 	}
-	return uf.Father[x]
+	return uf.father[x]
 }
 
 func (uf *UnionFind) Union(x, y int) bool {
@@ -29,11 +29,19 @@ func (uf *UnionFind) Union(x, y int) bool {
 	if x == y {
 		return false
 	}
-	if uf.Size[x] > uf.Size[y] {
+	if uf.size[x] > uf.size[y] {
 		x, y = y, x
 	}
-	uf.Father[x] = y
-	uf.Size[y] += uf.Size[x]
-	uf.Groups--
+	uf.father[x] = y
+	uf.size[y] += uf.size[x]
+	uf.groups--
 	return true
+}
+
+func (uf UnionFind) Groups() int {
+	return uf.groups
+}
+
+func (uf UnionFind) GroupSize(i int) int {
+	return uf.size[uf.Find(i)]
 }

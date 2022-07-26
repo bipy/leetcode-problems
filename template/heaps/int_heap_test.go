@@ -1,4 +1,4 @@
-package template
+package heaps
 
 import (
 	"container/heap"

@@ -1,12 +1,12 @@
-package template
+package trie
 
 import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestTrieTree(t *testing.T) {
-	tree := InitTrieTree()
+func TestTrie(t *testing.T) {
+	tree := InitTrie()
 	tree.Insert("hello")
 	tree.Insert("world")
 	tree.Insert("haha")

@@ -3,7 +3,7 @@ package leetcode
 import (
 	"fmt"
 	"github.com/emirpasic/gods/trees/redblacktree"
-	"leetcode/template"
+	"leetcode/template/union_find"
 	"math"
 	"math/bits"
 	"math/rand"
@@ -3069,7 +3069,7 @@ func oddCells(m int, n int, indices [][]int) (ans int) {
 }
 
 func findRedundantConnection(edges [][]int) []int {
-	uf := template.InitUnionFind(len(edges) + 1)
+	uf := union_find.InitUnionFind(len(edges) + 1)
 	for _, e := range edges {
 		if !uf.Union(e[0], e[1]) {
 			return e
@@ -3165,7 +3165,7 @@ func numIslands(grid [][]byte) int {
 
 func findCircleNum(isConnected [][]int) int {
 	n := len(isConnected)
-	uf := template.InitUnionFind(n)
+	uf := union_find.InitUnionFind(n)
 	for i := range isConnected {
 		for j := range isConnected[i] {
 			if i != j && isConnected[i][j] == 1 {
@@ -3173,12 +3173,12 @@ func findCircleNum(isConnected [][]int) int {
 			}
 		}
 	}
-	return uf.Groups
+	return uf.Groups()
 }
 
 func accountsMerge(accounts [][]string) [][]string {
 	n := len(accounts)
-	uf := template.InitUnionFind(n)
+	uf := union_find.InitUnionFind(n)
 	m := map[string]int{}
 	for i := range accounts {
 		for j := 1; j < len(accounts[i]); j++ {
@@ -3197,7 +3197,7 @@ func accountsMerge(accounts [][]string) [][]string {
 		}
 		temp[fa] = append(temp[fa], k)
 	}
-	ans := make([][]string, 0, uf.Groups)
+	ans := make([][]string, 0, uf.Groups())
 	for k := range temp {
 		ans = append(ans, temp[k])
 	}
@@ -3209,11 +3209,11 @@ func accountsMerge(accounts [][]string) [][]string {
 
 func minSwapsCouples(row []int) int {
 	n := len(row)
-	uf := template.InitUnionFind(n / 2)
+	uf := union_find.InitUnionFind(n / 2)
 	for i := 0; i < n; i += 2 {
 		uf.Union(row[i]/2, row[i+1]/2)
 	}
-	return n/2 - uf.Groups
+	return n/2 - uf.Groups()
 }
 
 func numberOfPairs(nums []int) []int {

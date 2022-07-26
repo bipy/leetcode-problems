@@ -1,6 +1,14 @@
-package template
+package priority_queue
 
-import "container/heap"
+import (
+	"container/heap"
+)
+
+type Item struct {
+	value    interface{}
+	priority int
+	index    int
+}
 
 type PriorityQueue []*Item
 
@@ -18,18 +26,18 @@ func (pq PriorityQueue) Swap(i, j int) {
 	pq[j].index = j
 }
 
-func (pq *PriorityQueue) Push(x any) {
+func (pq *PriorityQueue) Push(x interface{}) {
 	x.(*Item).index = len(*pq)
 	*pq = append(*pq, x.(*Item))
 }
 
 // Pop panic if PriorityQueue is empty
-func (pq *PriorityQueue) Pop() (v any) {
+func (pq *PriorityQueue) Pop() (v interface{}) {
 	*pq, v = (*pq)[:pq.Len()-1], (*pq)[pq.Len()-1]
 	return
 }
 
-func (pq *PriorityQueue) Update(item *Item, value any, priority int) {
+func (pq *PriorityQueue) Update(item *Item, value interface{}, priority int) {
 	item.value = value
 	item.priority = priority
 	heap.Fix(pq, item.index)

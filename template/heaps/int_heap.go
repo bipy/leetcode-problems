@@ -1,6 +1,6 @@
-package template
+package heaps
 
-// IntHeap min heap
+// IntHeap min heaps
 type IntHeap []int
 
 func (h IntHeap) Len() int {

@@ -1,4 +1,4 @@
-package template
+package union_find
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -12,6 +12,7 @@ func TestUnionFind(t *testing.T) {
 	assert.True(t, uf.Union(1, 7))
 	assert.True(t, uf.Union(1, 8))
 	assert.True(t, uf.Union(2, 7))
+	assert.Equal(t, 4, uf.GroupSize(1))
 	assert.False(t, uf.Union(1, 8))
 	assert.False(t, uf.Union(2, 7))
 	assert.True(t, uf.Union(3, 2))

@@ -1,4 +1,4 @@
-package template
+package deque
 
 import (
 	"github.com/stretchr/testify/assert"

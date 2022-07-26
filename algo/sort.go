@@ -102,7 +102,7 @@ func RandomizedQuickSort(arr []int) {
 }
 
 func HeapSort(arr []int) {
-	// max heap
+	// max heaps
 	cmp := func(i, j int) bool {
 		return arr[i] > arr[j]
 	}

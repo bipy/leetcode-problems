@@ -1,4 +1,10 @@
-package template
+package deque
+
+type Item struct {
+	value    interface{}
+	priority int
+	index    int
+}
 
 type Deque struct {
 	left, right []*Item
