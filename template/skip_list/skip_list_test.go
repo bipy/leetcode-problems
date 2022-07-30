@@ -6,7 +6,9 @@ import (
 )
 
 func TestSkipList(t *testing.T) {
-	s := InitSkipList(IntComparator)
+	s := InitSkipList(func(i, j interface{}) bool {
+		return i.(int) < j.(int)
+	})
 	for i := 0; i < 10000; i++ {
 		s.Insert(i, struct{}{})
 	}

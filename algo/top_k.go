@@ -1,11 +1,6 @@
 package algo
 
-import "sort"
-
 func TopK(k int, arr []*Item, less func(i, j int) bool) []*Item {
-	if len(arr) < k {
-		return arr
-	}
-	sort.Slice(arr, less)
+	partition(k, arr, less)
 	return arr[:k]
 }

@@ -153,3 +153,13 @@ func Test_countExcellentPairs(t *testing.T) {
 	defer Timer()
 	countExcellentPairs(StrToIntSlice("[1,2,3,1]"), 3)
 }
+
+func Test_fractionAddition(t *testing.T) {
+	fractionAddition("-1/2+1/2")
+}
+
+func Test_largestComponentSize(t *testing.T) {
+	defer Timer()
+	args := GetInput()
+	largestComponentSize(StrToIntSlice(args[0]))
+}

@@ -77,3 +77,11 @@ func TestRedBlackTree_Ceiling(t *testing.T) {
 	_, ok = rb.Ceiling(100)
 	assert.False(t, ok)
 }
+
+func TestRedBlackTree_Remove(t *testing.T) {
+	rb := redblacktree.NewWithIntComparator()
+	rb.Put(1, &Item{value: "hello"})
+	rb.Put(2, &Item{value: "world"})
+	rb.Remove(2)
+	assert.Equal(t, "hello", rb.Right().Value.(*Item).value.(string))
+}

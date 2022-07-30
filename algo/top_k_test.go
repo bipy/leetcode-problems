@@ -20,7 +20,11 @@ func TestTopK(t *testing.T) {
 	sort.Slice(sorted, func(i, j int) bool {
 		return sorted[i].value.(int) < sorted[j].value.(int)
 	})
-	assert.Equal(t, sorted[:k], TopK(k, ori, func(i, j int) bool {
+	topk := TopK(k, ori, func(i, j int) bool {
 		return ori[i].value.(int) < ori[j].value.(int)
-	}))
+	})
+	sort.Slice(topk, func(i, j int) bool {
+		return topk[i].value.(int) < topk[j].value.(int)
+	})
+	assert.Equal(t, sorted[:k], topk)
 }

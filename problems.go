@@ -671,10 +671,6 @@ func intersection(nums [][]int) []int {
 	return rt
 }
 
-func getDistSq(dx, dy int) int {
-	return dx*dx + dy*dy
-}
-
 func countLatticePoints(circles [][]int) int {
 	const MAXL = 205
 	g := make([][]bool, MAXL)
@@ -3523,7 +3519,7 @@ func equalPairs(grid [][]int) int {
 }
 
 func countExcellentPairs(nums []int, k int) int64 {
-	nums = removeDup(nums)
+	nums = RemoveDup(nums)
 	sort.Slice(nums, func(i, j int) bool {
 		return bits.OnesCount(uint(nums[i])) < bits.OnesCount(uint(nums[j]))
 	})
@@ -3547,4 +3543,89 @@ func distanceBetweenBusStops(distance []int, start int, destination int) int {
 	}
 	t := distance[destination] - distance[start]
 	return min(total-t, t)
+}
+
+func fractionAddition(expression string) string {
+	ans := Frac{0, 1}
+	a := strings.Split(expression, "+")
+	for i := range a {
+		t := Frac{0, 1}
+		b := strings.Split(a[i], "-")
+		if b[0] != "" {
+			f := strings.Split(b[0], "/")
+			u, _ := strconv.Atoi(f[0])
+			d, _ := strconv.Atoi(f[1])
+			t.Add(Frac{u, d})
+		}
+		for j := 1; j < len(b); j++ {
+			f := strings.Split(b[j], "/")
+			u, _ := strconv.Atoi(f[0])
+			d, _ := strconv.Atoi(f[1])
+			t.Sub(Frac{u, d})
+		}
+		ans.Add(t)
+	}
+	return fmt.Sprintf("%d/%d", ans.up, ans.down)
+}
+
+func arrayRankTransform(arr []int) []int {
+	n := len(arr)
+	idx := Nums(0, n)
+	sort.Slice(idx, func(i, j int) bool {
+		return arr[idx[i]] < arr[idx[j]]
+	})
+	rt := make([]int, n)
+	r := 1
+	for i := range idx {
+		if i > 0 && arr[idx[i]] != arr[idx[i-1]] {
+			r++
+		}
+		rt[idx[i]] = r
+	}
+	return rt
+}
+
+func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
+	points := [4][]int{p1, p2, p3, p4}
+	cnt := map[int]int{}
+	for i := 0; i < 4; i++ {
+		for j := i + 1; j < 4; j++ {
+			cnt[getDistSq(points[i][0]-points[j][0], points[i][1]-points[j][1])]++
+		}
+	}
+	if len(cnt) == 2 {
+		kv := MapToSlice(cnt)
+		if kv[0].k > kv[1].k {
+			kv[0], kv[1] = kv[1], kv[0]
+		}
+		if kv[0].v == 4 && kv[1].v == 2 {
+			if kv[0].k*2 == kv[1].k {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func largestComponentSize(nums []int) int {
+	const maxNums = 1e5 + 10
+	n := len(nums)
+	uf := union_find.InitUnionFind(maxNums)
+	for i := 0; i < n; i++ {
+		for j := 2; j*j <= nums[i]; j++ {
+			if nums[i]%j == 0 {
+				uf.Union(nums[i], j)
+				uf.Union(nums[i], nums[i]/j)
+			}
+		}
+	}
+	cnt := map[int]int{}
+	for _, v := range nums {
+		cnt[uf.Find(v)]++
+	}
+	ans := 0
+	for _, v := range cnt {
+		ans = max(ans, v)
+	}
+	return ans
 }
