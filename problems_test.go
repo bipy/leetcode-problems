@@ -163,3 +163,23 @@ func Test_largestComponentSize(t *testing.T) {
 	args := GetInput()
 	largestComponentSize(StrToIntSlice(args[0]))
 }
+
+func Test_maxLevelSum(t *testing.T) {
+	rt := maxLevelSum(TreeDeserialize("[1,7,0,7,-8,null,null]"))
+	fmt.Println(rt)
+}
+
+func Test_closestMeetingNode(t *testing.T) {
+	closestMeetingNode(StrToIntSlice("[2,2,3,-1]"), 0, 1)
+}
+
+func Test_longestCycle(t *testing.T) {
+	defer Timer()
+	args := GetInput()
+	rt := longestCycle(StrToIntSlice(args[0]))
+	fmt.Println(rt)
+}
+
+func Test_minTimeToType(t *testing.T) {
+	minTimeToType("bza")
+}

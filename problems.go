@@ -1,8 +1,11 @@
 package leetcode
 
 import (
+	"bytes"
+	"container/heap"
 	"fmt"
 	"github.com/emirpasic/gods/trees/redblacktree"
+	"leetcode/template/heaps"
 	"leetcode/template/union_find"
 	"math"
 	"math/bits"
@@ -11,6 +14,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -3594,7 +3598,7 @@ func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
 		}
 	}
 	if len(cnt) == 2 {
-		kv := MapToSlice(cnt)
+		kv := MapItems(cnt)
 		if kv[0].k > kv[1].k {
 			kv[0], kv[1] = kv[1], kv[0]
 		}
@@ -3628,4 +3632,261 @@ func largestComponentSize(nums []int) int {
 		ans = max(ans, v)
 	}
 	return ans
+}
+
+func maxLevelSum(root *TreeNode) int {
+	ans := 1
+	maxV := math.MinInt32
+	cnt := 1
+	var queue []*TreeNode
+	queue = append(queue, root)
+	for len(queue) > 0 {
+		n := len(queue)
+		sum := 0
+		for i := 0; i < n; i++ {
+			sum += queue[i].Val
+			if queue[i].Left != nil {
+				queue = append(queue, queue[i].Left)
+			}
+			if queue[i].Right != nil {
+				queue = append(queue, queue[i].Right)
+			}
+		}
+		if sum > maxV {
+			ans = cnt
+			maxV = sum
+		}
+		cnt++
+		queue = queue[n:]
+	}
+	return ans
+}
+
+func minimumOperations(nums []int) int {
+	getMin := func(arr []int) int {
+		rt := 1000
+		for i := range arr {
+			if arr[i] > 0 && arr[i] < rt {
+				rt = arr[i]
+			}
+		}
+		return rt
+	}
+	cnt := 0
+	for {
+		minV := getMin(nums)
+		flag := false
+		for i := range nums {
+			if nums[i] > 0 {
+				nums[i] -= minV
+				flag = true
+			}
+		}
+		if !flag {
+			break
+		}
+		cnt++
+	}
+	return cnt
+}
+
+func maximumGroups(grades []int) int {
+	n := len(grades)
+	ans := 1
+	for ans*(ans+1) <= n*2 {
+		ans++
+	}
+	return ans - 1
+}
+
+func closestMeetingNode(edges []int, node1 int, node2 int) int {
+	n := len(edges)
+	f := func(node int) ([]int, map[int]int) {
+		idx := make([]int, 0, n)
+		dist := make(map[int]int, n)
+		vis := make([]bool, n)
+		cnt := 0
+		for node != -1 && !vis[node] {
+			vis[node] = true
+			idx = append(idx, node)
+			dist[node] = cnt
+			cnt++
+			node = edges[node]
+		}
+		return idx, dist
+	}
+	idx1, dist1 := f(node1)
+	idx2, dist2 := f(node2)
+	common := Intersection(idx1, idx2)
+	ans := math.MaxInt32
+	minV := math.MaxInt32
+	for i := range common {
+		cur := max(dist1[common[i]], dist2[common[i]])
+		if cur < minV {
+			ans = common[i]
+			minV = cur
+		} else if cur == minV && ans > common[i] {
+			ans = common[i]
+		}
+	}
+	return Cond(ans == math.MaxInt32, -1, ans).(int)
+}
+
+func longestCycle(edges []int) int {
+	n := len(edges)
+	ans := 0
+	vis := make([]bool, n)
+	for i := range edges {
+		dist := map[int]int{}
+		node := i
+		cnt := 0
+		for node != -1 {
+			if vis[node] {
+				d, ok := dist[node]
+				if ok {
+					ans = max(ans, cnt-d)
+				}
+				break
+			}
+			vis[node] = true
+			dist[node] = cnt
+			cnt++
+			node = edges[node]
+		}
+	}
+	return Cond(ans == 0, -1, ans).(int)
+}
+
+func generateTheString(n int) string {
+	rt := bytes.Repeat([]byte{'a'}, n)
+	if n%2 == 0 {
+		rt[0] = 'b'
+	}
+	return Bytes2Str(rt)
+}
+
+func videoStitching(clips [][]int, time int) int {
+	ts := make([]int, time+1)
+	for _, c := range clips {
+		if c[0] < time {
+			ts[c[0]] = max(ts[c[0]], min(c[1], time))
+		}
+	}
+	cnt := 0
+	begin, end := 0, 0
+	for end < time {
+		newEnd := end
+		for j := begin; j <= end; j++ {
+			newEnd = max(newEnd, ts[j])
+		}
+		if newEnd == end {
+			return -1
+		}
+		begin, end = end, newEnd
+		cnt++
+	}
+	return Cond(end == time, cnt, -1).(int)
+}
+
+func orderlyQueue(s string, k int) string {
+	n := len(s)
+	ans := Str2Bytes(s)
+	if k == 1 {
+		b := make([]byte, n*2)
+		copy(b, s)
+		copy(b[n:], s)
+		for i := 0; i < n; i++ {
+			if bytes.Compare(ans, b[i:i+n]) > 0 {
+				ans = b[i : i+n]
+			}
+		}
+	} else {
+		sort.Slice(ans, func(i, j int) bool {
+			return ans[i] < ans[j]
+		})
+	}
+	return Bytes2Str(ans)
+}
+
+func minSubsequence(nums []int) (rt []int) {
+	h := heaps.IntHeap(nums)
+	heap.Init(&h)
+	sum := 0
+	total := SummarizingInt(nums)
+	for {
+		top := heap.Pop(&h).(int)
+		sum += top
+		total -= top
+		rt = append(rt, top)
+		if sum > total {
+			break
+		}
+	}
+	return
+}
+
+func minSubsequence1(nums []int) []int {
+	sum := 0
+	total := SummarizingInt(nums)
+	sort.Sort(sort.Reverse(sort.IntSlice(nums)))
+	for i := range nums {
+		sum += nums[i]
+		total -= nums[i]
+		if sum > total {
+			return nums[:i+1]
+		}
+	}
+	return nums
+}
+
+func dayOfYear(date string) int {
+	d, _ := time.Parse("2006-01-02", date)
+	return d.YearDay()
+}
+
+func countNumbersWithUniqueDigits(n int) int {
+	if n == 0 {
+		return 1
+	}
+	return C(1, 9)*A(n-1, 9) + countNumbersWithUniqueDigits(n-1)
+}
+
+func minTimeToType(word string) int {
+	ans := 0
+	cur := 'a'
+	for _, c := range word {
+		if cur == c {
+			ans++
+			continue
+		}
+		a := abs(int(c - cur))
+		b := 26 - a
+		ans += min(a, b) + 1
+		cur = c
+	}
+	return ans
+}
+
+func checkString(s string) bool {
+	return !strings.Contains(s, "ba")
+}
+
+func stringMatching(words []string) (rt []string) {
+	n := len(words)
+	vis := make([]bool, n)
+	for i := range words {
+		if vis[i] {
+			continue
+		}
+		for j := range words {
+			if vis[j] {
+				continue
+			}
+			if i != j && strings.Contains(words[i], words[j]) {
+				vis[j] = true
+				rt = append(rt, words[j])
+			}
+		}
+	}
+	return
 }

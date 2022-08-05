@@ -30,3 +30,7 @@ func TestSummarizingInt(t *testing.T) {
 func TestSummarizingFloat(t *testing.T) {
 	assert.Equal(t, 7.2, SummarizingFloat([]float64{1.5, 2.5, 3.2}))
 }
+
+func TestC(t *testing.T) {
+	assert.Equal(t, 6, C(2, 4))
+}

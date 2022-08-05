@@ -101,16 +101,8 @@ func RemoveDup(arr []int) []int {
 	return arr
 }
 
-// COString 三目运算
-func COString(cond bool, x string, y string) string {
-	if cond {
-		return x
-	}
-	return y
-}
-
-// COInt 三目运算
-func COInt(cond bool, x int, y int) int {
+// Cond 三目运算
+func Cond(cond bool, x interface{}, y interface{}) interface{} {
 	if cond {
 		return x
 	}
@@ -250,10 +242,30 @@ func FilterString(arr []string, f func(i string) bool) []string {
 	return arr[:k]
 }
 
-func MapToSlice(m map[int]int) []struct{ k, v int } {
+func MapItems(m map[int]int) []struct{ k, v int } {
 	rt := make([]struct{ k, v int }, 0, len(m))
 	for k, v := range m {
 		rt = append(rt, struct{ k, v int }{k, v})
+	}
+	return rt
+}
+
+func MapKeys(m map[int]int) []int {
+	rt := make([]int, 0, len(m))
+	for k := range m {
+		rt = append(rt, k)
+	}
+	return rt
+}
+
+func MapValues(m map[int]int) []int {
+	set := make(map[int]struct{})
+	for _, v := range m {
+		set[v] = struct{}{}
+	}
+	rt := make([]int, 0, len(set))
+	for k := range set {
+		rt = append(rt, k)
 	}
 	return rt
 }

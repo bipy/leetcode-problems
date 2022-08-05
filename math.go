@@ -146,3 +146,25 @@ func Pow(x, n, mod int) int {
 func getDistSq(dx, dy int) int {
 	return dx*dx + dy*dy
 }
+
+func frac(a, b int) int {
+	rt := 1
+	for i := a; i <= b; i++ {
+		rt *= i
+	}
+	return rt
+}
+
+func C(a, b int) int {
+	if a > b {
+		a, b = b, a
+	}
+	return frac(b-a+1, b) / frac(1, a)
+}
+
+func A(a, b int) int {
+	if a > b {
+		a, b = b, a
+	}
+	return frac(b-a+1, b)
+}
