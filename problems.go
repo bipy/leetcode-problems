@@ -3599,11 +3599,11 @@ func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
 	}
 	if len(cnt) == 2 {
 		kv := MapItems(cnt)
-		if kv[0].k > kv[1].k {
+		if kv[0][0] > kv[1][0] {
 			kv[0], kv[1] = kv[1], kv[0]
 		}
-		if kv[0].v == 4 && kv[1].v == 2 {
-			if kv[0].k*2 == kv[1].k {
+		if kv[0][1] == 4 && kv[1][1] == 2 {
+			if kv[0][0]*2 == kv[1][0] {
 				return true
 			}
 		}
@@ -3889,4 +3889,74 @@ func stringMatching(words []string) (rt []string) {
 		}
 	}
 	return
+}
+
+func mergeSimilarItems(items1 [][]int, items2 [][]int) [][]int {
+	m := make(map[int]int, len(items1)+len(items2))
+	for _, it := range items1 {
+		m[it[0]] += it[1]
+	}
+	for _, it := range items2 {
+		m[it[0]] += it[1]
+	}
+	rt := make([][]int, 0, len(m))
+	for k, v := range m {
+		rt = append(rt, []int{k, v})
+	}
+	sort.Slice(rt, func(i, j int) bool {
+		return rt[i][0] < rt[j][0]
+	})
+	return rt
+}
+
+func countBadPairs(nums []int) int64 {
+	if len(nums) < 2 {
+		return 0
+	}
+	cnt := map[int]int{}
+	ans := 0
+	for i := range nums {
+		cnt[nums[i]-i]++
+	}
+	for _, v := range cnt {
+		if v >= 2 {
+			ans += C(2, v)
+		}
+	}
+	return int64(C(2, len(nums)) - ans)
+}
+
+func taskSchedulerII(tasks []int, space int) int64 {
+	last := map[int]int{}
+	cur := 1
+	for i := range tasks {
+		if n, ok := last[tasks[i]]; ok {
+			if cur-n <= space {
+				cur = n + space + 1
+			}
+		}
+		last[tasks[i]] = cur
+		cur++
+	}
+	return int64(cur - 1)
+}
+
+func minimumReplacement(nums []int) int64 {
+	ans := 0
+	minV := nums[len(nums)-1]
+	for i := len(nums) - 1; i >= 0; i-- {
+		minV = min(minV, nums[i])
+		if nums[i] > minV {
+			ans += Ceil(nums[i], minV) - 1
+			if nums[i]%minV != 0 {
+				for j := 2; j < minV; j++ {
+					if nums[i]/i < minV {
+						minV = nums[i] / i
+						break
+					}
+				}
+			}
+		}
+	}
+	return int64(ans)
 }

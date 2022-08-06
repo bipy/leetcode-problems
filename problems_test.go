@@ -183,3 +183,16 @@ func Test_longestCycle(t *testing.T) {
 func Test_minTimeToType(t *testing.T) {
 	minTimeToType("bza")
 }
+
+func Test_taskSchedulerII(t *testing.T) {
+	taskSchedulerII(StrToIntSlice("[1,2,1,2,3,1]"), 3)
+}
+
+func Test_countBadPairs(t *testing.T) {
+	rt := countBadPairs(StrToIntSlice("[4]"))
+	fmt.Println(rt)
+}
+
+func Test_minimumReplacement(t *testing.T) {
+	minimumReplacement(StrToIntSlice("[7,6,15,6,11,14,10]"))
+}

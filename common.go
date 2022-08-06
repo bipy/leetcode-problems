@@ -242,10 +242,10 @@ func FilterString(arr []string, f func(i string) bool) []string {
 	return arr[:k]
 }
 
-func MapItems(m map[int]int) []struct{ k, v int } {
-	rt := make([]struct{ k, v int }, 0, len(m))
+func MapItems(m map[int]int) [][]int {
+	rt := make([][]int, 0, len(m))
 	for k, v := range m {
-		rt = append(rt, struct{ k, v int }{k, v})
+		rt = append(rt, []int{k, v})
 	}
 	return rt
 }
