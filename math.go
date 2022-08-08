@@ -1,6 +1,8 @@
 package leetcode
 
-import "math"
+import (
+	"math"
+)
 
 type Frac struct {
 	up, down int
@@ -143,18 +145,23 @@ func Pow(x, n, mod int) int {
 	return res
 }
 
+// 平面距离的平方
 func getDistSq(dx, dy int) int {
 	return dx*dx + dy*dy
 }
 
+// 阶乘值
+var fracNums = []int{1}
+
+// 阶乘
 func frac(a, b int) int {
-	rt := 1
-	for i := a; i <= b; i++ {
-		rt *= i
+	for i := len(fracNums); i <= b; i++ {
+		fracNums = append(fracNums, fracNums[i-1]*i)
 	}
-	return rt
+	return fracNums[b] / fracNums[a-1]
 }
 
+// C 组合数
 func C(a, b int) int {
 	if a > b {
 		a, b = b, a
@@ -162,9 +169,27 @@ func C(a, b int) int {
 	return frac(b-a+1, b) / frac(1, a)
 }
 
+// A 排列数
 func A(a, b int) int {
 	if a > b {
 		a, b = b, a
 	}
 	return frac(b-a+1, b)
+}
+
+func SameLineThree(p1, p2, p3 []int) bool {
+	return p1[0]*(p2[1]-p3[1])-p2[0]*(p1[1]-p3[1])+p3[0]*(p1[1]-p2[1]) == 0
+}
+
+func SameLine(points [][]int) bool {
+	if len(points) < 3 {
+		return true
+	}
+	a, b := points[0], points[1]
+	for _, c := range points[2:] {
+		if !SameLineThree(a, b, c) {
+			return false
+		}
+	}
+	return true
 }

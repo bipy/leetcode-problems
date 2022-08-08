@@ -196,3 +196,15 @@ func Test_countBadPairs(t *testing.T) {
 func Test_minimumReplacement(t *testing.T) {
 	minimumReplacement(StrToIntSlice("[7,6,15,6,11,14,10]"))
 }
+
+func Test_longestIdealString(t *testing.T) {
+	longestIdealString("acfgbd", 2)
+}
+
+func Test_validPartition(t *testing.T) {
+	fmt.Println(validPartition(StrToIntSlice("[993335,993336,993337,993338,993339,993340,993341]")))
+}
+
+func Test_exclusiveTime(t *testing.T) {
+	exclusiveTime(2, StrToStrSlice("[\"0:start:0\",\"1:start:2\",\"1:end:5\",\"0:end:6\"]"))
+}

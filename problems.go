@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"container/heap"
 	"fmt"
-	"github.com/emirpasic/gods/trees/redblacktree"
 	"leetcode/template/heaps"
 	"leetcode/template/union_find"
 	"math"
@@ -18,6 +17,7 @@ import (
 	"unicode"
 )
 
+// 819 最常见的单词
 func mostCommonWord(paragraph string, banned []string) string {
 	paragraph += "$"
 	bannedMap := map[string]bool{}
@@ -50,6 +50,7 @@ func mostCommonWord(paragraph string, banned []string) string {
 	return rt
 }
 
+// 剑指 Offer 03 数组中重复的数字
 func findRepeatNumber(nums []int) int {
 	m := map[int]bool{}
 	for _, v := range nums {
@@ -61,6 +62,7 @@ func findRepeatNumber(nums []int) int {
 	return 0
 }
 
+// 剑指 Offer 06 从尾到头打印链表
 func reversePrint(head *ListNode) []int {
 	if head == nil {
 		return []int{}
@@ -70,6 +72,7 @@ func reversePrint(head *ListNode) []int {
 	return rt
 }
 
+// 剑指 Offer 11 旋转数组的最小数字
 func minArray(numbers []int) int {
 	if len(numbers) == 1 {
 		return numbers[0]
@@ -85,6 +88,7 @@ func minArray(numbers []int) int {
 	return numbers[0]
 }
 
+// 剑指 Offer 17 打印从1到最大的n位数
 func printNumbers(n int) []int {
 	rt := make([]int, int(math.Pow10(n)-1))
 	for i := 0; i < len(rt); i++ {
@@ -93,6 +97,7 @@ func printNumbers(n int) []int {
 	return rt
 }
 
+// 剑指 Offer 21 调整数组顺序使奇数位于偶数前面
 func exchange(nums []int) []int {
 	l, r := 0, len(nums)
 	for l < r {
@@ -109,6 +114,7 @@ func exchange(nums []int) []int {
 	return nums
 }
 
+// 剑指 Offer 24 反转链表
 func reverseList(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
 		return head
@@ -119,6 +125,7 @@ func reverseList(head *ListNode) *ListNode {
 	return rt
 }
 
+// 剑指 Offer 27 二叉树的镜像
 func mirrorTree(root *TreeNode) *TreeNode {
 	if root == nil {
 		return nil
@@ -129,6 +136,7 @@ func mirrorTree(root *TreeNode) *TreeNode {
 	return root
 }
 
+// 386 字典序排数
 func lexicalOrder(n int) []int {
 	data := make([]int, n)
 	data[0] = 1
@@ -149,6 +157,7 @@ func lexicalOrder(n int) []int {
 	return data
 }
 
+// 剑指 Offer 29 顺时针打印矩阵
 func spiralOrder(matrix [][]int) []int {
 	var ans []int
 	rows := len(matrix)
@@ -184,6 +193,7 @@ func spiralOrder(matrix [][]int) []int {
 	return ans
 }
 
+// 剑指 Offer 32 - II 从上到下打印二叉树 II
 func levelOrder(root *TreeNode) [][]int {
 	if root == nil {
 		return nil
@@ -209,6 +219,7 @@ func levelOrder(root *TreeNode) [][]int {
 	return ans
 }
 
+// 824 山羊拉丁文
 func toGoatLatin(sentence string) string {
 	aeiou := []byte("aeiouAEIOU")
 	vowels := map[byte]struct{}{}
@@ -233,6 +244,7 @@ func toGoatLatin(sentence string) string {
 	return ans.String()
 }
 
+// 面试题 05.06 整数转换
 func convertInteger(A int, B int) int {
 	r := A ^ B
 	ans := 0
@@ -247,6 +259,7 @@ func convertInteger(A int, B int) int {
 	return ans
 }
 
+// 105 从前序与中序遍历序列构造二叉树
 func buildTree(preorder []int, inorder []int) *TreeNode {
 	if len(preorder) == 0 {
 		return nil
@@ -263,6 +276,7 @@ func buildTree(preorder []int, inorder []int) *TreeNode {
 	return root
 }
 
+// 958 二叉树的完全性检验
 func isCompleteTree(root *TreeNode) bool {
 	var queue []*TreeNode
 	queue = append(queue, root)
@@ -293,6 +307,7 @@ func isCompleteTree(root *TreeNode) bool {
 	return true
 }
 
+// 62 不同路径
 func uniquePaths(m int, n int) int {
 	dp := make([]int, n)
 	dp[0] = 1
@@ -304,6 +319,7 @@ func uniquePaths(m int, n int) int {
 	return dp[n-1]
 }
 
+// 1289 下降路径最小和 II
 func minFallingPathSum(grid [][]int) int {
 	minExcept := func(idx int, nums ...int) int {
 		min := 0x7fffffff
@@ -326,6 +342,7 @@ func minFallingPathSum(grid [][]int) int {
 	return minExcept(-1, grid[n-1]...)
 }
 
+// 576 出界的路径数
 func findPaths(m int, n int, maxMove int, startRow int, startColumn int) int {
 	if maxMove == 0 {
 		return 0
@@ -363,6 +380,7 @@ func findPaths(m int, n int, maxMove int, startRow int, startColumn int) int {
 	return dfs(maxMove, startRow, startColumn)
 }
 
+// 2255 统计是给定字符串前缀的字符串数目
 func countPrefixes(words []string, s string) int {
 	ans := 0
 	for _, w := range words {
@@ -384,6 +402,7 @@ func countPrefixes(words []string, s string) int {
 	return ans
 }
 
+// 2256 最小平均差
 func minimumAverageDifference(nums []int) int {
 	n := len(nums)
 	for i := 1; i < n; i++ {
@@ -412,6 +431,7 @@ func minimumAverageDifference(nums []int) int {
 	return rt
 }
 
+// 2257 统计网格图中没有被保卫的格子数
 func countUnguarded(m int, n int, guards [][]int, walls [][]int) int {
 	// 0 not touched
 	// 1 watched north
@@ -489,6 +509,7 @@ func countUnguarded(m int, n int, guards [][]int, walls [][]int) int {
 	return m*n - ans - len(guards) - len(walls)
 }
 
+// 16 最接近的三数之和
 func threeSumClosest(nums []int, target int) int {
 	n := len(nums)
 	sort.Ints(nums)
@@ -512,6 +533,7 @@ func threeSumClosest(nums []int, target int) int {
 	return rt
 }
 
+// 1305 两棵二叉搜索树中的所有元素
 func getAllElements(root1 *TreeNode, root2 *TreeNode) []int {
 	var inorder func(*TreeNode, *[]int)
 	inorder = func(cur *TreeNode, data *[]int) {
@@ -543,6 +565,7 @@ func getAllElements(root1 *TreeNode, root2 *TreeNode) []int {
 	return rt
 }
 
+// 2259 移除指定数字得到的最大结果
 func removeDigit(number string, digit byte) string {
 	ans := ""
 	arr := []byte(number)
@@ -560,6 +583,7 @@ func removeDigit(number string, digit byte) string {
 	return ans
 }
 
+// 2260 必须拿起的最小连续卡牌数
 func minimumCardPickup(cards []int) int {
 	m := map[int]int{}
 	ans := math.MaxInt32
@@ -577,6 +601,7 @@ func minimumCardPickup(cards []int) int {
 	return ans
 }
 
+// 2261 含最多 K 个可整除元素的子数组
 func countDistinct(nums []int, k int, p int) int {
 	if p == 1 {
 		// n - 1 + 1
@@ -595,6 +620,7 @@ func countDistinct(nums []int, k int, p int) int {
 
 }
 
+// 2262 字符串的总引力 TODO
 func appealSum(s string) int {
 	cm := &CntMap{}
 	n := len(s)
@@ -622,6 +648,7 @@ func appealSum(s string) int {
 	return ans
 }
 
+// 937 重新排列日志文件
 func reorderLogFiles(logs []string) []string {
 	type node struct {
 		idx     int
@@ -658,6 +685,7 @@ func reorderLogFiles(logs []string) []string {
 	return rt
 }
 
+// 2248 多个数组求交集
 func intersection(nums [][]int) []int {
 	m := map[int]int{}
 	for _, arr := range nums {
@@ -675,6 +703,7 @@ func intersection(nums [][]int) []int {
 	return rt
 }
 
+// 2249 统计圆内格点数目
 func countLatticePoints(circles [][]int) int {
 	const MAXL = 205
 	g := make([][]bool, MAXL)
@@ -703,6 +732,7 @@ func countLatticePoints(circles [][]int) int {
 	return ans
 }
 
+// 2250 统计包含每个点的矩形数目
 func countRectangles(rectangles [][]int, points [][]int) []int {
 	recs := make([][]int, 101)
 	for _, r := range rectangles {
@@ -720,6 +750,7 @@ func countRectangles(rectangles [][]int, points [][]int) []int {
 	return rt
 }
 
+// 433 最小基因变化
 func minMutation(start string, end string, bank []string) int {
 	isOK := func(a, b string) bool {
 		cnt := 0
@@ -756,6 +787,7 @@ func minMutation(start string, end string, bank []string) int {
 	return -1
 }
 
+// 2264 字符串中最大的 3 位相同数字
 func largestGoodInteger(num string) string {
 	ans := ""
 	for i := 2; i < len(num); i++ {
@@ -768,6 +800,7 @@ func largestGoodInteger(num string) string {
 	return ans
 }
 
+// 2265 统计值等于子树平均值的节点数
 func averageOfSubtree(root *TreeNode) int {
 	ans := 0
 	var dfs func(*TreeNode) (int, int)
@@ -787,6 +820,7 @@ func averageOfSubtree(root *TreeNode) int {
 	return ans
 }
 
+// 2266 统计打字方案数
 func countTexts(pressedKeys string) int {
 	pressedKeys += "$"
 	dp3, dp4 := []int{0, 1, 2, 4}, []int{0, 1, 2, 4, 8}
@@ -820,6 +854,7 @@ func countTexts(pressedKeys string) int {
 	return ans
 }
 
+// 2267 检查是否有合法括号字符串路径 TODO
 func hasValidPath(grid [][]byte) bool {
 	m, n := len(grid), len(grid[0])
 	if grid[m-1][n-1] == '(' {
@@ -868,6 +903,7 @@ func hasValidPath(grid [][]byte) bool {
 	return ans
 }
 
+// 2243 计算字符串的数字和
 func digitSum(s string, k int) string {
 	for len(s) > k {
 		n := len(s) / k
@@ -894,6 +930,7 @@ func digitSum(s string, k int) string {
 	return s
 }
 
+// 2244 完成所有任务需要的最少轮数
 func minimumRounds(tasks []int) int {
 	cnt := map[int]int{}
 	for _, v := range tasks {
@@ -921,6 +958,7 @@ func minimumRounds(tasks []int) int {
 	return ans
 }
 
+// 2245 转角路径的乘积中最多能有几个尾随零 TODO
 func maxTrailingZeros(grid [][]int) int {
 	m, n := len(grid), len(grid[0])
 	directions := [][]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
@@ -967,6 +1005,7 @@ func maxTrailingZeros(grid [][]int) int {
 	return ans
 }
 
+// 2269 找到一个数字的 K 美丽值
 func divisorSubstrings(num int, k int) int {
 	snum := strconv.Itoa(num)
 	ans := 0
@@ -979,6 +1018,7 @@ func divisorSubstrings(num int, k int) int {
 	return ans
 }
 
+// 2270 分割数组的方案数
 func waysToSplitArray(nums []int) int {
 	ans := 0
 	n := len(nums)
@@ -995,6 +1035,7 @@ func waysToSplitArray(nums []int) int {
 	return ans
 }
 
+// 2271 毯子覆盖的最多白色砖块数
 func maximumWhiteTiles(tiles [][]int, carpetLen int) int {
 	sort.Slice(tiles, func(i, j int) bool {
 		return tiles[i][0] < tiles[j][0]
@@ -1022,6 +1063,7 @@ func maximumWhiteTiles(tiles [][]int, carpetLen int) int {
 	return ans
 }
 
+// 2272 最大波动的子字符串 TODO
 func largestVariance(s string) int {
 	ans := 0
 	maxf := func(x, y int) int {
@@ -1058,6 +1100,7 @@ func largestVariance(s string) int {
 	return ans
 }
 
+// 812 最大三角形面积
 func largestTriangleArea(points [][]int) float64 {
 	n := len(points)
 	ans := 0.0
@@ -1071,6 +1114,7 @@ func largestTriangleArea(points [][]int) float64 {
 	return ans
 }
 
+// 953 验证外星语词典
 func isAlienSorted(words []string, order string) bool {
 	orders := [26]int{}
 	for i, c := range order {
@@ -1087,6 +1131,7 @@ func isAlienSorted(words []string, order string) bool {
 	})
 }
 
+// 2273 移除字母异位词后的结果数组
 func removeAnagrams(words []string) []string {
 	n := len(words)
 	check := func(i, j int) bool {
@@ -1120,6 +1165,7 @@ func removeAnagrams(words []string) []string {
 	return ans
 }
 
+// 2274 不含特殊楼层的最大连续楼层数
 func maxConsecutive(bottom int, top int, special []int) int {
 	sort.Ints(special)
 	ans := special[0] - bottom
@@ -1129,6 +1175,7 @@ func maxConsecutive(bottom int, top int, special []int) int {
 	return max(ans, top-special[len(special)-1])
 }
 
+// 2275 按位与结果大于零的最长组合
 func largestCombination(candidates []int) int {
 	cnt := [32]int{}
 	for _, v := range candidates {
@@ -1148,6 +1195,7 @@ func largestCombination(candidates []int) int {
 	return ans
 }
 
+// 462 最少移动次数使数组元素相等 II
 func minMoves2(nums []int) int {
 	sort.Ints(nums)
 	target := nums[len(nums)>>1]
@@ -1158,47 +1206,7 @@ func minMoves2(nums []int) int {
 	return ans
 }
 
-type CountIntervals struct {
-	*redblacktree.Tree
-	cnt int // 所有区间长度和
-}
-
-func ConstructorCountIntervals() CountIntervals {
-	return CountIntervals{redblacktree.NewWithIntComparator(), 0}
-}
-
-func (t *CountIntervals) Add(left, right int) {
-	//// 遍历所有被 [left,right] 覆盖到的区间（部分覆盖也算）
-	//for node, _ := t.Ceiling(left); node != nil && node.Value.(int) <= right; node, _ = t.Ceiling(left) {
-	//	l, r := node.Value.(int), node.Key.(int)
-	//	if l < left {
-	//		left = l
-	//	}
-	//	if r > right {
-	//		right = r
-	//	}
-	//	t.cnt -= r - l + 1
-	//	t.Remove(r)
-	//}
-	//t.cnt += right - left + 1
-	//t.Put(right, left)
-	for node, ok := t.Floor(right); ok && node.Key.(int) >= left; node, ok = t.Floor(right) {
-		l, r := node.Key.(int), node.Value.(int)
-		if l < left {
-			left = l
-		}
-		if r > right {
-			right = r
-		}
-		t.cnt -= r - l + 1
-		t.Remove(l)
-	}
-	t.cnt += right - left + 1
-	t.Put(left, right)
-}
-
-func (t *CountIntervals) Count() int { return t.cnt }
-
+// 436 寻找右区间
 func findRightInterval(intervals [][]int) []int {
 	n := len(intervals)
 	idx := make([]int, n)
@@ -1223,6 +1231,7 @@ func findRightInterval(intervals [][]int) []int {
 	return ans
 }
 
+// 961 在长度 2N 的数组中找出重复 N 次的元素
 func repeatedNTimes(nums []int) int {
 	n := len(nums)
 	for {
@@ -1233,6 +1242,7 @@ func repeatedNTimes(nums []int) int {
 	}
 }
 
+// 2278 字母在字符串中的百分比
 func percentageLetter(s string, letter byte) int {
 	cnt := 0
 	for i := range s {
@@ -1243,6 +1253,7 @@ func percentageLetter(s string, letter byte) int {
 	return cnt * 100 / len(s)
 }
 
+// 2279 装满石头的背包的最大数量
 func maximumBags(capacity []int, rocks []int, additionalRocks int) int {
 	n := len(capacity)
 	cnt := make([]int, n)
@@ -1262,6 +1273,7 @@ func maximumBags(capacity []int, rocks []int, additionalRocks int) int {
 	return ans
 }
 
+// 2280 表示一个折线图的最少线段数
 func minimumLines(stockPrices [][]int) int {
 	sort.Slice(stockPrices, func(i, j int) bool {
 		return stockPrices[i][0] < stockPrices[j][0]
@@ -1280,6 +1292,7 @@ func minimumLines(stockPrices [][]int) int {
 	return ans
 }
 
+// 965 单值二叉树
 func isUnivalTree(root *TreeNode) bool {
 	target := root.Val
 	var dfs func(*TreeNode) bool
@@ -1295,6 +1308,7 @@ func isUnivalTree(root *TreeNode) bool {
 	return dfs(root)
 }
 
+// 467 环绕字符串中唯一的子字符串
 func findSubstringInWraproundString(p string) int {
 	n := len(p)
 	dp := [26]int{}
@@ -1314,6 +1328,7 @@ func findSubstringInWraproundString(p string) int {
 	return ans
 }
 
+// 1021 删除最外层的括号
 func removeOuterParentheses(s string) string {
 	cnt := 0
 	sb := strings.Builder{}
@@ -1334,6 +1349,7 @@ func removeOuterParentheses(s string) string {
 	return sb.String()
 }
 
+// 2283 判断一个数的数字计数是否等于数位的值
 func digitCount(num string) bool {
 	cnt := [10]int{}
 	for i := range num {
@@ -1347,6 +1363,7 @@ func digitCount(num string) bool {
 	return true
 }
 
+// 2284 最多单词数的发件人
 func largestWordCount(messages []string, senders []string) string {
 	cnt := map[string]int{}
 	n := len(messages)
@@ -1370,6 +1387,7 @@ func largestWordCount(messages []string, senders []string) string {
 	return ans
 }
 
+// 2285 道路的最大总重要性
 func maximumImportance(n int, roads [][]int) int64 {
 	list := make([]int, n)
 	for _, road := range roads {
@@ -1388,6 +1406,7 @@ func maximumImportance(n int, roads [][]int) int64 {
 	return ans
 }
 
+// 468 验证IP地址
 func validIPAddress(queryIP string) string {
 	ip := net.ParseIP(queryIP)
 	if ip == nil {
@@ -1411,6 +1430,7 @@ func validIPAddress(queryIP string) string {
 	return "IPv4"
 }
 
+// 2287 重排字符形成目标字符串
 func rearrangeCharacters(s string, target string) int {
 	cnt, targetCnt := [26]int{}, [26]int{}
 	for i := range s {
@@ -1428,6 +1448,7 @@ func rearrangeCharacters(s string, target string) int {
 	return ans
 }
 
+// 2288 价格减免
 func discountPrices(sentence string, discount int) string {
 	words := strings.Split(sentence, " ")
 	disc := float64(100-discount) / 100.0
@@ -1441,6 +1462,7 @@ func discountPrices(sentence string, discount int) string {
 	return strings.Join(words, " ")
 }
 
+// 2290 到达角落需要移除障碍物的最小数目
 func minimumObstacles(grid [][]int) int {
 	m, n := len(grid), len(grid[0])
 	dp := make([][]int, m)
@@ -1482,6 +1504,7 @@ func minimumObstacles(grid [][]int) int {
 	return dp[m-1][n-1]
 }
 
+// 1022 从根到叶的二进制数之和
 func sumRootToLeaf(root *TreeNode) (ans int) {
 	var dfs func(*TreeNode, int)
 	dfs = func(cur *TreeNode, val int) {
@@ -1501,6 +1524,7 @@ func sumRootToLeaf(root *TreeNode) (ans int) {
 	return
 }
 
+// 剑指 Offer II 114 外星文字典
 func alienOrder(words []string) string {
 	g := [26][26]int{}
 	cnt := map[int]int{}
@@ -1557,6 +1581,7 @@ func alienOrder(words []string) string {
 	return sb.String()
 }
 
+// 450 删除二叉搜索树中的节点
 func deleteNode(root *TreeNode, key int) *TreeNode {
 	R := &TreeNode{Right: root}
 	pre, p := R, root
@@ -1594,6 +1619,7 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 	return R.Right
 }
 
+// 2177 找到和为给定整数的三个连续整数
 func sumOfThree(num int64) []int64 {
 	if num%3 == 0 {
 		return []int64{num/3 - 1, num / 3, num/3 + 1}
@@ -1601,6 +1627,7 @@ func sumOfThree(num int64) []int64 {
 	return []int64{}
 }
 
+// 829 连续整数求和
 func consecutiveNumbersSum(n int) int {
 	ans := 1
 	for i := 2; i < n; i++ {
@@ -1614,6 +1641,7 @@ func consecutiveNumbersSum(n int) int {
 	return ans
 }
 
+// 929 独特的电子邮件地址
 func numUniqueEmails(emails []string) int {
 	m := map[string]struct{}{}
 	for _, email := range emails {
@@ -1634,6 +1662,7 @@ func numUniqueEmails(emails []string) int {
 	return len(m)
 }
 
+// 1037 有效的回旋镖
 func isBoomerang(points [][]int) bool {
 	x1, y1 := points[0][0], points[0][1]
 	x2, y2 := points[1][0], points[1][1]
@@ -1641,6 +1670,7 @@ func isBoomerang(points [][]int) bool {
 	return x1*(y2-y3)-x2*(y1-y3)+x3*(y1-y2) != 0
 }
 
+// 875 爱吃香蕉的珂珂
 func minEatingSpeed(piles []int, h int) int {
 	upper := 0
 	for i := range piles {
@@ -1661,6 +1691,7 @@ func minEatingSpeed(piles []int, h int) int {
 	})
 }
 
+// 926 将字符串翻转到单调递增
 func minFlipsMonoIncr(s string) int {
 	ans := len(s)
 	zero, one := 0, 0
@@ -1679,6 +1710,7 @@ func minFlipsMonoIncr(s string) int {
 	return ans
 }
 
+// 2303 计算应缴税款总额
 func calculateTax(brackets [][]int, income int) float64 {
 	if income < brackets[0][0] {
 		return float64(income) * float64(brackets[0][1]) / 100
@@ -1695,6 +1727,7 @@ func calculateTax(brackets [][]int, income int) float64 {
 	return ans
 }
 
+// 2304 网格中的最小路径代价
 func minPathCost(grid [][]int, moveCost [][]int) int {
 	m, n := len(grid), len(grid[0])
 	dp := make([][]int, m)
@@ -1724,6 +1757,7 @@ func minPathCost(grid [][]int, moveCost [][]int) int {
 	return ans
 }
 
+// 2305 公平分发饼干
 func distributeCookies(cookies []int, k int) int {
 	n := len(cookies)
 	ans := 0x7fffffff
@@ -1750,6 +1784,7 @@ func distributeCookies(cookies []int, k int) int {
 	return ans
 }
 
+// 890 查找和替换模式
 func findAndReplacePattern(words []string, pattern string) (rt []string) {
 	for _, w := range words {
 		m := map[byte]byte{}
@@ -1775,6 +1810,7 @@ func findAndReplacePattern(words []string, pattern string) (rt []string) {
 	return
 }
 
+// 498 对角线遍历
 func findDiagonalOrder(mat [][]int) (rt []int) {
 	m, n := len(mat), len(mat[0])
 	maxSum := m + n - 2
@@ -1803,6 +1839,7 @@ func findDiagonalOrder(mat [][]int) (rt []int) {
 	return
 }
 
+// 719 找出第 K 小的数对距离
 func smallestDistancePair(nums []int, k int) int {
 	n := len(nums)
 	ans := make([]int, 0, n*(n+1)/2)
@@ -1815,6 +1852,7 @@ func smallestDistancePair(nums []int, k int) int {
 	return ans[k-1]
 }
 
+// 532 数组中的 k-diff 数对
 func findPairs(nums []int, k int) int {
 	ans := map[[2]int]struct{}{}
 	sort.Ints(nums)
@@ -1830,6 +1868,7 @@ func findPairs(nums []int, k int) int {
 	return len(ans)
 }
 
+// 1089 复写零
 func duplicateZeros(arr []int) {
 	n := len(arr)
 	j := 0
@@ -1856,6 +1895,7 @@ func duplicateZeros(arr []int) {
 	}
 }
 
+// 剑指 Offer II 029 排序的循环链表
 func insert(aNode *ListNode, x int) *ListNode {
 	t := &ListNode{Val: x}
 	if aNode == nil {
@@ -1890,6 +1930,7 @@ func insert(aNode *ListNode, x int) *ListNode {
 	return aNode
 }
 
+// 2309 兼具大小写的最好英文字母
 func greatestLetter(s string) string {
 	cntUpper := [26]bool{}
 	cntLower := [26]bool{}
@@ -1908,6 +1949,7 @@ func greatestLetter(s string) string {
 	return ""
 }
 
+// 2310 个位数字为 K 的整数之和
 func minimumNumbers(num int, k int) int {
 	if num == 0 {
 		return 0
@@ -1921,6 +1963,7 @@ func minimumNumbers(num int, k int) int {
 	return -1
 }
 
+// 2311 小于等于 K 的最长二进制子序列
 func longestSubsequence(s string, k int) int {
 	n := len(s)
 	cnt := 0
@@ -1941,6 +1984,7 @@ func longestSubsequence(s string, k int) int {
 	return cnt
 }
 
+// 508 出现次数最多的子树元素和
 func findFrequentTreeSum(root *TreeNode) (ans []int) {
 	type node struct {
 		val int
@@ -1978,6 +2022,7 @@ func findFrequentTreeSum(root *TreeNode) (ans []int) {
 	return
 }
 
+// 513 找树左下角的值
 func findBottomLeftValue(root *TreeNode) int {
 	var queue []*TreeNode
 	if root != nil {
@@ -2002,6 +2047,7 @@ func findBottomLeftValue(root *TreeNode) int {
 	return queue[0].Val
 }
 
+// 30 串联所有单词的子串
 func findSubstring(s string, words []string) (ans []int) {
 	length := len(words[0])
 	n := len(s)
@@ -2034,6 +2080,7 @@ r:
 	return
 }
 
+// 515 在每个树行中找最大值
 func largestValues(root *TreeNode) (ans []int) {
 	var queue []*TreeNode
 	if root == nil {
@@ -2061,6 +2108,7 @@ func largestValues(root *TreeNode) (ans []int) {
 	return
 }
 
+// 剑指 Offer II 091 粉刷房子
 func minCost(costs [][]int) int {
 	n := len(costs)
 	for i := 1; i < n; i++ {
@@ -2071,6 +2119,7 @@ func minCost(costs [][]int) int {
 	return min(min(costs[n-1][0], costs[n-1][1]), costs[n-1][2])
 }
 
+// 2315 统计星号
 func countAsterisks(s string) (ans int) {
 	cnt := 0
 	for i := range s {
@@ -2147,6 +2196,7 @@ func countPairs(n int, edges [][]int) int64 {
 	return ans
 }
 
+// 2317 操作后的最大异或和
 func maximumXOR(nums []int) int {
 	cnt := [32]int{}
 	for _, v := range nums {
@@ -2168,6 +2218,7 @@ func maximumXOR(nums []int) int {
 	return ans
 }
 
+// 2319 判断矩阵是否是一个 X 矩阵
 func checkXMatrix(grid [][]int) bool {
 	n := len(grid)
 	for i := 0; i < n; i++ {
@@ -2186,6 +2237,7 @@ func checkXMatrix(grid [][]int) bool {
 	return true
 }
 
+// 2320 统计放置房子的方式数
 func countHousePlacements(n int) int {
 	dp := make([][2]int, n)
 	dp[0][0] = 1
@@ -2200,6 +2252,7 @@ func countHousePlacements(n int) int {
 	return int((t * t) % int64(mod))
 }
 
+// 2321 拼接数组的最大分数
 func maximumsSplicedArray(nums1 []int, nums2 []int) int {
 	n := len(nums1)
 	div := make([]int, n)
@@ -2233,6 +2286,7 @@ func maximumsSplicedArray(nums1 []int, nums2 []int) int {
 	return max(sum1-minv, sum2+maxv)
 }
 
+// 128 最长连续序列
 func findLUSlength(strs []string) int {
 	m := map[string]int{}
 	var dfs func(int)
@@ -2257,10 +2311,12 @@ func findLUSlength(strs []string) int {
 	return maxl
 }
 
+// 461 汉明距离
 func hammingDistance(x int, y int) int {
 	return bits.OnesCount(uint(x ^ y))
 }
 
+// 983 最低票价
 func mincostTickets(days []int, costs []int) int {
 	n := len(days)
 	dp := make([]int, days[n-1]+1)
@@ -2289,6 +2345,7 @@ func mincostTickets(days []int, costs []int) int {
 	return dp[len(dp)-1]
 }
 
+// 241 为运算表达式设计优先级
 func diffWaysToCompute(expression string) (rt []int) {
 	if n, err := strconv.Atoi(expression); err == nil {
 		return append(rt, n)
@@ -2321,6 +2378,7 @@ func diffWaysToCompute(expression string) (rt []int) {
 	return rt
 }
 
+// 18 四数之和
 func fourSum(nums []int, target int) [][]int {
 	ans := map[[4]int]struct{}{}
 	sort.Ints(nums)
@@ -2362,6 +2420,7 @@ func fourSum(nums []int, target int) [][]int {
 	return rt
 }
 
+// 25 K 个一组翻转链表
 func reverseKGroup(head *ListNode, k int) *ListNode {
 	H := &ListNode{}
 	p := head
@@ -2386,6 +2445,7 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 	return H.Next
 }
 
+// 203 移除链表元素
 func removeElements(head *ListNode, val int) *ListNode {
 	H := &ListNode{Next: head}
 	p := H
@@ -2399,6 +2459,7 @@ func removeElements(head *ListNode, val int) *ListNode {
 	return H.Next
 }
 
+// 205 同构字符串
 func isIsomorphic(s string, t string) bool {
 	s2t := map[byte]byte{}
 	t2s := map[byte]byte{}
@@ -2417,6 +2478,9 @@ func isIsomorphic(s string, t string) bool {
 	return true
 }
 
+// 235 二叉搜索树的最近公共祖先
+// 236 二叉树的最近公共祖先
+// 剑指 Offer 68 - II 二叉树的最近公共祖先
 func lowestCommonAncestor(root, p, q *TreeNode) (ans *TreeNode) {
 	done := false
 	var dfs func(cur *TreeNode) bool
@@ -2443,6 +2507,7 @@ func lowestCommonAncestor(root, p, q *TreeNode) (ans *TreeNode) {
 	return
 }
 
+// 257 二叉树的所有路径
 func binaryTreePaths(root *TreeNode) (rt []string) {
 	var buf []string
 	var dfs func(*TreeNode)
@@ -2471,6 +2536,7 @@ func binaryTreePaths(root *TreeNode) (rt []string) {
 	return
 }
 
+// 342 4的幂
 func isPowerOfFour(n int) bool {
 	if cnt := bits.OnesCount(uint(n)); cnt == 1 {
 		if z := bits.TrailingZeros(uint(n)); z%2 == 0 {
@@ -2480,6 +2546,7 @@ func isPowerOfFour(n int) bool {
 	return false
 }
 
+// 350 两个数组的交集 II
 func intersect(nums1 []int, nums2 []int) (rt []int) {
 	var larger, smaller []int
 	if len(nums2) > len(nums1) {
@@ -2502,6 +2569,7 @@ func intersect(nums1 []int, nums2 []int) (rt []int) {
 	return
 }
 
+// 556 下一个更大元素 III
 func nextGreaterElement(n int) int {
 	num := []byte(strconv.Itoa(n))
 	flag := false
@@ -2535,6 +2603,7 @@ func nextGreaterElement(n int) int {
 	return -1
 }
 
+// 387 字符串中的第一个唯一字符
 func firstUniqChar(s string) int {
 	idx := [26]int{}
 	for i := range idx {
@@ -2559,6 +2628,7 @@ func firstUniqChar(s string) int {
 	return minv
 }
 
+// 1200 最小绝对差
 func minimumAbsDifference(arr []int) (ans [][]int) {
 	sort.Ints(arr)
 	n := len(arr)
@@ -2576,6 +2646,7 @@ func minimumAbsDifference(arr []int) (ans [][]int) {
 	return
 }
 
+// 33 搜索旋转排序数组
 func search(nums []int, target int) int {
 	n := len(nums)
 	last := nums[n-1]
@@ -2599,6 +2670,7 @@ func search(nums []int, target int) int {
 	return -1
 }
 
+// 45 跳跃游戏 II
 func jump(nums []int) int {
 	n := len(nums)
 	dp := make([]int, n)
@@ -2615,6 +2687,7 @@ func jump(nums []int) int {
 	return dp[n-1]
 }
 
+// 2325 解密消息
 func decodeMessage(key string, message string) string {
 	trans := [26]byte{}
 	idx := byte('a')
@@ -2633,6 +2706,7 @@ func decodeMessage(key string, message string) string {
 	return string(buf)
 }
 
+// 2326 螺旋矩阵 IV
 func spiralMatrix(m int, n int, head *ListNode) [][]int {
 	matrix := make([][]int, m)
 	for i := 0; i < m; i++ {
@@ -2664,6 +2738,7 @@ func spiralMatrix(m int, n int, head *ListNode) [][]int {
 	return matrix
 }
 
+// 2327 知道秘密的人数
 func peopleAwareOfSecret(n int, delay int, forget int) int {
 	type node struct {
 		total, inc, able int
@@ -2690,6 +2765,7 @@ func peopleAwareOfSecret(n int, delay int, forget int) int {
 	return dp[n].total
 }
 
+// 648 单词替换
 func replaceWords(dictionary []string, sentence string) string {
 	m := make(map[string]struct{}, len(dictionary))
 	for i := range dictionary {
@@ -2707,6 +2783,7 @@ func replaceWords(dictionary []string, sentence string) string {
 	return strings.Join(words, " ")
 }
 
+// 648 单词替换
 func replaceWords1(dictionary []string, sentence string) string {
 	type node struct {
 		end  bool
@@ -2746,6 +2823,7 @@ func replaceWords1(dictionary []string, sentence string) string {
 	return strings.Join(words, " ")
 }
 
+// 1217 玩筹码
 func minCostToMoveChips(position []int) int {
 	oddCnt := 0
 	for i := range position {
@@ -2756,6 +2834,7 @@ func minCostToMoveChips(position []int) int {
 	return min(oddCnt, len(position)-oddCnt)
 }
 
+// 未来城竞赛
 func canReceiveAllSignals(intervals [][]int) bool {
 	sort.Slice(intervals, func(i, j int) bool {
 		return intervals[i][0] < intervals[j][0]
@@ -2769,6 +2848,7 @@ func canReceiveAllSignals(intervals [][]int) bool {
 	return true
 }
 
+// 未来城竞赛
 func minSwaps(chess []int) int {
 	onesCnt := 0
 	for i := range chess {
@@ -2798,6 +2878,7 @@ func minSwaps(chess []int) int {
 	return onesCnt - ans
 }
 
+// 未来城竞赛
 func buildTransferStation(area [][]int) int {
 	m := len(area)
 	n := len(area[0])
@@ -2824,6 +2905,7 @@ func buildTransferStation(area [][]int) int {
 	return ans
 }
 
+// 未来城竞赛
 func minTransfers(distributions [][]int) int {
 	hosts := [12]int{}
 	for _, d := range distributions {
@@ -2880,6 +2962,7 @@ func minTransfers(distributions [][]int) int {
 	return ans
 }
 
+// 977 有序数组的平方
 func sortedSquares(nums []int) []int {
 	mid := sort.SearchInts(nums, 0)
 	n := len(nums)
@@ -2905,6 +2988,7 @@ func sortedSquares(nums []int) []int {
 	return rt
 }
 
+// 873 最长的斐波那契子序列的长度
 func lenLongestFibSubseq(arr []int) int {
 	ans := 0
 	n := len(arr)
@@ -2926,6 +3010,7 @@ func lenLongestFibSubseq(arr []int) int {
 	return ans
 }
 
+// 2331 计算布尔二叉树的值
 func evaluateTree(root *TreeNode) bool {
 	if root.Left == nil && root.Right == nil {
 		return root.Val == 1
@@ -2938,65 +3023,69 @@ func evaluateTree(root *TreeNode) bool {
 	return l && r
 }
 
-//func latestTimeCatchTheBus(buses []int, passengers []int, capacity int) int {
-//	buses = append(buses, 0)
-//	sort.Ints(buses)
-//	sort.Ints(passengers)
-//	type bus struct {
-//		full        bool
-//		firstOneIdx int
-//		lastOneIdx  int
-//	}
-//	status := make([]bus, len(buses))
-//	cur := 0
-//	for i := 1; i < len(buses); i++ {
-//		idx := sort.SearchInts(passengers, buses[i]+1)
-//		next := idx
-//		if idx-cur >= capacity {
-//			next = cur + capacity
-//			status[i].full = true
-//		}
-//		status[i].firstOneIdx = cur
-//		status[i].lastOneIdx = next - 1
-//		cur = next
-//	}
-//	for i := len(buses) - 1; i > 0; i-- {
-//		if !status[i].full {
-//			k := status[i].lastOneIdx
-//			for j := buses[i]; j > buses[i-1]; j-- {
-//				if j != passengers[k] {
-//					return j
-//				}
-//				if k > 0 {
-//					k--
-//				}
-//			}
-//		}
-//		if buses[i]-buses[i-1] == capacity {
-//			continue
-//		}
-//		if status[i].lastOneIdx-status[i].firstOneIdx == passengers[status[i].lastOneIdx]-passengers[status[i].firstOneIdx] {
-//			continue
-//		}
-//
-//	}
-//}
-//
-//func minSumSquareDiff(nums1 []int, nums2 []int, k1 int, k2 int) int64 {
-//	n := len(nums1)
-//	div := make([]int, n)
-//	for i := range div {
-//		div[i] = abs(nums1[i] - nums2[i])
-//	}
-//	sort.Ints(div)
-//	sum := 0
-//	for i := range div {
-//		sum += div[i]
-//	}
-//	avg := sum / n
-//
-//}
+// TODO
+func latestTimeCatchTheBus(buses []int, passengers []int, capacity int) int {
+	buses = append(buses, 0)
+	sort.Ints(buses)
+	sort.Ints(passengers)
+	type bus struct {
+		full        bool
+		firstOneIdx int
+		lastOneIdx  int
+	}
+	status := make([]bus, len(buses))
+	cur := 0
+	for i := 1; i < len(buses); i++ {
+		idx := sort.SearchInts(passengers, buses[i]+1)
+		next := idx
+		if idx-cur >= capacity {
+			next = cur + capacity
+			status[i].full = true
+		}
+		status[i].firstOneIdx = cur
+		status[i].lastOneIdx = next - 1
+		cur = next
+	}
+	for i := len(buses) - 1; i > 0; i-- {
+		if !status[i].full {
+			k := status[i].lastOneIdx
+			for j := buses[i]; j > buses[i-1]; j-- {
+				if j != passengers[k] {
+					return j
+				}
+				if k > 0 {
+					k--
+				}
+			}
+		}
+		if buses[i]-buses[i-1] == capacity {
+			continue
+		}
+		if status[i].lastOneIdx-status[i].firstOneIdx == passengers[status[i].lastOneIdx]-passengers[status[i].firstOneIdx] {
+			continue
+		}
 
+	}
+	return 0
+}
+
+// TODO
+func minSumSquareDiff(nums1 []int, nums2 []int, k1 int, k2 int) int64 {
+	n := len(nums1)
+	div := make([]int, n)
+	for i := range div {
+		div[i] = abs(nums1[i] - nums2[i])
+	}
+	sort.Ints(div)
+	sum := 0
+	for i := range div {
+		sum += div[i]
+	}
+	_ = sum / n
+	return 0
+}
+
+// 2335 装满杯子需要的最短总时长
 func fillCups(amount []int) int {
 	cnt := 0
 	for {
@@ -3011,6 +3100,7 @@ func fillCups(amount []int) int {
 	}
 }
 
+// 2337 移动片段得到字符串
 func canChange(start string, target string) bool {
 	type node struct {
 		val byte
@@ -3052,6 +3142,7 @@ func canChange(start string, target string) bool {
 	return true
 }
 
+// 1252 奇数值单元格的数目
 func oddCells(m int, n int, indices [][]int) (ans int) {
 	rows, cols := make([]int, m), make([]int, n)
 	for _, d := range indices {
@@ -3068,6 +3159,7 @@ func oddCells(m int, n int, indices [][]int) (ans int) {
 	return
 }
 
+// 684 冗余连接
 func findRedundantConnection(edges [][]int) []int {
 	uf := union_find.InitUnionFind(len(edges) + 1)
 	for _, e := range edges {
@@ -3078,6 +3170,7 @@ func findRedundantConnection(edges [][]int) []int {
 	return nil
 }
 
+// 130 被围绕的区域
 func surroundedRegions(board [][]byte) {
 	m := len(board)
 	n := len(board[0])
@@ -3129,6 +3222,7 @@ func surroundedRegions(board [][]byte) {
 	replace('T', 'O')
 }
 
+// 200 岛屿数量
 func numIslands(grid [][]byte) int {
 	m := len(grid)
 	n := len(grid[0])
@@ -3163,6 +3257,7 @@ func numIslands(grid [][]byte) int {
 	return ans
 }
 
+// 547 省份数量
 func findCircleNum(isConnected [][]int) int {
 	n := len(isConnected)
 	uf := union_find.InitUnionFind(n)
@@ -3176,6 +3271,7 @@ func findCircleNum(isConnected [][]int) int {
 	return uf.Groups()
 }
 
+// 721 账户合并
 func accountsMerge(accounts [][]string) [][]string {
 	n := len(accounts)
 	uf := union_find.InitUnionFind(n)
@@ -3207,6 +3303,7 @@ func accountsMerge(accounts [][]string) [][]string {
 	return ans
 }
 
+// 765 情侣牵手
 func minSwapsCouples(row []int) int {
 	n := len(row)
 	uf := union_find.InitUnionFind(n / 2)
@@ -3216,6 +3313,7 @@ func minSwapsCouples(row []int) int {
 	return n/2 - uf.Groups()
 }
 
+// 2341 数组能形成多少数对
 func numberOfPairs(nums []int) []int {
 	cnt := [101]int{}
 	for i := range nums {
@@ -3231,6 +3329,7 @@ func numberOfPairs(nums []int) []int {
 	return []int{a, b}
 }
 
+// 2342 数位和相等数对的最大和
 func maximumSum(nums []int) int {
 	m := map[int][]int{}
 	f := func(x int) (sum int) {
@@ -3257,6 +3356,7 @@ func maximumSum(nums []int) int {
 	return ans
 }
 
+// 2343 裁剪数字后查询第 K 小的数字
 func smallestTrimmedNumbers(nums []string, queries [][]int) (ans []int) {
 	length := len(nums[0])
 	type node struct {
@@ -3284,6 +3384,7 @@ func smallestTrimmedNumbers(nums []string, queries [][]int) (ans []int) {
 	return
 }
 
+// 2344 使数组可以被整除的最少删除次数
 func minOperations(nums []int, numsDivide []int) int {
 	sort.Ints(nums)
 	sort.Ints(numsDivide)
@@ -3303,6 +3404,7 @@ l:
 	return -1
 }
 
+// 565 数组嵌套
 func arrayNesting(nums []int) int {
 	ans := 0
 	for i := range nums {
@@ -3319,6 +3421,7 @@ func arrayNesting(nums []int) int {
 	return ans
 }
 
+// 1260 二维网格迁移
 func shiftGrid(grid [][]int, k int) [][]int {
 	m, n := len(grid), len(grid[0])
 	total := m * n
@@ -3339,6 +3442,7 @@ func shiftGrid(grid [][]int, k int) [][]int {
 	return ans
 }
 
+// 814 二叉树剪枝
 func pruneTree(root *TreeNode) *TreeNode {
 	if root == nil {
 		return nil
@@ -3351,6 +3455,7 @@ func pruneTree(root *TreeNode) *TreeNode {
 	return root
 }
 
+// 剑指 Offer II 115 重建序列
 func sequenceReconstruction(nums []int, sequences [][]int) bool {
 	n := len(nums)
 	g := make([][]int, n)
@@ -3370,6 +3475,7 @@ func sequenceReconstruction(nums []int, sequences [][]int) bool {
 	return true
 }
 
+// 2347 最好的扑克手牌
 func bestHand(ranks []int, suits []byte) string {
 	isFlush := func() bool {
 		flush := true
@@ -3431,6 +3537,7 @@ func bestHand(ranks []int, suits []byte) string {
 	return ""
 }
 
+// 2348 全 0 子数组的数目
 func zeroFilledSubarray(nums []int) int64 {
 	cnt := map[int]int{}
 	for i := 0; i < len(nums); i++ {
@@ -3466,6 +3573,7 @@ func zeroFilledSubarray(nums []int) int64 {
 	return int64(ans)
 }
 
+// 2350 不可能得到的最短骰子序列 TODO
 func shortestSequence(rolls []int, k int) int {
 	n := len(rolls)
 	cnt := make([]int, k+1)
@@ -3491,6 +3599,7 @@ func shortestSequence(rolls []int, k int) int {
 	return ans + 1
 }
 
+// 2351 第一个出现两次的字母
 func repeatedCharacter(s string) byte {
 	cnt := [26]int{}
 	for i := 0; i < len(s); i++ {
@@ -3502,6 +3611,7 @@ func repeatedCharacter(s string) byte {
 	return 'a'
 }
 
+// 2352 相等行列对
 func equalPairs(grid [][]int) int {
 	ans := 0
 	n := len(grid)
@@ -3522,6 +3632,7 @@ func equalPairs(grid [][]int) int {
 	return ans
 }
 
+// 2354 优质数对的数目
 func countExcellentPairs(nums []int, k int) int64 {
 	nums = RemoveDup(nums)
 	sort.Slice(nums, func(i, j int) bool {
@@ -3537,6 +3648,7 @@ func countExcellentPairs(nums []int, k int) int64 {
 	return int64(ans)
 }
 
+// 1184 公交站间的距离
 func distanceBetweenBusStops(distance []int, start int, destination int) int {
 	for i := 1; i < len(distance); i++ {
 		distance[i] += distance[i-1]
@@ -3549,6 +3661,7 @@ func distanceBetweenBusStops(distance []int, start int, destination int) int {
 	return min(total-t, t)
 }
 
+// 592 分数加减运算
 func fractionAddition(expression string) string {
 	ans := Frac{0, 1}
 	a := strings.Split(expression, "+")
@@ -3572,6 +3685,7 @@ func fractionAddition(expression string) string {
 	return fmt.Sprintf("%d/%d", ans.up, ans.down)
 }
 
+// 1331 数组序号转换
 func arrayRankTransform(arr []int) []int {
 	n := len(arr)
 	idx := Nums(0, n)
@@ -3589,6 +3703,7 @@ func arrayRankTransform(arr []int) []int {
 	return rt
 }
 
+// 593 有效的正方形
 func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
 	points := [4][]int{p1, p2, p3, p4}
 	cnt := map[int]int{}
@@ -3611,6 +3726,7 @@ func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
 	return false
 }
 
+// 952 按公因数计算最大组件大小
 func largestComponentSize(nums []int) int {
 	const maxNums = 1e5 + 10
 	n := len(nums)
@@ -3634,6 +3750,7 @@ func largestComponentSize(nums []int) int {
 	return ans
 }
 
+// 1161 最大层内元素和
 func maxLevelSum(root *TreeNode) int {
 	ans := 1
 	maxV := math.MinInt32
@@ -3662,6 +3779,7 @@ func maxLevelSum(root *TreeNode) int {
 	return ans
 }
 
+// 2357 使数组中所有元素都等于零
 func minimumOperations(nums []int) int {
 	getMin := func(arr []int) int {
 		rt := 1000
@@ -3690,6 +3808,7 @@ func minimumOperations(nums []int) int {
 	return cnt
 }
 
+// 2358 分组的最大数量
 func maximumGroups(grades []int) int {
 	n := len(grades)
 	ans := 1
@@ -3699,6 +3818,7 @@ func maximumGroups(grades []int) int {
 	return ans - 1
 }
 
+// 2359 找到离给定两个节点最近的节点
 func closestMeetingNode(edges []int, node1 int, node2 int) int {
 	n := len(edges)
 	f := func(node int) ([]int, map[int]int) {
@@ -3732,6 +3852,7 @@ func closestMeetingNode(edges []int, node1 int, node2 int) int {
 	return Cond(ans == math.MaxInt32, -1, ans).(int)
 }
 
+// 2360 图中的最长环
 func longestCycle(edges []int) int {
 	n := len(edges)
 	ans := 0
@@ -3757,6 +3878,7 @@ func longestCycle(edges []int) int {
 	return Cond(ans == 0, -1, ans).(int)
 }
 
+// 1374 生成每种字符都是奇数个的字符串
 func generateTheString(n int) string {
 	rt := bytes.Repeat([]byte{'a'}, n)
 	if n%2 == 0 {
@@ -3765,6 +3887,7 @@ func generateTheString(n int) string {
 	return Bytes2Str(rt)
 }
 
+// 1024 视频拼接
 func videoStitching(clips [][]int, time int) int {
 	ts := make([]int, time+1)
 	for _, c := range clips {
@@ -3788,6 +3911,7 @@ func videoStitching(clips [][]int, time int) int {
 	return Cond(end == time, cnt, -1).(int)
 }
 
+// 899 有序队列
 func orderlyQueue(s string, k int) string {
 	n := len(s)
 	ans := Str2Bytes(s)
@@ -3808,6 +3932,7 @@ func orderlyQueue(s string, k int) string {
 	return Bytes2Str(ans)
 }
 
+// 1403 非递增顺序的最小子序列
 func minSubsequence(nums []int) (rt []int) {
 	h := heaps.IntHeap(nums)
 	heap.Init(&h)
@@ -3825,6 +3950,7 @@ func minSubsequence(nums []int) (rt []int) {
 	return
 }
 
+// 1403 非递增顺序的最小子序列
 func minSubsequence1(nums []int) []int {
 	sum := 0
 	total := SummarizingInt(nums)
@@ -3839,11 +3965,13 @@ func minSubsequence1(nums []int) []int {
 	return nums
 }
 
+// 1154 一年中的第几天
 func dayOfYear(date string) int {
 	d, _ := time.Parse("2006-01-02", date)
 	return d.YearDay()
 }
 
+// 357 统计各位数字都不同的数字个数
 func countNumbersWithUniqueDigits(n int) int {
 	if n == 0 {
 		return 1
@@ -3851,6 +3979,7 @@ func countNumbersWithUniqueDigits(n int) int {
 	return C(1, 9)*A(n-1, 9) + countNumbersWithUniqueDigits(n-1)
 }
 
+// 1974 使用特殊打字机键入单词的最少时间
 func minTimeToType(word string) int {
 	ans := 0
 	cur := 'a'
@@ -3867,10 +3996,12 @@ func minTimeToType(word string) int {
 	return ans
 }
 
+// 2124 检查是否所有 A 都在 B 之前
 func checkString(s string) bool {
 	return !strings.Contains(s, "ba")
 }
 
+// 1408 数组中的字符串匹配
 func stringMatching(words []string) (rt []string) {
 	n := len(words)
 	vis := make([]bool, n)
@@ -3891,6 +4022,7 @@ func stringMatching(words []string) (rt []string) {
 	return
 }
 
+// 2363 合并相似的物品
 func mergeSimilarItems(items1 [][]int, items2 [][]int) [][]int {
 	m := make(map[int]int, len(items1)+len(items2))
 	for _, it := range items1 {
@@ -3909,6 +4041,7 @@ func mergeSimilarItems(items1 [][]int, items2 [][]int) [][]int {
 	return rt
 }
 
+// 2364 统计坏数对的数目
 func countBadPairs(nums []int) int64 {
 	if len(nums) < 2 {
 		return 0
@@ -3926,6 +4059,7 @@ func countBadPairs(nums []int) int64 {
 	return int64(C(2, len(nums)) - ans)
 }
 
+// 2365 任务调度器 II
 func taskSchedulerII(tasks []int, space int) int64 {
 	last := map[int]int{}
 	cur := 1
@@ -3941,6 +4075,7 @@ func taskSchedulerII(tasks []int, space int) int64 {
 	return int64(cur - 1)
 }
 
+// 2366 TODO
 func minimumReplacement(nums []int) int64 {
 	ans := 0
 	minV := nums[len(nums)-1]
@@ -3959,4 +4094,164 @@ func minimumReplacement(nums []int) int64 {
 		}
 	}
 	return int64(ans)
+}
+
+// 2367 算术三元组的数目
+func arithmeticTriplets(nums []int, diff int) int {
+	ans := 0
+	for i := range nums {
+		for j := i + 1; j < len(nums); j++ {
+			if nums[j]-nums[i] == diff {
+				for k := j + 1; k < len(nums); k++ {
+					if nums[k]-nums[j] == diff {
+						ans++
+					}
+				}
+			}
+		}
+	}
+	return ans
+}
+
+// 2368 受限条件下可到达节点的数目
+func reachableNodes(n int, edges [][]int, restricted []int) int {
+	uf := union_find.InitUnionFind(n)
+	m := map[int]struct{}{}
+	for i := range restricted {
+		m[restricted[i]] = struct{}{}
+	}
+	for _, e := range edges {
+		if _, ok := m[e[0]]; ok {
+			continue
+		}
+		if _, ok := m[e[1]]; ok {
+			continue
+		}
+		uf.Union(e[0], e[1])
+	}
+	return uf.GroupSize(0)
+}
+
+// 2369 检查数组是否存在有效划分
+func validPartition(nums []int) bool {
+	n := len(nums)
+	if n == 2 {
+		return nums[0] == nums[1]
+	}
+	dp := make([]bool, n+1)
+	dp[0] = true
+	for i := 2; i <= n; i++ {
+		if nums[i-1] == nums[i-2] && dp[i-2] {
+			dp[i] = true
+		}
+		if i >= 3 && nums[i-1] == nums[i-2] && nums[i-1] == nums[i-3] && dp[i-3] {
+			dp[i] = true
+		}
+		if i >= 3 && nums[i-1] == nums[i-2]+1 && nums[i-1] == nums[i-3]+2 && dp[i-3] {
+			dp[i] = true
+		}
+	}
+	return dp[n]
+}
+
+// 2370 最长理想子序列
+func longestIdealString(s string, k int) int {
+	dp := [26]int{}
+	for _, c := range s {
+		begin := max(0, int(c-'a')-k)
+		end := min(int(c-'a')+k, 25)
+		dp[c-'a'] = maxOf(dp[begin:end+1]...) + 1
+	}
+	return maxOf(dp[:]...)
+}
+
+// 636 函数的独占时间
+func exclusiveTime(n int, logs []string) []int {
+	var stack []int
+	cost := make([]int, n)
+	last := 0
+	for _, log := range logs {
+		sp := strings.Split(log, ":")
+		id, _ := strconv.Atoi(sp[0])
+		t, _ := strconv.Atoi(sp[2])
+		if sp[1] == "end" {
+			t++
+		}
+		if len(stack) > 0 {
+			cost[stack[len(stack)-1]] += t - last
+			last = t
+		}
+		if sp[1] == "start" {
+			stack = append(stack, id)
+		} else {
+			stack = stack[:len(stack)-1]
+		}
+	}
+	return cost
+}
+
+// 761 特殊的二进制序列
+func makeLargestSpecial(s string) string {
+	cnt, i := 0, 0
+	var queue []string
+	for j := 0; j < len(s); j++ {
+		if s[j] == '1' {
+			cnt++
+		} else {
+			cnt--
+		}
+		if cnt == 0 {
+			queue = append(queue, "1"+makeLargestSpecial(s[i+1:j])+"0")
+			i = j + 1
+		}
+	}
+	sort.Sort(sort.Reverse(sort.StringSlice(queue)))
+	return strings.Join(queue, "")
+}
+
+// 107 二叉树的层序遍历 II
+func levelOrderBottom(root *TreeNode) (rt [][]int) {
+	if root == nil {
+		return [][]int{}
+	}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		n := len(queue)
+		level := make([]int, n)
+		for i := 0; i < n; i++ {
+			level[i] = queue[i].Val
+			if queue[i].Left != nil {
+				queue = append(queue, queue[i].Left)
+			}
+			if queue[i].Right != nil {
+				queue = append(queue, queue[i].Right)
+			}
+		}
+		rt = append(rt, level)
+		queue = queue[n:]
+	}
+	for i := len(rt)/2 - 1; i >= 0; i-- {
+		j := len(rt) - i - 1
+		rt[i], rt[j] = rt[j], rt[i]
+	}
+	return
+}
+
+// 2302 统计得分小于 K 的子数组数目
+func countSubarrays(nums []int, k int64) int64 {
+	ans, left, sum := 0, 0, 0
+	for right, num := range nums {
+		sum += num
+		for sum*(right-left+1) >= int(k) {
+			sum -= nums[left]
+			left++
+		}
+		ans += right - left + 1
+	}
+	return int64(ans)
+}
+
+// 1232 缀点成线
+func checkStraightLine(coordinates [][]int) bool {
+	return SameLine(coordinates)
 }

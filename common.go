@@ -109,11 +109,13 @@ func Cond(cond bool, x interface{}, y interface{}) interface{} {
 	return y
 }
 
-// Zip 组合长度相同两数组
-func Zip(a, b []int) []struct{ a, b int } {
-	rt := make([]struct{ a, b int }, len(a))
-	for i := range a {
-		rt[i] = struct{ a, b int }{a: a[i], b: b[i]}
+// Zip 组合长度相同数组
+func Zip(a ...[]int) [][]int {
+	rt := make([][]int, len(a[0]))
+	for i := range a[0] {
+		for j := range a {
+			rt[i] = append(rt[i], a[j][i])
+		}
 	}
 	return rt
 }

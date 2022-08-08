@@ -1,6 +1,7 @@
 package leetcode
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -29,4 +30,9 @@ func Test_minOfSlice(t *testing.T) {
 		return arr[i] < arr[j]
 	})
 	assert.Equal(t, 1, arr[idx])
+}
+
+func TestZip(t *testing.T) {
+	a := []int{1, 2, 3, 4}
+	fmt.Println(Zip(a, a, a, a, a))
 }
