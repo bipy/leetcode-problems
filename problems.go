@@ -4255,3 +4255,175 @@ func countSubarrays(nums []int, k int64) int64 {
 func checkStraightLine(coordinates [][]int) bool {
 	return SameLine(coordinates)
 }
+
+// 1413 逐步求和得到正数的最小值
+func minStartValue(nums []int) int {
+	for i := 1; i < len(nums); i++ {
+		nums[i] += nums[i-1]
+	}
+	return max(1, 1-minOf(nums...))
+}
+
+// 833 字符串中的查找与替换
+func findReplaceString(s string, indices []int, sources []string, targets []string) string {
+	arr := strings.Split(s, "")
+	for i := range sources {
+		idx := indices[i]
+		if len(s[idx:]) >= len(sources[i]) {
+			if s[idx:idx+len(sources[i])] == sources[i] {
+				arr[idx] = targets[i]
+				for j := idx + 1; j < idx+len(sources[i]); j++ {
+					arr[j] = ""
+				}
+			}
+		}
+	}
+	return strings.Join(arr, "")
+}
+
+// 1578 使绳子变成彩色的最短时间
+func minCost1(colors string, neededTime []int) (ans int) {
+	pre := 0
+	for i := 1; i <= len(colors); i++ {
+		if i == len(colors) || colors[i] != colors[pre] {
+			if i-pre > 1 {
+				ans += SummarizingInt(neededTime[pre:i]) - maxOf(neededTime[pre:i]...)
+			}
+			pre = i
+		}
+	}
+	return
+}
+
+// 1536 排布二进制网格的最少交换次数
+func minSwaps1(grid [][]int) (ans int) {
+	n := len(grid)
+	type node struct {
+		idx, val int
+	}
+	trailingZeros := make([]node, n)
+	for i := range grid {
+		for j := n - 1; j >= -1; j-- {
+			if j == -1 || grid[i][j] != 0 {
+				trailingZeros[i] = node{
+					idx: i,
+					val: n - j - 1,
+				}
+				break
+			}
+		}
+	}
+	for i := 0; i < n; i++ {
+		target := n - i - 1
+		ok := false
+		for j := 0; j < n; j++ {
+			if trailingZeros[j].val >= target {
+				trailingZeros[j].val = -1
+				ans += trailingZeros[j].idx - i
+				ok = true
+				break
+			}
+			trailingZeros[j].idx++
+		}
+		if !ok {
+			return -1
+		}
+	}
+	return
+}
+
+// 1537 最大得分
+func maxSum(nums1 []int, nums2 []int) int {
+	a, b := 0, 0
+	p, q := 0, 0
+	for p < len(nums1) && q < len(nums2) {
+		if nums1[p] < nums2[q] {
+			a += nums1[p]
+			p++
+		} else if nums1[p] > nums2[q] {
+			b += nums2[q]
+			q++
+		} else {
+			a = max(a, b) + nums1[p]
+			b = a
+			p++
+			q++
+		}
+		a %= mod
+		b %= mod
+	}
+	for p < len(nums1) {
+		a += nums1[p]
+		a %= mod
+		p++
+	}
+	for q < len(nums2) {
+		b += nums2[q]
+		b %= mod
+		q++
+	}
+	return max(a, b)
+}
+
+// 640 求解方程
+func solveEquation(equation string) string {
+	a, b := 0, 0
+	sig := 1
+	check := func(it []byte, c int) {
+		var n int
+		if it[len(it)-1] == 'x' {
+			if len(it) == 1 {
+				n = 1
+			} else {
+				n, _ = strconv.Atoi(Bytes2Str(it[:len(it)-1]))
+			}
+			a += sig * c * n
+		} else {
+			n, _ = strconv.Atoi(Bytes2Str(it))
+			b += sig * c * n
+		}
+	}
+	process := func(part []byte) {
+		for _, p := range bytes.Split(part, []byte{'+'}) {
+			items := bytes.Split(p, []byte{'-'})
+			if len(items[0]) != 0 {
+				check(items[0], 1)
+			}
+			for i := 1; i < len(items); i++ {
+				check(items[i], -1)
+			}
+		}
+	}
+	bs := Str2Bytes(equation)
+	eq := bytes.Split(bs, []byte{'='})
+	process(eq[0])
+	sig = -1
+	process(eq[1])
+	if a == 0 {
+		if b == 0 {
+			return "Infinite solutions"
+		}
+		return "No solution"
+	}
+	return fmt.Sprintf("x=%d", -b/a)
+}
+
+// 2044 统计按位或能得到最大值的子集数目
+func countMaxOrSubsets(nums []int) (ans int) {
+	target := 0
+	for _, num := range nums {
+		target |= num
+	}
+	var dfs func(i, cur int)
+	dfs = func(i, cur int) {
+		cur |= nums[i]
+		if cur == target {
+			ans++
+		}
+		for j := i + 1; j < len(nums); j++ {
+			dfs(j, cur)
+		}
+	}
+	dfs(0, 0)
+	return
+}

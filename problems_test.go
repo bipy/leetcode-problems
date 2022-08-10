@@ -1,6 +1,7 @@
 package leetcode
 
 import (
+	"bytes"
 	"fmt"
 	"sort"
 	"testing"
@@ -207,4 +208,16 @@ func Test_validPartition(t *testing.T) {
 
 func Test_exclusiveTime(t *testing.T) {
 	exclusiveTime(2, StrToStrSlice("[\"0:start:0\",\"1:start:2\",\"1:end:5\",\"0:end:6\"]"))
+}
+
+func Test_minSwaps1(t *testing.T) {
+	fmt.Println(minSwaps1(StrTo2DIntSlice("[[0,0],[0,1]]")))
+}
+
+func Test_maxSum(t *testing.T) {
+	maxSum(StrToIntSlice("[2,4,5,8,10]"), StrToIntSlice("[4,6,8,9]"))
+}
+
+func Test_solveEquation(t *testing.T) {
+	fmt.Println(bytes.Split([]byte("-x+5-3+x=6+x-2"), []byte{'-'}))
 }
