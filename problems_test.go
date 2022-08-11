@@ -1,7 +1,6 @@
 package leetcode
 
 import (
-	"bytes"
 	"fmt"
 	"sort"
 	"testing"
@@ -218,6 +217,14 @@ func Test_maxSum(t *testing.T) {
 	maxSum(StrToIntSlice("[2,4,5,8,10]"), StrToIntSlice("[4,6,8,9]"))
 }
 
-func Test_solveEquation(t *testing.T) {
-	fmt.Println(bytes.Split([]byte("-x+5-3+x=6+x-2"), []byte{'-'}))
+func Test_splitString(t *testing.T) {
+	fmt.Println(splitString("050043"))
+}
+
+func Test_checkPalindromeFormation(t *testing.T) {
+	fmt.Println(checkPalindromeFormation("pvhmupgqeltozftlmfjjde", "yjgpzbezspnnpszebzmhvp"))
+}
+
+func Test_minInsertions(t *testing.T) {
+	fmt.Println(minInsertions("(()))(()))()())))"))
 }

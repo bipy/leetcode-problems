@@ -102,7 +102,7 @@ func RemoveDup(arr []int) []int {
 }
 
 // Cond 三目运算
-func Cond(cond bool, x interface{}, y interface{}) interface{} {
+func Cond(cond bool, x, y interface{}) interface{} {
 	if cond {
 		return x
 	}

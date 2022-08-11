@@ -2023,6 +2023,7 @@ func findFrequentTreeSum(root *TreeNode) (ans []int) {
 }
 
 // 513 找树左下角的值
+// 剑指 Offer II 045 二叉树最底层最左边的值
 func findBottomLeftValue(root *TreeNode) int {
 	var queue []*TreeNode
 	if root != nil {
@@ -4426,4 +4427,122 @@ func countMaxOrSubsets(nums []int) (ans int) {
 	}
 	dfs(0, 0)
 	return
+}
+
+// 785 判断二分图
+func isBipartite(graph [][]int) bool {
+	uf := union_find.InitUnionFind(len(graph))
+	for i := range graph {
+		for j := range graph[i] {
+			if uf.Find(i) == uf.Find(graph[i][j]) {
+				return false
+			}
+			uf.Union(graph[i][0], graph[i][j])
+		}
+	}
+	return true
+}
+
+// 670 最大交换
+func maximumSwap(num int) int {
+	s := []byte(strconv.Itoa(num))
+	n := len(s)
+	maxNum := make([]byte, n)
+	copy(maxNum, s)
+	for i := n - 2; i >= 0; i-- {
+		if maxNum[i] < maxNum[i+1] {
+			maxNum[i] = maxNum[i+1]
+		}
+	}
+l:
+	for i := 0; i < n; i++ {
+		if s[i] != maxNum[i] {
+			for j := i + 1; j <= n; j++ {
+				if j == n || maxNum[j] < maxNum[i] {
+					s[j-1], s[i] = s[i], s[j-1]
+					break l
+				}
+			}
+		}
+	}
+	rt, _ := strconv.Atoi(string(s))
+	return rt
+}
+
+// 1753 移除石子的最大得分
+func maximumScore(a int, b int, c int) int {
+	nums := [3]int{a, b, c}
+	sort.Ints(nums[:])
+	if nums[0]+nums[1] >= nums[2] {
+		return nums[2] + (nums[0]+nums[1]-nums[2])/2
+	}
+	return nums[0] + nums[1]
+}
+
+// 1849 将字符串拆分为递减的连续值
+func splitString(s string) bool {
+	ans := false
+	var dfs func(i int, target int)
+	dfs = func(i int, target int) {
+		if ans || i == len(s) {
+			ans = true
+			return
+		}
+		for j := i + 1; j <= len(s); j++ {
+			if n, _ := strconv.Atoi(s[i:j]); n == target {
+				dfs(j, target-1)
+			} else if n > target {
+				break
+			}
+		}
+	}
+	for i := 1; i < len(s); i++ {
+		if n, _ := strconv.Atoi(s[:i]); n > 0 {
+			dfs(i, n-1)
+		}
+	}
+	return ans
+}
+
+// 1616 分割两个字符串得到回文串
+func checkPalindromeFormation(a string, b string) bool {
+	equal := func(s, rev string) bool {
+		for i := 0; i < len(s); i++ {
+			if s[i] != rev[len(s)-i-1] {
+				return false
+			}
+		}
+		return true
+	}
+	check := func(x, y string) bool {
+		for i := len(x)/2 - 1; i >= 0; i-- {
+			if x[i] != x[len(x)-i-1] {
+				return equal(x[:i+1], y[len(y)-i-1:]) || equal(y[:i+1], x[len(y)-i-1:])
+			}
+		}
+		return true
+	}
+	return check(a, b) || check(b, a)
+}
+
+// 1541 平衡括号字符串的最少插入次数
+func minInsertions(s string) (ans int) {
+	left := 0
+	for i := 0; i < len(s); i++ {
+		if s[i] == '(' {
+			left++
+		} else if s[i] == ')' {
+			if i+1 >= len(s) || s[i+1] != ')' {
+				ans++
+			} else {
+				i++
+			}
+			if left == 0 {
+				ans++
+			} else {
+				left--
+			}
+		}
+	}
+	return ans + left*2
 }
