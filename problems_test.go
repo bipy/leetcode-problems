@@ -228,3 +228,8 @@ func Test_checkPalindromeFormation(t *testing.T) {
 func Test_minInsertions(t *testing.T) {
 	fmt.Println(minInsertions("(()))(()))()())))"))
 }
+
+func Test_smallestNumber(t *testing.T) {
+	defer Timer()
+	fmt.Println(smallestNumber("IIIDDD"))
+}

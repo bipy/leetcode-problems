@@ -4546,3 +4546,183 @@ func minInsertions(s string) (ans int) {
 	}
 	return ans + left*2
 }
+
+// 1417 重新格式化字符串
+func reformat(s string) string {
+	var a, b []byte
+	for i := range s {
+		if s[i] >= 'a' && s[i] <= 'z' {
+			a = append(a, s[i])
+		} else {
+			b = append(b, s[i])
+		}
+	}
+	if len(b) > len(a) {
+		a, b = b, a
+	}
+	if len(a)-len(b) > 1 {
+		return ""
+	}
+	sb := strings.Builder{}
+	for i := 0; i < len(b); i++ {
+		sb.WriteByte(a[i])
+		sb.WriteByte(b[i])
+	}
+	if len(a) > len(b) {
+		sb.WriteByte(a[len(a)-1])
+	}
+	return sb.String()
+}
+
+// 1282 用户分组
+func groupThePeople(groupSizes []int) (ans [][]int) {
+	m := map[int][]int{}
+	for i := range groupSizes {
+		m[groupSizes[i]] = append(m[groupSizes[i]], i)
+	}
+	for k, v := range m {
+		for i := 0; i < len(v); i += k {
+			ans = append(ans, v[i:i+k])
+		}
+	}
+	return
+}
+
+// 768 最多能完成排序的块 II
+func maxChunksToSorted(arr []int) (ans int) {
+	n := len(arr)
+	lmax, rmin := make([]int, n), make([]int, n)
+	lmax[0], rmin[n-1] = arr[0], arr[n-1]
+	for i := 1; i < n; i++ {
+		lmax[i] = max(lmax[i-1], arr[i])
+		rmin[n-i-1] = min(rmin[n-i], arr[n-i-1])
+	}
+	for i := 0; i < n; i++ {
+		if arr[i] >= lmax[i] && arr[i] <= rmin[i] {
+			ans++
+		}
+	}
+	return
+}
+
+// 2373 矩阵中的局部最大值
+func largestLocal(grid [][]int) [][]int {
+	n := len(grid)
+	rt := make([][]int, n-2)
+	for i := range rt {
+		rt[i] = make([]int, n-2)
+		for j := range rt[i] {
+			for k := 0; k < 3; k++ {
+				for l := 0; l < 3; l++ {
+					rt[i][j] = max(rt[i][j], grid[i+k][j+l])
+				}
+			}
+		}
+	}
+	return rt
+}
+
+// 2374 边积分最高的节点
+func edgeScore(edges []int) int {
+	cnt := make([]int, len(edges))
+	for i, e := range edges {
+		cnt[e] += i
+	}
+	return maxIdx(cnt)
+}
+
+// 2375 根据模式串构造最小数字
+func smallestNumber(pattern string) string {
+	n := len(pattern)
+	ans := ""
+	used := [10]bool{}
+	var dfs func(cur []byte, i int)
+	dfs = func(cur []byte, i int) {
+		t := Bytes2Str(cur)
+		if ans != "" && ans < t {
+			return
+		}
+		if i == n {
+			if ans == "" || ans > t {
+				ans = string(cur)
+			}
+			return
+		}
+		for j := byte('1'); j <= '9'; j++ {
+			if !used[j-'0'] {
+				if pattern[i] == 'I' && j > cur[len(cur)-1] || pattern[i] == 'D' && j < cur[len(cur)-1] {
+					used[j-'0'] = true
+					cur = append(cur, j)
+					dfs(cur, i+1)
+					cur = cur[:len(cur)-1]
+					used[j-'0'] = false
+				}
+			}
+		}
+	}
+	for j := byte('1'); j <= '9'; j++ {
+		used[j-'0'] = true
+		dfs([]byte{j}, 0)
+		used[j-'0'] = false
+	}
+	return ans
+}
+// 2376 TODO
+func countSpecialNumbers(n int) int {
+	return 0
+}
+
+// 1422 分割字符串的最大得分
+func maxScore(s string) (ans int) {
+	l, r := 0, 0
+	for _, c := range s {
+		if c == '1' {
+			r++
+		}
+	}
+	for i := 0; i < len(s)-1; i++ {
+		if s[i] == '1' {
+			r--
+		} else {
+			l++
+		}
+		ans = max(ans, l+r)
+	}
+	return ans
+}
+
+// 793 阶乘函数后 K 个零
+func preimageSizeFZF(k int) int {
+	f := func(i int) bool {
+		sum := 0
+		for j := 5; j <= i; j *= 5 {
+			sum += i / j
+		}
+		return sum >= k
+	}
+	left := sort.Search(1<<31, f)
+	k++
+	right := sort.Search(1<<31, f)
+	return right - left
+}
+
+// 1302 层数最深叶子节点的和
+func deepestLeavesSum(root *TreeNode) (ans int) {
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		n := len(queue)
+		sum := 0
+		for i := 0; i < n; i++ {
+			sum += queue[i].Val
+			if queue[i].Left != nil {
+				queue = append(queue, queue[i].Left)
+			}
+			if queue[i].Right != nil {
+				queue = append(queue, queue[i].Right)
+			}
+		}
+		ans = sum
+		queue = queue[n:]
+	}
+	return
+}
