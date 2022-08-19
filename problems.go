@@ -4667,6 +4667,7 @@ func smallestNumber(pattern string) string {
 	}
 	return ans
 }
+
 // 2376 TODO
 func countSpecialNumbers(n int) int {
 	return 0
@@ -4723,6 +4724,56 @@ func deepestLeavesSum(root *TreeNode) (ans int) {
 		}
 		ans = sum
 		queue = queue[n:]
+	}
+	return
+}
+
+// 1224 最大相等频率
+func maxEqualFreq(nums []int) (ans int) {
+	cnt := map[int]int{}
+	rev := map[int]map[int]struct{}{}
+	for i := range nums {
+		n, ok := cnt[nums[i]]
+		if ok {
+			delete(rev[n], nums[i])
+			if len(rev[n]) == 0 {
+				delete(rev, n)
+			}
+		}
+		cnt[nums[i]] = n + 1
+		if _, ook := rev[n+1]; !ook {
+			rev[n+1] = map[int]struct{}{}
+		}
+		rev[n+1][nums[i]] = struct{}{}
+		if len(rev) == 2 {
+			items := [2][2]int{}
+			j := 0
+			for k, v := range rev {
+				items[j] = [2]int{k, len(v)}
+				j++
+			}
+			if items[0][0]-items[1][0] == 1 && items[0][1] == 1 ||
+				items[1][0]-items[0][0] == 1 && items[1][1] == 1 ||
+				(items[0][0] == 1 && items[0][1] == 1 || items[1][0] == 1 && items[1][1] == 1) {
+				ans = i + 1
+			}
+		} else if len(rev) == 1 {
+			for k, v := range rev {
+				if k == 1 || len(v) == 1 {
+					ans = i + 1
+				}
+			}
+		}
+	}
+	return
+}
+
+// 1450 在既定时间做作业的学生人数
+func busyStudent(startTime []int, endTime []int, queryTime int) (ans int) {
+	for i := range startTime {
+		if queryTime >= startTime[i] && queryTime <= endTime[i] {
+			ans++
+		}
 	}
 	return
 }

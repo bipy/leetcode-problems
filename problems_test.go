@@ -233,3 +233,7 @@ func Test_smallestNumber(t *testing.T) {
 	defer Timer()
 	fmt.Println(smallestNumber("IIIDDD"))
 }
+
+func Test_maxEqualFreq(t *testing.T) {
+	fmt.Println(maxEqualFreq(StrToIntSlice("[1,2]")))
+}
