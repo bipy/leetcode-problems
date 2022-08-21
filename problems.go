@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"container/heap"
 	"fmt"
+	"github.com/emirpasic/gods/trees/redblacktree"
 	"leetcode/template/heaps"
 	"leetcode/template/union_find"
 	"math"
@@ -4776,4 +4777,274 @@ func busyStudent(startTime []int, endTime []int, queryTime int) (ans int) {
 		}
 	}
 	return
+}
+
+// 56 合并区间
+func merge(intervals [][]int) (ans [][]int) {
+	sort.Slice(intervals, func(i, j int) bool {
+		if intervals[i][0] == intervals[j][0] {
+			return intervals[i][1] > intervals[j][1]
+		}
+		return intervals[i][0] < intervals[j][0]
+	})
+	intervals = append(intervals, []int{1 << 31})
+	left, right := intervals[0][0], intervals[0][1]
+	for i := 1; i < len(intervals); i++ {
+		if intervals[i][0] < right {
+			if intervals[i][1] > right {
+				right = intervals[i][1]
+			}
+		} else {
+			ans = append(ans, []int{left, right})
+			left, right = intervals[i][0], intervals[i][1]
+		}
+	}
+	return
+}
+
+// 654 最大二叉树
+func constructMaximumBinaryTree(nums []int) *TreeNode {
+	if len(nums) == 0 {
+		return nil
+	}
+	idx := maxIdx(nums)
+	return &TreeNode{
+		Val:   nums[idx],
+		Left:  constructMaximumBinaryTree(nums[:idx]),
+		Right: constructMaximumBinaryTree(nums[idx+1:]),
+	}
+}
+
+func minimumRecolors(blocks string, k int) int {
+	cnt := 0
+	for i := 0; i < k; i++ {
+		if blocks[i] == 'W' {
+			cnt++
+		}
+	}
+	ans := cnt
+	for i := k; i < len(blocks); i++ {
+		if blocks[i] == 'B' && blocks[i-k] == 'W' {
+			cnt--
+		} else if blocks[i] == 'W' && blocks[i-k] == 'B' {
+			cnt++
+		}
+		if cnt < ans {
+			ans = cnt
+		}
+	}
+	return ans
+}
+
+func secondsToRemoveOccurrences(s string) int {
+	cnt := 0
+	for strings.Contains(s, "01") {
+		cnt++
+		s = strings.ReplaceAll(s, "01", "10")
+	}
+	return cnt
+}
+
+func shiftingLetters(s string, shifts [][]int) string {
+	div := make([]int, len(s)+1)
+	for _, sh := range shifts {
+		if sh[2] == 0 {
+			div[sh[0]]--
+			div[sh[1]+1]++
+		} else if sh[2] == 1 {
+			div[sh[0]]++
+			div[sh[1]+1]--
+		}
+	}
+	b := []byte(s)
+	sum := 0
+	for i := range b {
+		sum += div[i]
+		b[i] = 'a' + byte((int(b[i]-'a')+2600000+sum)%26)
+	}
+	return string(b)
+}
+
+// 删除操作后的最大子段和
+func maximumSegmentSum(nums []int, removeQueries []int) []int64 {
+	type tuple struct {
+		left, right, sum int
+	}
+	sum := make([]int, len(nums))
+	sum[0] = nums[0]
+	for i := 1; i < len(sum); i++ {
+		sum[i] = sum[i-1] + nums[i]
+	}
+	getSum := func(l, r int) int {
+		if l == 0 {
+			return sum[r]
+		}
+		return sum[r] - sum[l-1]
+	}
+	rbt := redblacktree.NewWithIntComparator()
+	h := heaps.InitHeap(nil, func(i, j interface{}) bool {
+		return i.(*tuple).sum > j.(*tuple).sum
+	})
+	ans := make([]int64, len(nums))
+	rbt.Put(0, &tuple{0, len(nums) - 1, sum[len(sum)-1]})
+	heap.Push(h, rbt.Left().Value)
+	for i, v := range removeQueries {
+		node, _ := rbt.Floor(v)
+		left, right := node.Key.(int), node.Value.(*tuple).right
+		rbt.Remove(left)
+		if left < v {
+			t := &tuple{left, v - 1, getSum(left, v-1)}
+			rbt.Put(left, t)
+			heap.Push(h, t)
+		}
+		if v < right {
+			t := &tuple{v + 1, right, getSum(v+1, right)}
+			rbt.Put(v+1, t)
+			heap.Push(h, t)
+		}
+		for {
+			if h.Len() == 0 {
+				ans[i] = 0
+				break
+			}
+			cur := h.Top().(*tuple)
+			res, ok := rbt.Get(cur.left)
+			if ok && res.(*tuple).right == cur.right {
+				ans[i] = int64(cur.sum)
+				break
+			}
+			heap.Pop(h)
+		}
+	}
+	return ans
+}
+
+func minNumberOfHours(initialEnergy int, initialExperience int, energy []int, experience []int) int {
+	ans := 0
+	for i := range experience {
+		if initialEnergy <= energy[i] {
+			ans += energy[i] - initialEnergy + 1
+			initialEnergy = 1
+		} else {
+			initialEnergy -= energy[i]
+		}
+		if initialExperience <= experience[i] {
+			ans += experience[i] - initialExperience + 1
+			initialExperience = experience[i] + 1 + experience[i]
+		} else {
+			initialExperience += experience[i]
+		}
+	}
+	return ans
+}
+
+func largestPalindromic(num string) string {
+	cnt := [10]int{}
+	for i := range num {
+		cnt[num[i]-'0']++
+	}
+	var seq []byte
+	sb := strings.Builder{}
+	for i := 9; i >= 0; i-- {
+		seq = append(seq, byte('0'+i))
+		sb.Write(bytes.Repeat([]byte{byte('0' + i)}, cnt[i]/2))
+	}
+	for i := 9; i >= 0; i-- {
+		if cnt[i]%2 == 1 {
+			sb.WriteByte(byte('0' + i))
+			break
+		}
+	}
+	for i := len(seq) - 1; i >= 0; i-- {
+		sb.Write(bytes.Repeat([]byte{seq[i]}, cnt[seq[i]-'0']/2))
+	}
+	s := sb.String()
+	s = strings.TrimLeft(s, "0")
+	s = strings.TrimRight(s, "0")
+	if s == "" {
+		return "0"
+	}
+	return s
+}
+
+func amountOfTime(root *TreeNode, start int) int {
+	g := map[int][]int{}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		n := len(queue)
+		for i := 0; i < n; i++ {
+			if queue[i].Left != nil {
+				a, b := queue[i].Val, queue[i].Left.Val
+				g[a] = append(g[a], b)
+				g[b] = append(g[b], a)
+				queue = append(queue, queue[i].Left)
+			}
+			if queue[i].Right != nil {
+				a, b := queue[i].Val, queue[i].Right.Val
+				g[a] = append(g[a], b)
+				g[b] = append(g[b], a)
+				queue = append(queue, queue[i].Right)
+			}
+		}
+		queue = queue[n:]
+	}
+	ans := -1
+	q := []int{start}
+	vis := map[int]struct{}{}
+	vis[start] = struct{}{}
+	for len(q) > 0 {
+		ans++
+		n := len(q)
+		for i := 0; i < n; i++ {
+			for _, to := range g[q[i]] {
+				if _, ok := vis[to]; !ok {
+					vis[to] = struct{}{}
+					q = append(q, to)
+				}
+			}
+		}
+		q = q[n:]
+	}
+	return ans
+}
+
+func kSum(nums []int, k int) int64 {
+	tot := 0
+	for i := range nums {
+		if nums[i] >= 0 {
+			tot += nums[i]
+		} else {
+			nums[i] = -nums[i]
+		}
+	}
+	if k == 1 {
+		return int64(tot)
+	}
+	sort.Ints(nums)
+	type node struct {
+		sum, idx int
+	}
+	h := heaps.InitHeap(nil, func(i, j interface{}) bool {
+		return i.(node).sum < j.(node).sum
+	})
+	heap.Push(h, node{nums[0], 0})
+	for i := 2; i < k; i++ {
+		cur := heap.Pop(h).(node)
+		if cur.idx+1 < len(nums) {
+			heap.Push(h, node{cur.sum + nums[cur.idx+1], cur.idx + 1})
+			heap.Push(h, node{cur.sum - nums[cur.idx] + nums[cur.idx+1], cur.idx + 1})
+		}
+	}
+	kth := h.Top().(node)
+	return int64(tot - kth.sum)
+}
+
+// 1455 检查单词是否为句中其他单词的前缀
+func isPrefixOfWord(sentence string, searchWord string) int {
+	for i, w := range strings.Split(sentence, " ") {
+		if strings.HasPrefix(w, searchWord) {
+			return i
+		}
+	}
+	return -1
 }

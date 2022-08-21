@@ -237,3 +237,21 @@ func Test_smallestNumber(t *testing.T) {
 func Test_maxEqualFreq(t *testing.T) {
 	fmt.Println(maxEqualFreq(StrToIntSlice("[1,2]")))
 }
+
+func Test_merge(t *testing.T) {
+	fmt.Println(merge(StrTo2DIntSlice("[[1,4],[2,3]]")))
+}
+
+func Test_shiftingLetters(t *testing.T) {
+	fmt.Println(shiftingLetters("dztz", StrTo2DIntSlice("[[0,0,0],[1,1,1]]")))
+}
+
+func Test_maximumSegmentSum(t *testing.T) {
+	defer Timer()
+	args := GetInput()
+	fmt.Println(maximumSegmentSum(StrToIntSlice(args[0]), StrToIntSlice(args[1])))
+}
+
+func Test_kSum(t *testing.T) {
+	fmt.Println(kSum(StrToIntSlice("[-1,1]"), 1))
+}

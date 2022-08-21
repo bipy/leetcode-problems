@@ -1,67 +1,76 @@
 package segment_tree
 
-type SegmentTree struct {
-	arr  []int
-	sum  []int
-	root int
-	size int
+type segNode struct {
+	left, right, val int
 }
 
-func InitSegmentTree(arr []int) *SegmentTree {
+type SegmentTree struct {
+	values []segNode
+	// 要求操作满足区间可加性
+	// 例如 + * | & ^ min max gcd mulMatrix 摩尔投票 最大子段和 ...
+	op func(a, b int) int
+}
+
+func InitSegmentTree(arr []int, op func(a, b int) int) *SegmentTree {
 	t := &SegmentTree{
-		arr:  arr,
-		sum:  make([]int, len(arr)<<2),
-		root: 1,
-		size: len(arr),
+		values: make([]segNode, len(arr)<<2),
+		op:     op,
 	}
-	t.build(1, t.root, t.size)
+	t.build(arr, 1, 1, len(arr))
 	return t
 }
 
-func (t SegmentTree) Add(idx, val int) {
-	t.add(1, t.root, t.size, idx, val)
+// Update 范围 [0, n - 1]
+func (t SegmentTree) Update(idx, val int) {
+	t.update(1, idx+1, val)
 }
 
-func (t SegmentTree) QuerySum(left, right int) int {
-	return t.querySum(1, t.root, t.size, left, right)
+// Query 闭区间 范围 [0, n - 1]
+func (t SegmentTree) Query(left, right int) int {
+	return t.query(1, left+1, right+1)
 }
 
-func (t SegmentTree) build(cur, left, right int) {
+func (t SegmentTree) QueryAll() int {
+	return t.values[1].val
+}
+
+func (t SegmentTree) build(arr []int, cur, left, right int) {
+	t.values[cur].left, t.values[cur].right = left, right
 	if left == right {
-		t.sum[cur] = t.arr[left-1]
+		t.values[cur].val = arr[left-1]
 		return
 	}
 	mid := (left + right) >> 1
-	t.build(cur*2, left, mid)
-	t.build(cur*2+1, mid+1, right)
-	t.sum[cur] = t.sum[cur*2] + t.sum[cur*2+1]
+	t.build(arr, cur*2, left, mid)
+	t.build(arr, cur*2+1, mid+1, right)
+	t.values[cur].val = t.op(t.values[cur*2].val, t.values[cur*2+1].val)
 }
 
-func (t SegmentTree) add(cur, left, right, idx, val int) {
-	if left == right {
-		t.sum[cur] += val
+func (t SegmentTree) update(cur, idx, val int) {
+	if t.values[cur].left == t.values[cur].right {
+		t.values[cur].val = val
 		return
 	}
-	mid := (left + right) >> 1
+	mid := (t.values[cur].left + t.values[cur].right) >> 1
 	if mid >= idx {
-		t.add(cur*2, left, mid, idx, val)
+		t.update(cur*2, idx, val)
 	} else {
-		t.add(cur*2+1, mid+1, right, idx, val)
+		t.update(cur*2+1, idx, val)
 	}
-	t.sum[cur] = t.sum[cur*2] + t.sum[cur*2+1]
+	t.values[cur].val = t.op(t.values[cur*2].val, t.values[cur*2+1].val)
 }
 
-func (t SegmentTree) querySum(cur, left, right, queryLeft, queryRight int) int {
-	if left <= queryLeft && right >= queryRight {
-		return t.sum[cur]
+func (t SegmentTree) query(cur, queryLeft, queryRight int) int {
+	if queryLeft <= t.values[cur].left && t.values[cur].right <= queryRight {
+		return t.values[cur].val
 	}
-	sum := 0
-	mid := (left + right) >> 1
-	if mid >= queryLeft {
-		sum += t.querySum(cur*2, left, mid, queryLeft, queryRight)
+	mid := (t.values[cur].left + t.values[cur].right) >> 1
+	if mid >= queryRight {
+		return t.query(cur*2, queryLeft, queryRight)
 	}
-	if mid < queryRight {
-		sum += t.querySum(cur*2+1, mid+1, right, queryLeft, queryRight)
+	if mid < queryLeft {
+		return t.query(cur*2+1, queryLeft, queryRight)
 	}
-	return sum
+	vl, vr := t.query(cur*2, queryLeft, queryRight), t.query(cur*2+1, queryLeft, queryRight)
+	return t.op(vl, vr)
 }

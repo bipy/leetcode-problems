@@ -52,7 +52,7 @@ func (SkipList) randomLevel() int {
 	return lv
 }
 
-func (s *SkipList) Find(key interface{}) (interface{}, bool) {
+func (s SkipList) Find(key interface{}) (interface{}, bool) {
 	cur := s.head
 	for i := s.level - 1; i >= 0; i-- {
 		// 找到第 i 层小于且最接近 target 的元素
@@ -122,11 +122,11 @@ func (s *SkipList) Remove(key interface{}) bool {
 	return true
 }
 
-func (s *SkipList) Left() *Node {
+func (s SkipList) Left() *Node {
 	return s.head.forward[0]
 }
 
-func (s *SkipList) Right() *Node {
+func (s SkipList) Right() *Node {
 	cur := s.head
 	for i := s.level - 1; i >= 0; i-- {
 		for cur.forward[i] != nil {
