@@ -5048,3 +5048,38 @@ func isPrefixOfWord(sentence string, searchWord string) int {
 	}
 	return -1
 }
+
+func printTree(root *TreeNode) [][]string {
+	height := 0
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		n := len(queue)
+		for i := 0; i < n; i++ {
+			if queue[i].Left != nil {
+				queue = append(queue, queue[i].Left)
+			}
+			if queue[i].Right != nil {
+				queue = append(queue, queue[i].Right)
+			}
+		}
+		queue = queue[n:]
+		height++
+	}
+	length := 1<<height - 1
+	res := make([][]string, height)
+	for i := range res {
+		res[i] = make([]string, length)
+	}
+	var dfs func(cur *TreeNode, x, y int)
+	dfs = func(cur *TreeNode, x, y int) {
+		res[x][y] = strconv.Itoa(cur.Val)
+		if cur.Left != nil {
+			dfs(cur.Left, x+1, y-(1<<(height-x-2)))
+		}
+		if cur.Right != nil {
+			dfs(cur.Right, x+1, y+(1<<(height-x-2)))
+		}
+	}
+	dfs(root, 0, (length-1)/2)
+	return res
+}
