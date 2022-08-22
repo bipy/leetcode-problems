@@ -1,7 +1,6 @@
 package heaps
 
 import (
-	"container/heap"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -29,13 +28,13 @@ func TestHeap(t *testing.T) {
 	})
 
 	assert.Equal(t, node{2, 5}, h.Top())
-	assert.Equal(t, node{2, 5}, heap.Pop(h))
-	assert.Equal(t, node{2, 2}, heap.Pop(h))
+	assert.Equal(t, node{2, 5}, h.Pop())
+	assert.Equal(t, node{2, 2}, h.Pop())
 
-	heap.Push(h, node{2, 1})
+	h.Push(node{2, 1})
 	assert.Equal(t, node{2, 1}, h.Top())
 
-	h.Update(0, node{3, 1})
+	h.UpdateTop(node{3, 1})
 	assert.Equal(t, node{3, 2}, h.Top())
 
 }

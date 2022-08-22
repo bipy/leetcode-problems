@@ -4887,7 +4887,7 @@ func maximumSegmentSum(nums []int, removeQueries []int) []int64 {
 	})
 	ans := make([]int64, len(nums))
 	rbt.Put(0, &tuple{0, len(nums) - 1, sum[len(sum)-1]})
-	heap.Push(h, rbt.Left().Value)
+	h.Push(rbt.Left().Value)
 	for i, v := range removeQueries {
 		node, _ := rbt.Floor(v)
 		left, right := node.Key.(int), node.Value.(*tuple).right
@@ -4895,15 +4895,15 @@ func maximumSegmentSum(nums []int, removeQueries []int) []int64 {
 		if left < v {
 			t := &tuple{left, v - 1, getSum(left, v-1)}
 			rbt.Put(left, t)
-			heap.Push(h, t)
+			h.Push(t)
 		}
 		if v < right {
 			t := &tuple{v + 1, right, getSum(v+1, right)}
 			rbt.Put(v+1, t)
-			heap.Push(h, t)
+			h.Push(t)
 		}
 		for {
-			if h.Len() == 0 {
+			if h.Size() == 0 {
 				ans[i] = 0
 				break
 			}
@@ -4913,7 +4913,7 @@ func maximumSegmentSum(nums []int, removeQueries []int) []int64 {
 				ans[i] = int64(cur.sum)
 				break
 			}
-			heap.Pop(h)
+			h.Pop()
 		}
 	}
 	return ans
@@ -5027,12 +5027,12 @@ func kSum(nums []int, k int) int64 {
 	h := heaps.InitHeap(nil, func(i, j interface{}) bool {
 		return i.(node).sum < j.(node).sum
 	})
-	heap.Push(h, node{nums[0], 0})
+	h.Push(node{nums[0], 0})
 	for i := 2; i < k; i++ {
-		cur := heap.Pop(h).(node)
+		cur := h.Pop().(node)
 		if cur.idx+1 < len(nums) {
-			heap.Push(h, node{cur.sum + nums[cur.idx+1], cur.idx + 1})
-			heap.Push(h, node{cur.sum - nums[cur.idx] + nums[cur.idx+1], cur.idx + 1})
+			h.Push(node{cur.sum + nums[cur.idx+1], cur.idx + 1})
+			h.Push(node{cur.sum - nums[cur.idx] + nums[cur.idx+1], cur.idx + 1})
 		}
 	}
 	kth := h.Top().(node)
