@@ -7,40 +7,42 @@ import (
 )
 
 func TestDeque(t *testing.T) {
-	dq := &Deque{}
-	dq.PushBack(&Item{value: 1, priority: 1})
+	dq := InitDeque(func(a, b interface{}) bool {
+		return a.(int) < b.(int)
+	})
+	dq.PushBack(1)
 	// 1
 
-	assert.Equal(t, 1, dq.Front().value.(int))
-	assert.Equal(t, 1, dq.Back().value.(int))
+	assert.Equal(t, 1, dq.Front().(int))
+	assert.Equal(t, 1, dq.Back().(int))
 
-	dq.PushBack(&Item{value: 2, priority: 2})
+	dq.PushBack(2)
 	// 1 2
-	dq.PushFront(&Item{value: 3, priority: 3})
+	dq.PushFront(3)
 	// 3 1 2
 
 	assert.Equal(t, 3, dq.Len())
-	assert.Equal(t, 3, dq.Front().value.(int))
-	assert.Equal(t, 2, dq.Back().value.(int))
+	assert.Equal(t, 3, dq.Front().(int))
+	assert.Equal(t, 2, dq.Back().(int))
 
 	sort.Sort(dq)
 	// 1 2 3
 
-	assert.Equal(t, 1, dq.Front().value.(int))
-	assert.Equal(t, 3, dq.Back().value.(int))
+	assert.Equal(t, 1, dq.Front().(int))
+	assert.Equal(t, 3, dq.Back().(int))
 
 	dq.PopBack()
 	// 1 2
 
-	assert.Equal(t, 2, dq.Back().value.(int))
+	assert.Equal(t, 2, dq.Back().(int))
 
 	dq.PopFront()
 	// 2
 
-	assert.Equal(t, 2, dq.Front().value.(int))
-	assert.False(t, dq.Empty())
+	assert.Equal(t, 2, dq.Front().(int))
+	assert.Equal(t, 1, dq.Len())
 
 	dq.PopFront()
 
-	assert.True(t, dq.Empty())
+	assert.True(t, dq.Len() == 0)
 }

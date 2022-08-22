@@ -1,35 +1,40 @@
 package avl_tree
 
-type node struct {
-	key    int
-	val    any
-	left   *node
-	right  *node
+type avlNode struct {
+	key    interface{}
+	val    interface{}
+	left   *avlNode
+	right  *avlNode
 	height int
 }
 
 type AVLTree struct {
-	root *node
+	root *avlNode
 	size int
+	less func(a, b interface{}) bool
 }
 
-func getNodeHeight(cur *node) int {
+func InitAVLTree(less func(i, j interface{}) bool) *AVLTree {
+	return &AVLTree{less: less}
+}
+
+func getNodeHeight(cur *avlNode) int {
 	if cur == nil {
 		return 0
 	}
 	return cur.height
 }
 
-func (n *node) isBalanced() bool {
+func (n *avlNode) isBalanced() bool {
 	bf := getNodeHeight(n.left) - getNodeHeight(n.right)
 	return bf <= 1 && bf >= -1
 }
 
-func (n *node) updateHeight() {
+func (n *avlNode) updateHeight() {
 	n.height = max(getNodeHeight(n.left), getNodeHeight(n.right)) + 1
 }
 
-func llRotation(cur *node) (ptr *node) {
+func llRotation(cur *avlNode) (ptr *avlNode) {
 	ptr = cur.left
 	cur.left = ptr.right
 	ptr.right = cur
@@ -38,7 +43,7 @@ func llRotation(cur *node) (ptr *node) {
 	return
 }
 
-func rrRotation(cur *node) (ptr *node) {
+func rrRotation(cur *avlNode) (ptr *avlNode) {
 	ptr = cur.right
 	cur.right = ptr.left
 	ptr.left = cur
@@ -47,37 +52,37 @@ func rrRotation(cur *node) (ptr *node) {
 	return
 }
 
-func lrRotation(cur *node) *node {
+func lrRotation(cur *avlNode) *avlNode {
 	cur.left = rrRotation(cur.left)
 	return llRotation(cur)
 }
 
-func rlRotation(cur *node) *node {
+func rlRotation(cur *avlNode) *avlNode {
 	cur.right = llRotation(cur.right)
 	return rrRotation(cur)
 }
 
-func insert(cur *node, key int, value any, treeSize *int) *node {
+func (t AVLTree) insert(cur *avlNode, key interface{}, value interface{}, treeSize *int) *avlNode {
 	if cur == nil {
-		cur = &node{
+		cur = &avlNode{
 			key: key,
 			val: value,
 		}
 		*treeSize++
 	} else {
-		if key > cur.key {
-			cur.right = insert(cur.right, key, value, treeSize)
+		if t.less(cur.key, key) {
+			cur.right = t.insert(cur.right, key, value, treeSize)
 			if !cur.isBalanced() {
-				if cur.right.key > key {
+				if t.less(key, cur.right.key) {
 					cur = rlRotation(cur)
 				} else {
 					cur = rrRotation(cur)
 				}
 			}
-		} else if key < cur.key {
-			cur.left = insert(cur.left, key, value, treeSize)
+		} else if t.less(key, cur.key) {
+			cur.left = t.insert(cur.left, key, value, treeSize)
 			if !cur.isBalanced() {
-				if cur.left.key < key {
+				if t.less(cur.left.key, key) {
 					cur = lrRotation(cur)
 				} else {
 					cur = llRotation(cur)
@@ -91,29 +96,29 @@ func insert(cur *node, key int, value any, treeSize *int) *node {
 	return cur
 }
 
-func find(cur *node, key int) (value any, ok bool) {
+func (t AVLTree) find(cur *avlNode, key interface{}) (value interface{}, ok bool) {
 	if cur == nil {
 		return nil, false
 	}
-	if cur.key > key {
-		return find(cur.left, key)
+	if t.less(key, cur.key) {
+		return t.find(cur.left, key)
 	}
-	if cur.key < key {
-		return find(cur.right, key)
+	if t.less(cur.key, key) {
+		return t.find(cur.right, key)
 	}
 	return cur.val, true
 }
 
-func (tree *AVLTree) Put(key int, value any) {
-	tree.root = insert(tree.root, key, value, &tree.size)
+func (t *AVLTree) Put(key interface{}, value interface{}) {
+	t.root = t.insert(t.root, key, value, &t.size)
 }
 
-func (tree *AVLTree) Find(key int) (value any, ok bool) {
-	return find(tree.root, key)
+func (t AVLTree) Get(key interface{}) (value interface{}, ok bool) {
+	return t.find(t.root, key)
 }
 
-func (tree *AVLTree) Len() int {
-	return tree.size
+func (t AVLTree) Size() int {
+	return t.size
 }
 
 func max(x, y int) int {

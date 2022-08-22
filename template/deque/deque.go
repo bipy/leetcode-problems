@@ -1,13 +1,12 @@
 package deque
 
-type Item struct {
-	value    interface{}
-	priority int
-	index    int
+type Deque struct {
+	left, right []interface{}
+	less        func(a, b interface{}) bool
 }
 
-type Deque struct {
-	left, right []*Item
+func InitDeque(less func(a, b interface{}) bool) *Deque {
+	return &Deque{less: less}
 }
 
 func (d Deque) Len() int {
@@ -15,24 +14,21 @@ func (d Deque) Len() int {
 }
 
 func (d Deque) Less(i, j int) bool {
-	return d.Get(i).priority < d.Get(j).priority
+	return d.less(d.Get(i), d.Get(j))
 }
 
 func (d Deque) Swap(i, j int) {
-	ii, jj := d.getPtr(i), d.getPtr(j)
-	*ii, *jj = *jj, *ii
+	ii, jj := d.Get(i), d.Get(j)
+	d.Set(i, jj)
+	d.Set(j, ii)
 }
 
-func (d Deque) Empty() bool {
-	return d.Len() == 0
+func (d *Deque) PushBack(x interface{}) {
+	d.right = append(d.right, x)
 }
 
-func (d *Deque) PushBack(item *Item) {
-	d.right = append(d.right, item)
-}
-
-func (d *Deque) PushFront(item *Item) {
-	d.left = append(d.left, item)
+func (d *Deque) PushFront(x interface{}) {
+	d.left = append(d.left, x)
 }
 
 func (d *Deque) PopBack() {
@@ -51,15 +47,15 @@ func (d *Deque) PopFront() {
 	}
 }
 
-func (d Deque) Back() *Item {
+func (d Deque) Back() interface{} {
 	return d.Get(d.Len() - 1)
 }
 
-func (d Deque) Front() *Item {
+func (d Deque) Front() interface{} {
 	return d.Get(0)
 }
 
-func (d Deque) Get(i int) *Item {
+func (d Deque) Get(i int) interface{} {
 	ll := len(d.left)
 	if i < ll {
 		return d.left[ll-i-1]
@@ -67,10 +63,11 @@ func (d Deque) Get(i int) *Item {
 	return d.right[i-ll]
 }
 
-func (d Deque) getPtr(i int) **Item {
+func (d Deque) Set(i int, x interface{}) {
 	ll := len(d.left)
 	if i < ll {
-		return &d.left[ll-i-1]
+		d.left[ll-i-1] = x
+	} else {
+		d.right[i-ll] = x
 	}
-	return &d.right[i-ll]
 }

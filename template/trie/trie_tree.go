@@ -1,23 +1,23 @@
 package trie
 
-type node struct {
-	next [26]*node
+type trieNode struct {
+	next [26]*trieNode
 	end  bool
 }
 
 type Trie struct {
-	*node
+	*trieNode
 }
 
 func InitTrie() *Trie {
-	return &Trie{&node{}}
+	return &Trie{&trieNode{}}
 }
 
 func (t Trie) Insert(s string) {
-	p := t.node
+	p := t.trieNode
 	for _, c := range s {
 		if p.next[c-'a'] == nil {
-			p.next[c-'a'] = &node{}
+			p.next[c-'a'] = &trieNode{}
 		}
 		p = p.next[c-'a']
 	}
@@ -25,7 +25,7 @@ func (t Trie) Insert(s string) {
 }
 
 func (t Trie) Query(s string) bool {
-	p := t.node
+	p := t.trieNode
 	for _, c := range s {
 		if p.next[c-'a'] == nil {
 			return false
@@ -36,7 +36,7 @@ func (t Trie) Query(s string) bool {
 }
 
 func (t Trie) QueryPrefix(s string) bool {
-	p := t.node
+	p := t.trieNode
 	for _, c := range s {
 		if p.next[c-'a'] == nil {
 			return false
