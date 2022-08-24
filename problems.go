@@ -2492,6 +2492,9 @@ func lowestCommonAncestor(root, p, q *TreeNode) (ans *TreeNode) {
 		}
 		l := dfs(cur.Left)
 		r := dfs(cur.Right)
+		if done {
+			return false
+		}
 		if cur == p || cur == q {
 			if l || r {
 				done = true
@@ -4815,6 +4818,7 @@ func constructMaximumBinaryTree(nums []int) *TreeNode {
 	}
 }
 
+// 2379 得到 K 个黑块的最少涂色次数
 func minimumRecolors(blocks string, k int) int {
 	cnt := 0
 	for i := 0; i < k; i++ {
@@ -4836,6 +4840,7 @@ func minimumRecolors(blocks string, k int) int {
 	return ans
 }
 
+// 2380 二进制字符串重新安排顺序需要的时间
 func secondsToRemoveOccurrences(s string) int {
 	cnt := 0
 	for strings.Contains(s, "01") {
@@ -4845,6 +4850,7 @@ func secondsToRemoveOccurrences(s string) int {
 	return cnt
 }
 
+// 2381 字母移位 II
 func shiftingLetters(s string, shifts [][]int) string {
 	div := make([]int, len(s)+1)
 	for _, sh := range shifts {
@@ -4865,7 +4871,7 @@ func shiftingLetters(s string, shifts [][]int) string {
 	return string(b)
 }
 
-// 删除操作后的最大子段和
+// 2382 删除操作后的最大子段和
 func maximumSegmentSum(nums []int, removeQueries []int) []int64 {
 	type tuple struct {
 		left, right, sum int
@@ -4919,6 +4925,7 @@ func maximumSegmentSum(nums []int, removeQueries []int) []int64 {
 	return ans
 }
 
+// 2383 赢得比赛需要的最少训练时长
 func minNumberOfHours(initialEnergy int, initialExperience int, energy []int, experience []int) int {
 	ans := 0
 	for i := range experience {
@@ -4938,6 +4945,7 @@ func minNumberOfHours(initialEnergy int, initialExperience int, energy []int, ex
 	return ans
 }
 
+// 2384 最大回文数字
 func largestPalindromic(num string) string {
 	cnt := [10]int{}
 	for i := range num {
@@ -4967,6 +4975,7 @@ func largestPalindromic(num string) string {
 	return s
 }
 
+// 2385 感染二叉树需要的总时间
 func amountOfTime(root *TreeNode, start int) int {
 	g := map[int][]int{}
 	queue := []*TreeNode{root}
@@ -5008,6 +5017,7 @@ func amountOfTime(root *TreeNode, start int) int {
 	return ans
 }
 
+// 2386 找出数组的第 K 大和
 func kSum(nums []int, k int) int64 {
 	tot := 0
 	for i := range nums {
@@ -5049,6 +5059,7 @@ func isPrefixOfWord(sentence string, searchWord string) int {
 	return -1
 }
 
+// 655 输出二叉树
 func printTree(root *TreeNode) [][]string {
 	height := 0
 	queue := []*TreeNode{root}
@@ -5082,4 +5093,26 @@ func printTree(root *TreeNode) [][]string {
 	}
 	dfs(root, 0, (length-1)/2)
 	return res
+}
+
+// 852 山脉数组的峰顶索引
+func peakIndexInMountainArray(arr []int) int {
+	return sort.Search(len(arr)-1, func(i int) bool {
+		return arr[i] > arr[i+1]
+	})
+}
+
+// 1460 通过翻转子数组使两个数组相等
+func canBeEqual(target []int, arr []int) bool {
+	cnt := [1001]int{}
+	for i := range target {
+		cnt[target[i]]++
+		cnt[arr[i]]--
+	}
+	for i := range cnt {
+		if cnt[i] != 0 {
+			return false
+		}
+	}
+	return true
 }
