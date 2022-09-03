@@ -177,10 +177,12 @@ func A(a, b int) int {
 	return frac(b-a+1, b)
 }
 
+// SameLineThree 判断三点是否共线
 func SameLineThree(p1, p2, p3 []int) bool {
 	return p1[0]*(p2[1]-p3[1])-p2[0]*(p1[1]-p3[1])+p3[0]*(p1[1]-p2[1]) == 0
 }
 
+// SameLine 判断点集是否共线
 func SameLine(points [][]int) bool {
 	if len(points) < 3 {
 		return true
@@ -192,4 +194,17 @@ func SameLine(points [][]int) bool {
 		}
 	}
 	return true
+}
+
+// ParseInt 转换10进制数到任意进制
+func ParseInt(d int, base int) (num []int) {
+	for {
+		num = append(num, d%base)
+		d = d / base
+		if d == 0 {
+			break
+		}
+	}
+	reverseSlice(num)
+	return
 }

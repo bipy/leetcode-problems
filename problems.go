@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/emirpasic/gods/trees/redblacktree"
 	"leetcode/template/heaps"
+	"leetcode/template/partial_sum"
+	"leetcode/template/sparse_table"
 	"leetcode/template/union_find"
 	"math"
 	"math/bits"
@@ -5115,4 +5117,249 @@ func canBeEqual(target []int, arr []int) bool {
 		}
 	}
 	return true
+}
+
+// 658 找到 K 个最接近的元素
+// TODO
+func findClosestElements(arr []int, k int, x int) []int {
+	n := len(arr)
+	idx := sort.Search(n, func(i int) bool {
+		return arr[i] >= x
+	})
+	i, j := idx-1, idx
+	for j-i < k && i >= 0 && j < n {
+		d1, d2 := x-arr[i], arr[j]-x
+		if d1 > d2 {
+			j++
+		} else {
+			i--
+		}
+	}
+	if i < 0 {
+		return arr[:k]
+	} else if j >= n {
+		return arr[n-k:]
+	}
+	return arr[i+1 : j]
+}
+
+// 662 二叉树最大宽度
+func widthOfBinaryTree(root *TreeNode) (ans int) {
+	levels := map[int]int{}
+	var dfs func(cur *TreeNode, flag int, cnt int)
+	dfs = func(cur *TreeNode, flag int, cnt int) {
+		if cur == nil {
+			return
+		}
+		n, ok := levels[cnt]
+		if !ok {
+			levels[cnt] = flag
+			n = flag
+		}
+		flag = flag - n + 1
+		ans = max(ans, flag)
+		dfs(cur.Left, flag<<1, cnt+1)
+		dfs(cur.Right, flag<<1|1, cnt+1)
+	}
+	dfs(root, 0, 0)
+	return
+}
+
+// 1464 数组中两元素的最大乘积
+func maxProduct(nums []int) int {
+	first, second := 0, 0
+	for i := range nums {
+		if nums[i] >= first {
+			first, second = nums[i], first
+		} else if nums[i] > second {
+			second = nums[i]
+		}
+	}
+	return (first - 1) * (second - 1)
+}
+
+// 1470 重新排列数组
+func shuffle(nums []int, n int) []int {
+	ans := make([]int, n<<1)
+	for i := 0; i < n; i++ {
+		ans[i<<1] = nums[i]
+		ans[i<<1|1] = nums[i+n]
+	}
+	return ans
+}
+
+// 998 最大二叉树 II
+func insertIntoMaxTree(root *TreeNode, val int) *TreeNode {
+	if root == nil || root.Val < val {
+		return &TreeNode{
+			Val:  val,
+			Left: root,
+		}
+	}
+	root.Right = insertIntoMaxTree(root.Right, val)
+	return root
+}
+
+// 946 验证栈序列
+func validateStackSequences(pushed []int, popped []int) bool {
+	var stack []int
+	j, n := 0, len(pushed)
+	for i := 0; i < n; i++ {
+		stack = append(stack, pushed[i])
+		for len(stack) > 0 && stack[len(stack)-1] == popped[j] {
+			stack = stack[:len(stack)-1]
+			j++
+		}
+	}
+	return len(stack) == 0
+}
+
+// 1475 商品折扣后的最终价格
+func finalPrices(prices []int) []int {
+	n := len(prices)
+	for i := 0; i < n; i++ {
+		for j := i + 1; j < len(prices); j++ {
+			if prices[j] <= prices[i] {
+				prices[i] -= prices[j]
+				break
+			}
+		}
+	}
+	return prices
+}
+
+// 687 最长同值路径
+func longestUnivaluePath(root *TreeNode) int {
+	ans := 1
+	var dfs func(cur *TreeNode) int
+	dfs = func(cur *TreeNode) int {
+		if cur == nil {
+			return 0
+		}
+		l := dfs(cur.Left)
+		r := dfs(cur.Right)
+		if cur.Left != nil && cur.Val == cur.Left.Val && cur.Right != nil && cur.Val == cur.Right.Val {
+			ans = max(ans, l+r+1)
+			return max(l, r) + 1
+		}
+		if cur.Left != nil && cur.Val == cur.Left.Val {
+			ans = max(ans, l+1)
+			return l + 1
+		}
+		if cur.Right != nil && cur.Val == cur.Right.Val {
+			ans = max(ans, r+1)
+			return r + 1
+		}
+		return 1
+	}
+	if root != nil {
+		dfs(root)
+	}
+	return ans - 1
+}
+
+// 646 最长数对链
+func findLongestChain(pairs [][]int) int {
+	n := len(pairs)
+	sort.Slice(pairs, func(i, j int) bool {
+		if pairs[i][1] == pairs[j][1] {
+			return pairs[i][0] < pairs[j][0]
+		}
+		return pairs[i][1] < pairs[j][1]
+	})
+	dp := make([]int, n)
+	pre := 0
+	for i := range pairs {
+		idx := sort.Search(i, func(i0 int) bool {
+			return pairs[i0][1] >= pairs[i][0]
+		})
+		if idx > pre {
+			dp[i] = maxOf(dp[:idx]...) + 1
+		}
+	}
+	return maxOf(dp[pre:]...) + 1
+}
+
+func findSubarrays(nums []int) bool {
+	m := map[int]struct{}{}
+	for i := 1; i < len(nums); i++ {
+		sum := nums[i] + nums[i-1]
+		if _, ok := m[sum]; ok {
+			return true
+		} else {
+			m[sum] = struct{}{}
+		}
+	}
+	return false
+}
+
+func isStrictlyPalindromic(n int) bool {
+	f := func(t, b int) (rt []int) {
+		for {
+			rt = append(rt, t%b)
+			t = t / b
+			if t == 0 {
+				break
+			}
+		}
+		return
+	}
+	for b := 2; b <= n-2; b++ {
+		s := f(n, b)
+		for i := 0; i < len(s)/2; i++ {
+			if s[i] != s[len(s)-i-1] {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func maximumRows(mat [][]int, cols int) (ans int) {
+	m, n := len(mat), len(mat[0])
+	nums := make([]int, m)
+	for i := range nums {
+		t := 0
+		for j := 0; j < n; j++ {
+			t <<= 1
+			t += mat[i][j]
+		}
+		nums[i] = t
+	}
+	var dfs func(flag, zeros, length int)
+	dfs = func(flag, zeros, length int) {
+		if length > n || zeros > cols {
+			return
+		}
+		if length >= n && zeros == cols {
+			cnt := 0
+			for i := range nums {
+				if nums[i]&flag == 0 {
+					cnt++
+				}
+			}
+			ans = max(ans, cnt)
+			return
+		}
+		dfs(flag<<1, zeros+1, length+1)
+		dfs(flag<<1|1, zeros, length+1)
+	}
+	dfs(1, 0, 0)
+	return
+}
+
+func maximumRobots(chargeTimes []int, runningCosts []int, budget int64) int {
+	n := len(chargeTimes)
+	st := sparse_table.InitSparseTable(chargeTimes, func(a, b int) int {
+		return max(a, b)
+	})
+	ps := partial_sum.InitPartialSum(runningCosts)
+	idx := sort.Search(n, func(k int) bool {
+		minV := int(budget) + 1
+		for i := 0; i+k < n; i++ {
+			minV = min(minV, st.Query(i, i+k+1)+(k+1)*ps.Query(i, i+k))
+		}
+		return minV > int(budget)
+	})
+	return idx
 }

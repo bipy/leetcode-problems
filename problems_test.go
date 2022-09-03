@@ -255,3 +255,17 @@ func Test_maximumSegmentSum(t *testing.T) {
 func Test_kSum(t *testing.T) {
 	fmt.Println(kSum(StrToIntSlice("[-1,1]"), 1))
 }
+
+func Test_findLongestChain(t *testing.T) {
+	defer Timer()
+	args := GetInput()
+	fmt.Println(findLongestChain(StrTo2DIntSlice(args[0])))
+}
+
+func Test_isStrictlyPalindromic(t *testing.T) {
+	fmt.Println(isStrictlyPalindromic(9))
+}
+
+func Test_maximumRobots(t *testing.T) {
+	fmt.Println(maximumRobots(StrToIntSlice("[11,12,74,67,37,87,42,34,18,90,36,28,34,20]"), StrToIntSlice("[18,98,2,84,7,57,54,65,59,91,7,23,94,20]"), 937))
+}

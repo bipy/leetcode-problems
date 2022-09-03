@@ -31,7 +31,7 @@ func StrToIntSlice(input string) []int {
 	for i := range s {
 		d, err := strconv.Atoi(s[i])
 		if err != nil {
-			fmt.Println("Error")
+			fmt.Println("Error", err.Error())
 		}
 		rt[i] = d
 	}
