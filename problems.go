@@ -5280,6 +5280,7 @@ func findLongestChain(pairs [][]int) int {
 	return maxOf(dp[pre:]...) + 1
 }
 
+// 2395 和相等的子数组
 func findSubarrays(nums []int) bool {
 	m := map[int]struct{}{}
 	for i := 1; i < len(nums); i++ {
@@ -5293,6 +5294,7 @@ func findSubarrays(nums []int) bool {
 	return false
 }
 
+// 2396 严格回文的数字
 func isStrictlyPalindromic(n int) bool {
 	f := func(t, b int) (rt []int) {
 		for {
@@ -5315,6 +5317,7 @@ func isStrictlyPalindromic(n int) bool {
 	return true
 }
 
+// 2397 被列覆盖的最多行数
 func maximumRows(mat [][]int, cols int) (ans int) {
 	m, n := len(mat), len(mat[0])
 	nums := make([]int, m)
@@ -5348,6 +5351,7 @@ func maximumRows(mat [][]int, cols int) (ans int) {
 	return
 }
 
+// 2398 预算内的最多机器人数目
 func maximumRobots(chargeTimes []int, runningCosts []int, budget int64) int {
 	n := len(chargeTimes)
 	st := sparse_table.InitSparseTable(chargeTimes, func(a, b int) int {
@@ -5362,4 +5366,74 @@ func maximumRobots(chargeTimes []int, runningCosts []int, budget int64) int {
 		return minV > int(budget)
 	})
 	return idx
+}
+
+// 1582 二进制矩阵中的特殊位置
+func numSpecial(mat [][]int) (ans int) {
+	rowCnt, colCnt := make([]int, len(mat)), make([]int, len(mat[0]))
+	for i := range mat {
+		for j := range mat[i] {
+			if mat[i][j] == 1 {
+				rowCnt[i]++
+				colCnt[j]++
+			}
+		}
+	}
+	for i := range mat {
+		for j := range mat[i] {
+			if mat[i][j] == 1 && rowCnt[i] == 1 && colCnt[j] == 1 {
+				ans++
+			}
+		}
+	}
+	return
+}
+
+// 652 寻找重复的子树
+func findDuplicateSubtrees(root *TreeNode) (ans []*TreeNode) {
+	type node struct {
+		ptr *TreeNode
+		idx int
+	}
+	m := map[[3]int]*node{}
+	i := 0
+	var dfs func(cur *TreeNode) int
+	dfs = func(cur *TreeNode) int {
+		if cur == nil {
+			return 0
+		}
+		tup := [3]int{cur.Val, dfs(cur.Left), dfs(cur.Right)}
+		if n, ok := m[tup]; ok {
+			if n.ptr != nil {
+				ans = append(ans, n.ptr)
+				n.ptr = nil
+			}
+			return n.idx
+		}
+		i++
+		m[tup] = &node{cur, i}
+		return i
+	}
+	dfs(root)
+	return
+}
+
+// 828 统计子串中的唯一字符
+func uniqueLetterString(s string) (ans int) {
+	idx := [26][]int{}
+	for i := range idx {
+		idx[i] = append(idx[i], -1)
+	}
+	for i, c := range s {
+		idx[c-'A'] = append(idx[c-'A'], i)
+	}
+	for i := range idx {
+		idx[i] = append(idx[i], len(s))
+	}
+	for i := range idx {
+		for j := 1; j < len(idx[i])-1; j++ {
+			ans += (idx[i][j] - idx[i][j-1]) * (idx[i][j+1] - idx[i][j])
+		}
+	}
+	return
 }
