@@ -5437,3 +5437,67 @@ func uniqueLetterString(s string) (ans int) {
 	}
 	return
 }
+
+// 1592 重新排列单词间的空格
+func reorderSpaces(text string) string {
+	cnt := 0
+	words := strings.FieldsFunc(text, func(r rune) bool {
+		if r == ' ' {
+			cnt++
+			return true
+		}
+		return false
+	})
+	if len(words) == 1 {
+		return words[0] + strings.Repeat(" ", cnt)
+	}
+	m, n := cnt%(len(words)-1), cnt/(len(words)-1)
+	if m == 0 {
+		return strings.Join(words, strings.Repeat(" ", n))
+	}
+	return strings.Join(words, strings.Repeat(" ", n)) + strings.Repeat(" ", m)
+}
+
+// 667 优美的排列 II
+func constructArray(n int, k int) []int {
+	arr := Nums(1, n+1)
+	for i := 1; i <= k; i++ {
+		if i%2 == 0 {
+			arr[i] = i/2 + 1
+		} else {
+			arr[i] = k + 1 - arr[i-1]
+		}
+	}
+	return arr
+}
+
+// 1598 文件夹操作日志搜集器
+func minOperations1(logs []string) int {
+	var stack []string
+	for _, log := range logs {
+		if log == "../" {
+			if len(stack) != 0 {
+				stack = stack[:len(stack)-1]
+			}
+		} else if log != "./" {
+			stack = append(stack, log)
+		}
+	}
+	return len(stack)
+}
+
+// 669 修剪二叉搜索树
+func trimBST(root *TreeNode, low int, high int) *TreeNode {
+	if root == nil {
+		return nil
+	}
+	if root.Val < low {
+		return trimBST(root.Right, low, high)
+	}
+	if root.Val > high {
+		return trimBST(root.Left, low, high)
+	}
+	root.Left = trimBST(root.Left, low, high)
+	root.Right = trimBST(root.Right, low, high)
+	return root
+}

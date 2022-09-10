@@ -129,7 +129,7 @@ func ZipIdx(a []int) []struct{ k, v int } {
 	return rt
 }
 
-// Nums 生成连续数字数组
+// Nums 生成连续数字数组 [begin, end)
 func Nums(begin, end int) []int {
 	n := end - begin
 	rt := make([]int, n)

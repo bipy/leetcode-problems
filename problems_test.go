@@ -269,3 +269,7 @@ func Test_isStrictlyPalindromic(t *testing.T) {
 func Test_maximumRobots(t *testing.T) {
 	fmt.Println(maximumRobots(StrToIntSlice("[11,12,74,67,37,87,42,34,18,90,36,28,34,20]"), StrToIntSlice("[18,98,2,84,7,57,54,65,59,91,7,23,94,20]"), 937))
 }
+
+func Test_reorderSpaces(t *testing.T) {
+	reorderSpaces("aa ss    dd ")
+}
