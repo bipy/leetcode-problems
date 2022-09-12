@@ -271,3 +271,52 @@ func MapValues(m map[int]int) []int {
 	}
 	return rt
 }
+
+func Reduce(arr []int, f func(a, b int) int) int {
+	if len(arr) == 0 {
+		return 0
+	}
+	ans := arr[0]
+	for i := 1; i < len(arr); i++ {
+		ans = f(ans, arr[i])
+	}
+	return ans
+}
+
+func All(arr []int, f func(int) bool) bool {
+	for _, v := range arr {
+		if !f(v) {
+			return false
+		}
+	}
+	return true
+}
+
+func Any(arr []int, f func(int) bool) bool {
+	for _, v := range arr {
+		if f(v) {
+			return true
+		}
+	}
+	return false
+}
+
+func CountInt(arr []int) map[int]int {
+	m := map[int]int{}
+	for _, v := range arr {
+		m[v]++
+	}
+	return m
+}
+
+func CountChar(s string) [26]int {
+	cnt := [26]int{}
+	base := 'a'
+	if len(s) > 0 && s[0] >= 'A' && s[0] <= 'Z' {
+		base = 'A'
+	}
+	for _, c := range s {
+		cnt[c-base]++
+	}
+	return cnt
+}

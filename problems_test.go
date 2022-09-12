@@ -3,6 +3,7 @@ package leetcode
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"testing"
 )
 
@@ -272,4 +273,11 @@ func Test_maximumRobots(t *testing.T) {
 
 func Test_reorderSpaces(t *testing.T) {
 	reorderSpaces("aa ss    dd ")
+}
+
+func Test_lengthOfLIS(t *testing.T) {
+	defer Timer()
+	args := GetInput()
+	n, _ := strconv.Atoi(args[1])
+	fmt.Println(lengthOfLIS(StrToIntSlice(args[0]), n))
 }

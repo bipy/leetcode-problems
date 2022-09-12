@@ -7,6 +7,7 @@ import (
 	"github.com/emirpasic/gods/trees/redblacktree"
 	"leetcode/template/heaps"
 	"leetcode/template/partial_sum"
+	"leetcode/template/segment_tree"
 	"leetcode/template/sparse_table"
 	"leetcode/template/union_find"
 	"math"
@@ -5500,4 +5501,72 @@ func trimBST(root *TreeNode, low int, high int) *TreeNode {
 	root.Left = trimBST(root.Left, low, high)
 	root.Right = trimBST(root.Right, low, high)
 	return root
+}
+
+// 1608 特殊数组的特征值
+func specialArray(nums []int) int {
+	sort.Ints(nums)
+	n := len(nums)
+	x := 1 + sort.Search(n, func(i int) bool {
+		return n-sort.SearchInts(nums, i+1) <= i+1
+	})
+	if x == n-sort.SearchInts(nums, x) {
+		return x
+	}
+	return -1
+}
+
+func mostFrequentEven(nums []int) int {
+	nums = FilterInt(nums, func(i int) bool {
+		return i%2 == 0
+	})
+	m := CountInt(nums)
+	items := MapItems(m)
+	sort.Slice(items, func(i, j int) bool {
+		if items[i][1] == items[j][1] {
+			return items[i][0] < items[j][0]
+		}
+		return items[i][1] > items[j][1]
+	})
+	if len(items) == 0 {
+		return -1
+	}
+	return items[0][0]
+}
+
+func partitionString(s string) int {
+	cnt := [26]bool{}
+	ans := 0
+	for _, c := range s {
+		if cnt[c-'a'] {
+			ans++
+			cnt = [26]bool{}
+		}
+		cnt[c-'a'] = true
+	}
+	return ans + 1
+}
+
+func minGroups(intervals [][]int) int {
+	div := make([]int, 1e6+10)
+	for i := range intervals {
+		div[intervals[i][0]]++
+		div[intervals[i][1]+1]--
+	}
+	ans := 0
+	cnt := 0
+	for i := range div {
+		cnt += div[i]
+		ans = max(ans, cnt)
+	}
+	return ans
+}
+
+func lengthOfLIS(nums []int, k int) int {
+	st := segment_tree.InitSegmentTree(make([]int, maxOf(nums...)+1), max)
+	for _, v := range nums {
+		maxV := st.Query(max(0, v-k), v-1)
+		st.Update(v, maxV+1)
+	}
+	return st.QueryAll()
 }

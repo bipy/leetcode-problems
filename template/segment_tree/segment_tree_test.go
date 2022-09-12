@@ -22,3 +22,22 @@ func TestSegmentTree(t *testing.T) {
 	assert.Equal(t, 21, st.Query(2, 7))
 	assert.Equal(t, 31, st.QueryAll())
 }
+
+func TestSegmentTreeMax(t *testing.T) {
+	arr := make([]int, 100001)
+	st := InitSegmentTree(arr, func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	})
+	st.Update(1, 1)
+	st.Update(100, 2)
+	st.Update(500, 3)
+	st.Update(100000, 4)
+	assert.Equal(t, 1, st.Query(0, 1))
+	assert.Equal(t, 2, st.Query(0, 100))
+	assert.Equal(t, 3, st.Query(0, 500))
+	assert.Equal(t, 4, st.Query(0, 100000))
+	assert.Equal(t, 3, st.Query(0, 99999))
+}

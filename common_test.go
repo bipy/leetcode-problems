@@ -36,3 +36,8 @@ func TestZip(t *testing.T) {
 	a := []int{1, 2, 3, 4}
 	fmt.Println(Zip(a, a, a, a, a))
 }
+
+func TestReduce(t *testing.T) {
+	a := []int{6, 12, 60, 120}
+	fmt.Println(Reduce(a, GCD))
+}
