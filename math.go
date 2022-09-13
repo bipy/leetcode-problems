@@ -150,15 +150,13 @@ func getDistSq(dx, dy int) int {
 	return dx*dx + dy*dy
 }
 
-// 阶乘值
-var fracNums = []int{1}
-
 // 阶乘
 func frac(a, b int) int {
-	for i := len(fracNums); i <= b; i++ {
-		fracNums = append(fracNums, fracNums[i-1]*i)
+	res := 1
+	for i := a; i <= b; i++ {
+		res *= i
 	}
-	return fracNums[b] / fracNums[a-1]
+	return res
 }
 
 // C 组合数

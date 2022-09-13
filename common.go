@@ -320,3 +320,15 @@ func CountChar(s string) [26]int {
 	}
 	return cnt
 }
+
+func IntRepeat(x int, count int) []int {
+	if count == 0 {
+		return []int{}
+	}
+	arr := make([]int, count)
+	arr[0] = x
+	for i := 1; i < len(arr); i <<= 1 {
+		copy(arr[i:], arr[:i])
+	}
+	return arr
+}

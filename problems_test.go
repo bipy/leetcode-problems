@@ -281,3 +281,9 @@ func Test_lengthOfLIS(t *testing.T) {
 	n, _ := strconv.Atoi(args[1])
 	fmt.Println(lengthOfLIS(StrToIntSlice(args[0]), n))
 }
+
+func Test_countPairs1(t *testing.T) {
+	fmt.Println(countPairs1(StrToIntSlice(
+		"[149,107,1,63,0,1,6867,1325,5611,2581,39,89,46,18,12,20,22,234]",
+	)))
+}

@@ -5516,24 +5516,23 @@ func specialArray(nums []int) int {
 	return -1
 }
 
+// 2404 出现最频繁的偶数元素
 func mostFrequentEven(nums []int) int {
 	nums = FilterInt(nums, func(i int) bool {
 		return i%2 == 0
 	})
 	m := CountInt(nums)
-	items := MapItems(m)
-	sort.Slice(items, func(i, j int) bool {
-		if items[i][1] == items[j][1] {
-			return items[i][0] < items[j][0]
+	ans, cnt := -1, -1
+	for k, v := range m {
+		if v > cnt || v == cnt && k < ans {
+			cnt = v
+			ans = k
 		}
-		return items[i][1] > items[j][1]
-	})
-	if len(items) == 0 {
-		return -1
 	}
-	return items[0][0]
+	return ans
 }
 
+// 2405 子字符串的最优划分
 func partitionString(s string) int {
 	cnt := [26]bool{}
 	ans := 0
@@ -5547,6 +5546,7 @@ func partitionString(s string) int {
 	return ans + 1
 }
 
+// 2406 将区间分为最少组数
 func minGroups(intervals [][]int) int {
 	div := make([]int, 1e6+10)
 	for i := range intervals {
@@ -5562,6 +5562,7 @@ func minGroups(intervals [][]int) int {
 	return ans
 }
 
+// 2407 最长递增子序列 II
 func lengthOfLIS(nums []int, k int) int {
 	st := segment_tree.InitSegmentTree(make([]int, maxOf(nums...)+1), max)
 	for _, v := range nums {
@@ -5569,4 +5570,48 @@ func lengthOfLIS(nums []int, k int) int {
 		st.Update(v, maxV+1)
 	}
 	return st.QueryAll()
+}
+
+// 1711 大餐计数
+func countPairs1(deliciousness []int) (ans int) {
+	m := CountInt(deliciousness)
+	items := MapItems(m)
+	sort.Slice(items, func(i, j int) bool {
+		return items[i][0] < items[j][0]
+	})
+	maxV := maxOf(deliciousness...) << 1
+	for _, it := range items {
+		k, v := it[0], it[1]
+		for i := 0; maxV>>i != 0; i++ {
+			if k == 1<<i && v > 1 {
+				ans += C(2, v)
+				ans %= mod
+			}
+			if k < 1<<i && k<<1 != 1<<i {
+				if cnt, ok := m[1<<i-k]; ok && cnt > 0 {
+					ans += v * cnt
+					ans %= mod
+				}
+			}
+		}
+		m[k] = 0
+	}
+	return
+}
+
+// 322 零钱兑换
+func coinChange(coins []int, amount int) int {
+	dp := IntRepeat(math.MaxInt, amount+1)
+	dp[0] = 0
+	for i := 1; i <= amount; i++ {
+		for _, coin := range coins {
+			if i >= coin {
+				dp[i] = min(dp[i], dp[i-coin]+1)
+			}
+		}
+	}
+	if dp[amount] == math.MaxInt {
+		return -1
+	}
+	return dp[amount]
 }
