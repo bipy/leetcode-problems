@@ -287,3 +287,19 @@ func Test_countPairs1(t *testing.T) {
 		"[149,107,1,63,0,1,6867,1325,5611,2581,39,89,46,18,12,20,22,234]",
 	)))
 }
+
+func Test_trimMean(t *testing.T) {
+	trimMean(StrToIntSlice("[6,2,7,5,1,2,0,3,10,2,5,0,5,5,0,8,7,6,8,0]"))
+}
+
+func Test_smallestSubarrays(t *testing.T) {
+	fmt.Println(smallestSubarrays(StrToIntSlice("[1,0]")))
+}
+
+func Test_minimumMoney(t *testing.T) {
+	fmt.Println(minimumMoney(StrTo2DIntSlice("")))
+}
+
+func Test_reverseOddLevels(t *testing.T) {
+	reverseOddLevels(TreeDeserialize("[2,3,5,8,13,21,34]"))
+}

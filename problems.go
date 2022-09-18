@@ -5615,3 +5615,222 @@ func coinChange(coins []int, amount int) int {
 	}
 	return dp[amount]
 }
+
+// 1619 删除某些元素后的数组均值
+func trimMean(arr []int) float64 {
+	sort.Ints(arr)
+	return AverageInt(arr[len(arr)/20 : len(arr)-len(arr)/20])
+}
+
+// TODO:850 矩形面积 II
+func rectangleArea(rectangles [][]int) int {
+	return 0
+}
+
+// 1624 两个相同字符之间的最长子字符串
+func maxLengthBetweenEqualCharacters(s string) int {
+	ans := -1
+	first := IntRepeat(-1, 26)
+	for i := range s {
+		if idx := first[s[i]-'a']; idx != -1 {
+			ans = max(ans, i-idx-1)
+		} else {
+			first[s[i]-'a'] = i
+		}
+	}
+	return ans
+}
+
+func countDaysTogether(arriveAlice string, leaveAlice string, arriveBob string, leaveBob string) int {
+	trans := func(date string) int {
+		m, _ := strconv.Atoi(date[:2])
+		d, _ := strconv.Atoi(date[3:])
+		return time.Date(2022, time.Month(m), d, 0, 0, 0, 0, time.UTC).YearDay()
+	}
+	aa, la := trans(arriveAlice), trans(leaveAlice)
+	ab, lb := trans(arriveBob), trans(leaveBob)
+	from, to := max(aa, ab), min(la, lb)
+	if from > to {
+		return 0
+	}
+	return to - from + 1
+}
+
+func matchPlayersAndTrainers(players []int, trainers []int) int {
+	sort.Ints(players)
+	sort.Ints(trainers)
+	ans := 0
+	for i := range players {
+		idx := sort.Search(len(trainers), func(i0 int) bool {
+			return trainers[i0] >= players[i]
+		})
+		if idx != len(trainers) {
+			ans++
+			trainers = trainers[idx+1:]
+		}
+	}
+	return ans
+}
+
+func smallestSubarrays(nums []int) []int {
+	n := len(nums)
+	maxV := make([]int, n)
+	or := 0
+	for i := n - 1; i >= 0; i-- {
+		or |= nums[i]
+		maxV[i] = or
+	}
+	st := segment_tree.InitSegmentTree(nums, func(a, b int) int {
+		return a | b
+	})
+	ans := make([]int, n)
+	for i := 0; i < n; i++ {
+		idx := sort.Search(n, func(i0 int) bool {
+			if i > i0 {
+				return false
+			}
+			return st.Query(i, i0) >= maxV[i]
+		})
+		ans[i] = idx - i + 1
+	}
+	return ans
+}
+
+func minimumMoney(transactions [][]int) int64 {
+	n := len(transactions)
+	sort.Slice(transactions, func(i, j int) bool {
+		return transactions[i][0]-transactions[i][1] > transactions[j][0]-transactions[j][1]
+	})
+	idx := sort.Search(n, func(i int) bool {
+		return transactions[i][0]-transactions[i][1] < 0
+	})
+	t1, t2 := transactions[:idx], transactions[idx:]
+	sort.Slice(t1, func(i, j int) bool {
+		if t1[i][1] == t1[j][1] {
+			return t1[i][0] > t1[j][0]
+		}
+		return t1[i][1] < t1[j][1]
+	})
+	sort.Slice(t2, func(i, j int) bool {
+		return t2[i][0] > t2[j][0]
+	})
+	ans := 0
+	cur := 0
+	for _, v := range transactions {
+		if cur < v[0] {
+			ans += v[0] - cur
+			cur = v[1]
+		} else {
+			cur -= v[0]
+			cur += v[1]
+		}
+	}
+	return int64(ans)
+}
+
+// 827 最大人工岛
+func largestIsland(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	cur := 1
+	cnt := map[int]int{}
+	idx := make([][]int, m)
+	for i := range idx {
+		idx[i] = make([]int, n)
+	}
+	var dfs func(x, y int)
+	dfs = func(x, y int) {
+		idx[x][y] = cur
+		cnt[cur]++
+		for _, d := range dir4 {
+			nx, ny := x+d.x, y+d.y
+			if nx >= 0 && nx < m && ny >= 0 && ny < n && grid[nx][ny] == 1 && idx[nx][ny] == 0 {
+				dfs(nx, ny)
+			}
+		}
+	}
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == 1 && idx[i][j] == 0 {
+				dfs(i, j)
+				cur++
+			}
+		}
+	}
+	ans := 1
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == 0 {
+				sur := map[int]struct{}{}
+				for _, d := range dir4 {
+					nx, ny := i+d.x, j+d.y
+					if nx < m && nx >= 0 && ny < n && ny >= 0 && idx[nx][ny] != 0 {
+						sur[idx[nx][ny]] = struct{}{}
+					}
+				}
+				u := 0
+				for k := range sur {
+					u += cnt[k]
+				}
+				ans = max(ans, u+1)
+			} else {
+				ans = max(ans, cnt[idx[i][j]])
+			}
+		}
+	}
+	return ans
+}
+
+func smallestEvenMultiple(n int) int {
+	return LCM(2, n)
+}
+
+func longestContinuousSubstring(s string) int {
+	ans := 1
+	cnt := 1
+	for i := 1; i < len(s); i++ {
+		if s[i] == s[i-1]+1 {
+			cnt++
+			ans = max(ans, cnt)
+		} else {
+			cnt = 1
+		}
+	}
+	return ans
+}
+
+func reverseOddLevels(root *TreeNode) *TreeNode {
+	data := []int{0}
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		n := len(queue)
+		for i := 0; i < n; i++ {
+			data = append(data, queue[i].Val)
+			if queue[i].Left != nil {
+				queue = append(queue, queue[i].Left)
+			}
+			if queue[i].Right != nil {
+				queue = append(queue, queue[i].Right)
+			}
+		}
+		queue = queue[n:]
+	}
+	cnt := 0
+	for i := 1; i < len(data); i <<= 1 {
+		if cnt%2 == 1 {
+			reverseSlice(data[i : i<<1])
+		}
+		cnt++
+	}
+	var ins func(i int) *TreeNode
+	ins = func(i int) *TreeNode {
+		if i >= len(data) {
+			return nil
+		}
+		return &TreeNode{
+			Left:  ins(i * 2),
+			Right: ins(i*2 + 1),
+			Val:   data[i],
+		}
+	}
+	return ins(1)
+}
