@@ -74,7 +74,7 @@ func TestShellSort(t *testing.T) {
 
 func generateRandomSlices() (rt [][]int) {
 	rand.Seed(time.Now().UnixNano())
-	var lengths = []int{1, 2, 3, 4, 5, 10, 100, 1000, 1e5, 1e5, 1e5}
+	var lengths = []int{1, 2, 3, 4, 5, 10, 100, 1000, 1e4, 1e4, 1e4}
 	for _, length := range lengths {
 		temp := make([]int, length)
 		for i := range temp {

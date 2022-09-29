@@ -32,40 +32,25 @@ func MergeSort(arr []int) {
 	if len(arr) <= 1 {
 		return
 	}
-	if len(arr) == 2 {
-		if arr[0] > arr[1] {
-			arr[0], arr[1] = arr[1], arr[0]
-		}
-		return
-	}
 	n := len(arr)
 	mid := n >> 1
-	MergeSort(arr[:mid])
-	MergeSort(arr[mid:])
-	p, q, i := 0, mid, 0
-	t := make([]int, n)
-	for p < mid && q < n {
-		if arr[p] < arr[q] {
-			t[i] = arr[p]
-			p++
+	left, right := arr[:mid], arr[mid:]
+	MergeSort(left)
+	MergeSort(right)
+	t := make([]int, 0, n)
+	for len(left) > 0 && len(right) > 0 {
+		if left[0] < right[0] {
+			t = append(t, left[0])
+			left = left[1:]
 		} else {
-			t[i] = arr[q]
-			q++
+			t = append(t, right[0])
+			right = right[1:]
 		}
-		i++
 	}
-	for p < mid {
-		t[i] = arr[p]
-		p++
-		i++
-	}
-	for q < n {
-		t[i] = arr[q]
-		q++
-		i++
-	}
-	for k := range t {
-		arr[k] = t[k]
+	if len(left) > 0 {
+		copy(arr, append(t, left...))
+	} else {
+		copy(arr, append(t, right...))
 	}
 }
 

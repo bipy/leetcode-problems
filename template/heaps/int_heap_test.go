@@ -1,21 +1,24 @@
 package heaps
 
 import (
-	"container/heap"
 	"fmt"
 	"testing"
 )
 
-func TestIntHeap(t *testing.T) {
-	h := &IntHeap{2, 1, 5}
-	heap.Init(h)
-	heap.Push(h, 3)
-	fmt.Printf("minimum: %d\n", (*h)[0])
-	for h.Len() > 0 {
-		fmt.Printf("%d ", heap.Pop(h))
+func TestIntMaxHeap(t *testing.T) {
+	arr := []int{2, 1, 5}
+	h := InitIntMaxHeap(arr)
+	h.Push(3)
+	for h.Size() > 0 {
+		fmt.Printf("%d ", h.Pop())
 	}
-	fmt.Println()
-	// Output:
-	// minimum: 1
-	// 1 2 3 5
+}
+
+func TestIntMinHeap(t *testing.T) {
+	arr := []int{2, 1, 5}
+	h := InitIntMinHeap(arr)
+	h.Push(3)
+	for h.Size() > 0 {
+		fmt.Printf("%d ", h.Pop())
+	}
 }

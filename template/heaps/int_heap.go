@@ -1,27 +1,50 @@
 package heaps
 
-// IntHeap min heaps
-type IntHeap []int
+import "container/heap"
 
-func (h IntHeap) Len() int {
-	return len(h)
+type IntHeap struct {
+	hd *heapData
 }
 
-func (h IntHeap) Swap(i, j int) {
-	h[i], h[j] = h[j], h[i]
+func initIntHeap(data []int, less func(i, j interface{}) bool) *IntHeap {
+	t := make([]interface{}, len(data))
+	for i := range t {
+		t[i] = data[i]
+	}
+	h := &IntHeap{&heapData{t, less}}
+	heap.Init(h.hd)
+	return h
 }
 
-func (h IntHeap) Less(i, j int) bool {
-	return h[i] < h[j]
+func InitIntMaxHeap(data []int) *IntHeap {
+	return initIntHeap(data, func(i, j interface{}) bool {
+		return i.(int) > j.(int)
+	})
 }
 
-func (h *IntHeap) Push(x any) {
-	*h = append(*h, x.(int))
+func InitIntMinHeap(data []int) *IntHeap {
+	return initIntHeap(data, func(i, j interface{}) bool {
+		return i.(int) < j.(int)
+	})
 }
 
-func (h *IntHeap) Pop() any {
-	n := len(*h)
-	x := (*h)[n-1]
-	*h = (*h)[:n-1]
-	return x
+func (h IntHeap) Top() int {
+	return h.hd.data[0].(int)
+}
+
+func (h IntHeap) UpdateTop(x int) {
+	h.hd.data[0] = x
+	heap.Fix(h.hd, 0)
+}
+
+func (h IntHeap) Push(x int) {
+	heap.Push(h.hd, x)
+}
+
+func (h IntHeap) Pop() int {
+	return heap.Pop(h.hd).(int)
+}
+
+func (h IntHeap) Size() int {
+	return h.hd.Len()
 }

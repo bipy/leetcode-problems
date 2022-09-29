@@ -1,12 +1,12 @@
 package leetcode
 
 import (
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
 func GetInput() []string {
-	file, err := ioutil.ReadFile("data.in")
+	file, err := os.ReadFile("data.in")
 	if err != nil {
 		panic(err.Error())
 	}

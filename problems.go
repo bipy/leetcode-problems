@@ -2,7 +2,6 @@ package leetcode
 
 import (
 	"bytes"
-	"container/heap"
 	"fmt"
 	"github.com/emirpasic/gods/trees/redblacktree"
 	"leetcode/template/heaps"
@@ -3942,12 +3941,11 @@ func orderlyQueue(s string, k int) string {
 
 // 1403 非递增顺序的最小子序列
 func minSubsequence(nums []int) (rt []int) {
-	h := heaps.IntHeap(nums)
-	heap.Init(&h)
+	h := heaps.InitIntMinHeap(nums)
 	sum := 0
 	total := SummarizingInt(nums)
 	for {
-		top := heap.Pop(&h).(int)
+		top := h.Pop()
 		sum += top
 		total -= top
 		rt = append(rt, top)
@@ -5697,14 +5695,14 @@ func smallestSubarrays(nums []int) []int {
 }
 
 func minimumMoney(transactions [][]int) int64 {
-	n := len(transactions)
-	sort.Slice(transactions, func(i, j int) bool {
-		return transactions[i][0]-transactions[i][1] > transactions[j][0]-transactions[j][1]
-	})
-	idx := sort.Search(n, func(i int) bool {
-		return transactions[i][0]-transactions[i][1] < 0
-	})
-	t1, t2 := transactions[:idx], transactions[idx:]
+	i := -1
+	for j := range transactions {
+		if transactions[j][0]-transactions[j][1] > 0 {
+			i++
+			transactions[i], transactions[j] = transactions[j], transactions[i]
+		}
+	}
+	t1, t2 := transactions[:i+1], transactions[i+1:]
 	sort.Slice(t1, func(i, j int) bool {
 		if t1[i][1] == t1[j][1] {
 			return t1[i][0] > t1[j][0]
@@ -5833,4 +5831,72 @@ func reverseOddLevels(root *TreeNode) *TreeNode {
 		}
 	}
 	return ins(1)
+}
+
+// 1636 按照频率将数组升序排序
+func frequencySort(nums []int) []int {
+	cnt := CountInt(nums)
+	sort.Slice(nums, func(i, j int) bool {
+		if cnt[nums[i]] == cnt[nums[j]] {
+			return nums[i] > nums[j]
+		}
+		return cnt[nums[i]] < cnt[nums[j]]
+	})
+	return nums
+}
+
+// 1640 能否连接形成数组
+func canFormArray(arr []int, pieces [][]int) bool {
+	m := [101]int{}
+	for i := range arr {
+		m[arr[i]] = i
+	}
+	sort.Slice(pieces, func(i, j int) bool {
+		return m[pieces[i][0]] < m[pieces[j][0]]
+	})
+	idx := 0
+	for i := range pieces {
+		for j := range pieces[i] {
+			if pieces[i][j] != arr[idx] {
+				return false
+			}
+			idx++
+		}
+	}
+	return true
+}
+
+// 面试题 17.19 消失的两个数字
+func missingTwo(nums []int) (ans []int) {
+	nums = append(nums, 0, -1, -1)
+	for i := range nums {
+		for nums[i] != -1 && nums[i] != i {
+			nums[i], nums[nums[i]] = nums[nums[i]], nums[i]
+		}
+	}
+	for i := range nums {
+		if nums[i] == -1 {
+			ans = append(ans, i)
+		}
+	}
+	return
+}
+
+// 面试题 17.09 第 k 个数
+func getKthMagicNumber(k int) int {
+	h := heaps.InitIntMinHeap([]int{1})
+	vis := map[int]struct{}{}
+	insert := func(x int) {
+		if _, ok := vis[x]; !ok {
+			vis[x] = struct{}{}
+			h.Push(x)
+		}
+	}
+	for i := 1; i < k; i++ {
+		top := h.Pop()
+		insert(top * 3)
+		insert(top * 5)
+		insert(top * 7)
+	}
+	return h.Top()
 }

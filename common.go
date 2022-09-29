@@ -332,3 +332,37 @@ func IntRepeat(x int, count int) []int {
 	}
 	return arr
 }
+
+func Axis(matrix [][]int, axis int) []int {
+	col := make([]int, len(matrix))
+	for i := range col {
+		col[i] = matrix[i][axis]
+	}
+	return col
+}
+
+// SplitT 将数组 arr 原地分割为两部分并返回
+// f(x) 为判断函数，其中 x 为数组元素
+func SplitT[T any](arr []T, f func(x T) bool) (first, second []T) {
+	i := -1
+	for j := range arr {
+		if f(arr[j]) {
+			i++
+			arr[i], arr[j] = arr[j], arr[i]
+		}
+	}
+	return arr[:i+1], arr[i+1:]
+}
+
+// Split 将数组 arr 原地分割为两部分并返回
+// f(x) 为判断函数，其中 x 为数组元素
+func Split(arr []int, f func(x int) bool) (first, second []int) {
+	i := -1
+	for j := range arr {
+		if f(arr[j]) {
+			i++
+			arr[i], arr[j] = arr[j], arr[i]
+		}
+	}
+	return arr[:i+1], arr[i+1:]
+}
