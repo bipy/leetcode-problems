@@ -5900,3 +5900,294 @@ func getKthMagicNumber(k int) int {
 	}
 	return h.Top()
 }
+
+// 面试题 01.08 零矩阵
+func setZeroes(matrix [][]int) {
+	m, n := len(matrix), len(matrix[0])
+	rows, cols := make([]bool, m), make([]bool, n)
+	for i := range matrix {
+		for j := range matrix[i] {
+			if matrix[i][j] == 0 {
+				rows[i] = true
+				cols[j] = true
+			}
+		}
+	}
+	for i := range rows {
+		if rows[i] {
+			for j := 0; j < n; j++ {
+				matrix[i][j] = 0
+			}
+		}
+	}
+	for i := range cols {
+		if cols[i] {
+			for j := 0; j < m; j++ {
+				matrix[j][i] = 0
+			}
+		}
+	}
+}
+
+// 1694 重新格式化电话号码
+func reformatNumber(number string) string {
+	sb := strings.Builder{}
+	for i := range number {
+		if number[i] != '-' && number[i] != ' ' {
+			sb.WriteByte(number[i])
+		}
+	}
+	number = sb.String()
+	var ns []string
+	for k := 0; k < len(number); k += 3 {
+		ns = append(ns, number[k:min(k+3, len(number))])
+	}
+	n := len(ns)
+	if n > 1 && len(ns[n-1]) == 1 {
+		ns[n-2], ns[n-1] = ns[n-2][:2], ns[n-2][2:]+ns[n-1]
+	}
+	return strings.Join(ns, "-")
+}
+
+// 2423 删除字符使频率相同
+func equalFrequency(word string) bool {
+	cnt := CountChar(word)
+	m := map[int]int{}
+	for _, v := range cnt {
+		if v != 0 {
+			m[v]++
+		}
+	}
+	if len(m) == 1 {
+		for k, v := range m {
+			if k == 1 || v == 1 {
+				return true
+			}
+		}
+	}
+	if len(m) == 2 {
+		for k, v := range m {
+			if k == 1 && v == 1 {
+				return true
+			}
+		}
+		ans := MapItems(m)
+		if ans[0][1] == 1 && ans[0][0] == ans[1][0]+1 ||
+			ans[1][1] == 1 && ans[0][0]+1 == ans[1][0] {
+			return true
+		}
+	}
+	return false
+}
+
+// 2425 所有数对的异或和
+func xorAllNums(nums1 []int, nums2 []int) int {
+	if len(nums1)%2 == 0 && len(nums2)%2 == 0 {
+		return 0
+	}
+	xor := func(arr []int) int {
+		t := 0
+		for _, v := range arr {
+			t ^= v
+		}
+		return t
+	}
+	if len(nums1)%2 == 0 {
+		return xor(nums1)
+	}
+	if len(nums2)%2 == 0 {
+		return xor(nums2)
+	}
+	return xor(nums1) ^ xor(nums2)
+}
+
+// 2426 满足不等式的数对数目
+func numberOfPairs1(nums1 []int, nums2 []int, diff int) int64 {
+	n := len(nums1)
+	stSize := 60010
+	off := stSize >> 1
+	ans := 0
+	st := segment_tree.InitEmptySegmentTree(stSize, func(a, b int) int {
+		return a + b
+	})
+	for i := n - 1; i >= 0; i-- {
+		ans += st.Query(nums1[i]-nums2[i]-diff+off, stSize-1)
+		st.UpdateFunc(nums1[i]-nums2[i]+off, func(oldVal int) (newVal int) {
+			return oldVal + 1
+		})
+	}
+	return int64(ans)
+}
+
+// 777 在LR字符串中交换相邻字符
+func canTransform(start string, end string) bool {
+	n, p, q := len(start), 0, 0
+	for p < n && q < n {
+		if start[p] == 'X' {
+			p++
+		} else if end[q] == 'X' {
+			q++
+		} else {
+			if start[p] != end[q] {
+				return false
+			}
+			if start[p] == 'L' && p < q {
+				return false
+			}
+			if start[p] == 'R' && p > q {
+				return false
+			}
+			p++
+			q++
+		}
+	}
+	for p < n {
+		if start[p] != 'X' {
+			return false
+		}
+		p++
+	}
+	for q < n {
+		if end[q] != 'X' {
+			return false
+		}
+		q++
+	}
+	return true
+}
+
+// 1784 检查二进制字符串字段
+func checkOnesSegment(s string) bool {
+	return strings.Count(s+"0", "10") <= 1
+}
+
+// 921 使括号有效的最少添加
+func minAddToMakeValid(s string) int {
+	cnt := 0
+	ans := 0
+	for i := range s {
+		if s[i] == '(' {
+			cnt++
+		} else {
+			if cnt == 0 {
+				ans++
+			} else {
+				cnt--
+			}
+		}
+	}
+	return ans + cnt
+}
+
+// 811 子域名访问计数
+func subdomainVisits(cpdomains []string) (ans []string) {
+	m := make(map[string]int, len(cpdomains)*len(cpdomains))
+	for _, cpd := range cpdomains {
+		sp := strings.Split(cpd, " ")
+		cnt, _ := strconv.Atoi(sp[0])
+		m[sp[1]] += cnt
+		for i := range sp[1] {
+			if sp[1][i] == '.' {
+				m[sp[1][i+1:]] += cnt
+			}
+		}
+	}
+	for k, v := range m {
+		ans = append(ans, fmt.Sprintf("%d %s", v, k))
+	}
+	return
+}
+
+// 927 三等分
+func threeEqualParts(arr []int) []int {
+	cnt := 0
+	for i := range arr {
+		if arr[i] == 1 {
+			cnt++
+		}
+	}
+	if cnt == 0 {
+		return []int{0, 2}
+	}
+	if cnt%3 != 0 {
+		return []int{-1, -1}
+	}
+	target := cnt / 3
+	cur := 0
+	sl := [3][2]int{}
+	for i := range arr {
+		if arr[i] == 1 {
+			if cur%target == 0 {
+				sl[cur/target][0] = i
+			}
+			cur++
+			if cur%target == 0 {
+				sl[cur/target-1][1] = i
+			}
+		}
+	}
+	zeros := len(arr) - (sl[2][1] + 1)
+	if sl[0][1]+zeros < sl[1][0] && sl[1][1]+zeros < sl[2][0] {
+		if CompareIntSlice(arr[sl[0][0]:sl[0][1]+zeros+1], arr[sl[1][0]:sl[1][1]+zeros+1]) == 0 &&
+			CompareIntSlice(arr[sl[2][0]:], arr[sl[1][0]:sl[1][1]+zeros+1]) == 0 {
+			return []int{sl[0][1] + zeros, sl[1][1] + zeros + 1}
+		}
+	}
+	return []int{-1, -1}
+}
+
+// 994 腐烂的橘子
+func orangesRotting(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	dp := make([][]int, m)
+	const INF int = 1<<31 - 1
+	for i := range dp {
+		dp[i] = IntRepeat(INF, n)
+	}
+	bfs := func(x, y int) {
+		queue := [][2]int{{x, y}}
+		vis := map[[2]int]struct{}{}
+		vis[[2]int{x, y}] = struct{}{}
+		level := 0
+		for len(queue) > 0 {
+			l := len(queue)
+			for i := 0; i < l; i++ {
+				if dp[queue[i][0]][queue[i][1]] <= level {
+					continue
+				}
+				dp[queue[i][0]][queue[i][1]] = level
+				for _, d := range dir4 {
+					nx, ny := queue[i][0]+d.x, queue[i][1]+d.y
+					if nx < m && nx >= 0 && ny < n && ny >= 0 && grid[nx][ny] == 1 {
+						next := [2]int{nx, ny}
+						if _, ok := vis[next]; !ok {
+							vis[next] = struct{}{}
+							queue = append(queue, next)
+						}
+					}
+				}
+			}
+			level++
+			queue = queue[l:]
+		}
+	}
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == 2 {
+				bfs(i, j)
+			}
+		}
+	}
+	ans := 0
+	for i := range grid {
+		for j := range grid[i] {
+			if grid[i][j] == 1 {
+				if dp[i][j] == INF {
+					return -1
+				}
+				ans = max(ans, dp[i][j])
+			}
+		}
+	}
+	return ans
+}

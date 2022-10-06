@@ -175,10 +175,7 @@ func XORSet(a, b []int) (rt []int) {
 
 // CompareIntSlice 比较整数数组
 func CompareIntSlice(a, b []int) int {
-	if len(a) > len(b) {
-		a, b = b, a
-	}
-	for i := 0; i < len(a); i++ {
+	for i := 0; i < len(a) && i < len(b); i++ {
 		if a[i] < b[i] {
 			return -1
 		}
@@ -188,16 +185,16 @@ func CompareIntSlice(a, b []int) int {
 	}
 	if len(a) == len(b) {
 		return 0
+	}
+	if len(a) > len(b) {
+		return 1
 	}
 	return -1
 }
 
 // CompareByteSlice 比较字节数组
 func CompareByteSlice(a, b []byte) int {
-	if len(a) > len(b) {
-		a, b = b, a
-	}
-	for i := 0; i < len(a); i++ {
+	for i := 0; i < len(a) && i < len(b); i++ {
 		if a[i] < b[i] {
 			return -1
 		}
@@ -207,6 +204,9 @@ func CompareByteSlice(a, b []byte) int {
 	}
 	if len(a) == len(b) {
 		return 0
+	}
+	if len(a) > len(b) {
+		return 1
 	}
 	return -1
 }

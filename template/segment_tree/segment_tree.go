@@ -20,6 +20,20 @@ func InitSegmentTree(arr []int, op func(a, b int) int) *SegmentTree {
 	return t
 }
 
+func InitEmptySegmentTree(size int, op func(a, b int) int) *SegmentTree {
+	t := &SegmentTree{
+		values: make([]segNode, size<<2),
+		op:     op,
+	}
+	t.buildN(1, 1, size)
+	return t
+}
+
+// UpdateFunc 范围 [0, n - 1]
+func (t SegmentTree) UpdateFunc(idx int, f func(oldVal int) (newVal int)) {
+	t.updateFunc(1, idx+1, f)
+}
+
 // Update 范围 [0, n - 1]
 func (t SegmentTree) Update(idx, val int) {
 	t.update(1, idx+1, val)
@@ -32,6 +46,16 @@ func (t SegmentTree) Query(left, right int) int {
 
 func (t SegmentTree) QueryAll() int {
 	return t.values[1].val
+}
+
+func (t SegmentTree) buildN(cur, left, right int) {
+	t.values[cur].left, t.values[cur].right = left, right
+	if left == right {
+		return
+	}
+	mid := (left + right) >> 1
+	t.buildN(cur*2, left, mid)
+	t.buildN(cur*2+1, mid+1, right)
 }
 
 func (t SegmentTree) build(arr []int, cur, left, right int) {
@@ -73,4 +97,18 @@ func (t SegmentTree) query(cur, queryLeft, queryRight int) int {
 	}
 	vl, vr := t.query(cur*2, queryLeft, queryRight), t.query(cur*2+1, queryLeft, queryRight)
 	return t.op(vl, vr)
+}
+
+func (t SegmentTree) updateFunc(cur, idx int, f func(int) int) {
+	if t.values[cur].left == t.values[cur].right {
+		t.values[cur].val = f(t.values[cur].val)
+		return
+	}
+	mid := (t.values[cur].left + t.values[cur].right) >> 1
+	if mid >= idx {
+		t.updateFunc(cur*2, idx, f)
+	} else {
+		t.updateFunc(cur*2+1, idx, f)
+	}
+	t.values[cur].val = t.op(t.values[cur*2].val, t.values[cur*2+1].val)
 }

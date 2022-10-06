@@ -303,3 +303,16 @@ func Test_minimumMoney(t *testing.T) {
 func Test_reverseOddLevels(t *testing.T) {
 	reverseOddLevels(TreeDeserialize("[2,3,5,8,13,21,34]"))
 }
+
+func Test_reformatNumber(t *testing.T) {
+	reformatNumber("1-23-45 67")
+}
+
+func Test_threeEqualParts(t *testing.T) {
+	threeEqualParts([]int{1, 1, 0, 1, 1, 0, 1, 1})
+}
+
+func Test_orangesRotting(t *testing.T) {
+	defer Timer()
+	fmt.Println(orangesRotting(StrTo2DIntSlice("[[2,1,1],[1,1,0],[0,1,1]]")))
+}
